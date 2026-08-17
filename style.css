@@ -3273,3 +3273,39 @@ color:#ff5ca8;
         grid-template-columns:repeat(2,minmax(0,1fr))!important;
     }
 }
+
+
+/* =========================================================
+   SEED STORE + MICKY BUCS — ADDITIVE MODULE
+   ========================================================= */
+.seedStoreWindow{width:min(900px,92vw);max-height:88vh;overflow:auto}
+.seedStoreBody{padding:18px}
+.mickyWalletCard{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:16px;border-radius:18px;background:rgba(255,255,255,.12);margin-bottom:8px}
+.mickyWalletCard h2{margin:4px 0 0}
+.mickyWalletCard button,.mickyJobCard button,.seedShopCard button{border:0;border-radius:12px;padding:10px 14px;cursor:pointer;font-weight:700}
+.mickyJobsGrid,.seedShopGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin:12px 0 22px}
+.mickyJobCard,.seedShopCard{padding:14px;border-radius:16px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15)}
+.mickyJobCard h4,.seedShopCard h4{margin:4px 0 7px}
+.mickyJobCard p,.seedShopCard p{margin:5px 0 10px;font-size:.9rem}
+.mickyJobReward,.seedPrice{font-weight:800;margin-bottom:9px}
+.mickyJobCard.completed{opacity:.72}
+.seedStoreIntro{opacity:.8}
+.seedStoreStatus{min-height:22px;margin:8px 0 12px;font-weight:700}
+@media(max-width:600px){.mickyWalletCard{align-items:flex-start;flex-direction:column}.seedStoreWindow{width:95vw}}
+
+
+/* STORE EXPANSION V2 — additive, existing progress keys are untouched */
+.storeExpansionTabs{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}
+.storeExpansionTabs button,.bankButtons button,#claimSavingsBonus{border:0;border-radius:12px;padding:10px 13px;cursor:pointer;font-weight:800}
+.storeExpansionPanel{margin:12px 0 20px;padding:14px;border-radius:16px;background:rgba(255,255,255,.07)}
+.classifiedItemCard{padding:15px;border:1px dashed rgba(255,255,255,.4);border-radius:16px;margin:10px 0 15px}
+.bankCard{padding:15px;border-radius:16px;background:rgba(255,255,255,.09)}
+.bankButtons{display:flex;gap:8px;margin:10px 0;flex-wrap:wrap}
+.achievementGrid,.secretShelfGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
+.achievementCard,.secretItem{padding:13px;border-radius:14px;background:rgba(255,255,255,.09)}
+.achievementCard.unlocked{outline:1px solid rgba(255,255,255,.45)}
+.secretItem small{display:block;margin-top:7px;opacity:.7}
+.verifyBadge{display:inline-block;padding:4px 8px;border-radius:999px;font-size:10px;font-weight:900;margin:4px 0}
+.jobPending{opacity:.82}
+
+.secretItem input{width:100%;margin-top:10px;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.12);color:inherit}.purchasedLettersBox,.mikaelTokensBox{margin:18px;padding:15px;border-radius:16px;background:rgba(255,255,255,.08)}.purchasedLetter{margin:8px 0;padding:10px;border-radius:12px;background:rgba(255,255,255,.08)}.purchasedLetter pre{white-space:pre-wrap;font-family:inherit;line-height:1.6;margin-top:10px}

@@ -1582,6 +1582,7 @@ document.addEventListener("keydown", (event) => {
     }
 
     function finishHeartGame(){
+        window.dispatchEvent(new CustomEvent("lizzyJobProof",{detail:{type:"game_complete",game:"heart_catch"}}));
         gameRunning = false;
         clearInterval(spawnTimer);
         clearInterval(countdownTimer);
@@ -1831,6 +1832,7 @@ document.addEventListener("keydown", (event) => {
             }));
         }
 
+        window.dispatchEvent(new CustomEvent("lizzyJobProof",{detail:{type:"game_complete",game:"mikhail_quiz",perfect:score===total}}));
         const completedAt=new Date();
         const right=answerLog.filter(x=>x.correct);
         const wrong=answerLog.filter(x=>!x.correct);
@@ -2020,7 +2022,7 @@ function intro(){$("wouldRatherIntro").classList.remove("hidden");$("wouldRather
 function start(){round=[...bank].sort(()=>Math.random()-.5).slice(0,5);i=score=0;answerLog=[];$("wouldRatherIntro").classList.add("hidden");$("wouldRatherResult").classList.add("hidden");$("wouldRatherPlay").classList.remove("hidden");render()}
 function render(){let q=round[i];$("wouldRatherProgress").textContent=`${i+1}/5 • Q${q.n}`;$("wouldRatherScore").textContent=`Score: ${score}`;$("wouldRatherA").textContent=q.a;$("wouldRatherB").textContent=q.b;$("wouldRatherA").disabled=$("wouldRatherB").disabled=false;$("wouldRatherReaction").textContent=""}
 function pick(x){let q=round[i],ok=q.correct==="BOTH"||q.correct===x;if(ok)score++;answerLog.push({questionNumber:q.n,question:`${q.a} OR ${q.b}`,lizzyAnswer:x==="A"?q.a:q.b,mikaelAnswer:q.correct==="BOTH"?"Either / Both":q.correct==="A"?q.a:q.b,correct:ok?"Yes":"No"});$("wouldRatherA").disabled=$("wouldRatherB").disabled=true;$("wouldRatherReaction").textContent=ok?"Correct 👀❤️":"Wrong 😭 Mr Perfect disagrees.";setTimeout(()=>{i++;i<5?render():finish()},650)}
-function finish(){$("wouldRatherPlay").classList.add("hidden");$("wouldRatherResult").classList.remove("hidden");let t=score===5?"DANGEROUSLY HIGH CLEARANCE 🕵️❤️":score>=4?"Very Suspicious 👀":score>=3?"Respectable 😌":score>=2?"Further Investigation Required 😂":"SECURITY CLEARANCE DENIED 🚨";$("wouldRatherResultTitle").textContent=`${score}/5 — ${t}`;$("wouldRatherResultText").textContent=score===5?"Agent Yelizaveta knows Mr Perfect suspiciously well.":"Play another random five and prove yourself.";fetch("https://formspree.io/f/mrpzlzkw",{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify({game:"Would Mikael Rather?",score:`${score}/5`,result:t,questions_and_answers:answerLog.map((a,n)=>`${n+1}. ${a.question}\nLizzy: ${a.lizzyAnswer}\nMikael: ${a.mikaelAnswer}\nCorrect: ${a.correct}`).join("\n\n")})}).catch(()=>{});lizzyTelegramNotify("🤔 WOULD MIKAEL RATHER COMPLETED",`${score}/5 — ${t}`,answerLog.map((a,n)=>`${n+1}. ${a.question}\nLizzy: ${a.lizzyAnswer}\nMikael: ${a.mikaelAnswer}\nCorrect: ${a.correct}`).join("\n\n"))}
+function finish(){window.dispatchEvent(new CustomEvent("lizzyJobProof",{detail:{type:"would_rather_complete"}}));window.dispatchEvent(new CustomEvent("lizzyJobProof",{detail:{type:"game_complete",game:"would_rather",perfect:score===5}}));$("wouldRatherPlay").classList.add("hidden");$("wouldRatherResult").classList.remove("hidden");let t=score===5?"DANGEROUSLY HIGH CLEARANCE 🕵️❤️":score>=4?"Very Suspicious 👀":score>=3?"Respectable 😌":score>=2?"Further Investigation Required 😂":"SECURITY CLEARANCE DENIED 🚨";$("wouldRatherResultTitle").textContent=`${score}/5 — ${t}`;$("wouldRatherResultText").textContent=score===5?"Agent Yelizaveta knows Mr Perfect suspiciously well.":"Play another random five and prove yourself.";fetch("https://formspree.io/f/mrpzlzkw",{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify({game:"Would Mikael Rather?",score:`${score}/5`,result:t,questions_and_answers:answerLog.map((a,n)=>`${n+1}. ${a.question}\nLizzy: ${a.lizzyAnswer}\nMikael: ${a.mikaelAnswer}\nCorrect: ${a.correct}`).join("\n\n")})}).catch(()=>{});lizzyTelegramNotify("🤔 WOULD MIKAEL RATHER COMPLETED",`${score}/5 — ${t}`,answerLog.map((a,n)=>`${n+1}. ${a.question}\nLizzy: ${a.lizzyAnswer}\nMikael: ${a.mikaelAnswer}\nCorrect: ${a.correct}`).join("\n\n"))}
 $("wouldMikaelRatherIcon")?.addEventListener("click",()=>{$("wouldMikaelRatherWindow").classList.remove("hidden");intro()});$("wouldMikaelRatherClose")?.addEventListener("click",()=>$("wouldMikaelRatherWindow").classList.add("hidden"));$("closeWouldMikaelRather")?.addEventListener("click",()=>$("wouldMikaelRatherWindow").classList.add("hidden"));$("startWouldRather")?.addEventListener("click",start);$("playWouldRatherAgain")?.addEventListener("click",start);$("wouldRatherA")?.addEventListener("click",()=>pick("A"));$("wouldRatherB")?.addEventListener("click",()=>pick("B"));})();
 // TIC-TAC-TOE VS MR PERFECT
 // Easy = mostly random
@@ -2202,6 +2204,7 @@ $("wouldMikaelRatherIcon")?.addEventListener("click",()=>{$("wouldMikaelRatherWi
 
         if (result === HUMAN) {
             score.human++;
+            window.dispatchEvent(new CustomEvent("lizzyJobProof",{detail:{type:"ttt_win"}}));
             setStatus(reactions.humanWin[Math.floor(Math.random()*reactions.humanWin.length)]);
             if (typeof confetti === "function") confetti({particleCount:80,spread:80,origin:{y:.7}});
         } else if (result === AI) {
@@ -2211,6 +2214,7 @@ $("wouldMikaelRatherIcon")?.addEventListener("click",()=>{$("wouldMikaelRatherWi
             score.draw++;
             setStatus(reactions.draw[Math.floor(Math.random()*reactions.draw.length)]);
         }
+        window.dispatchEvent(new CustomEvent("lizzyJobProof",{detail:{type:"game_complete",game:"tic_tac_toe"}}));
         render();
     }
 
@@ -2302,7 +2306,7 @@ function menu(){$("crackMenu").classList.remove("hidden");$("crackPlay").classLi
 function start(id){mid=Number(id);stage=0;attempts=0;crackLog=[];$("crackMenu").classList.add("hidden");$("crackComplete").classList.add("hidden");$("crackPlay").classList.remove("hidden");render()}
 function render(){let m=missions[mid],s=m.stages[stage];$("crackMissionTitle").textContent=m.title;$("crackStage").textContent=`Stage ${stage+1}/${m.stages.length}`;$("crackPuzzle").innerHTML=s.q;$("crackAnswer").value="";$("crackFeedback").textContent="";$("crackAnswer").focus()}
 function submit(){let s=missions[mid].stages[stage],raw=$("crackAnswer").value,v=norm(raw),ok=s.a.some(a=>norm(a)===v);crackLog.push({stage:stage+1,question:$("crackPuzzle").innerText.replace(/\s+/g," ").trim(),answer:raw||"(blank)",expected:s.a.join(" / "),correct:ok?"Yes":"No"});if(ok){attempts=0;$("crackFeedback").textContent="✅ DECRYPTED. Accessing next layer...";setTimeout(()=>{stage++;stage<missions[mid].stages.length?render():complete()},650)}else{attempts++;$("crackFeedback").textContent=attempts>=3?"🚨 INTRUDER DETECTED. Agent clearance temporarily questioned. Try the hint. 😭":"❌ ACCESS DENIED. Incorrect code."}}
-function complete(){let m=missions[mid];$("crackPlay").classList.add("hidden");$("crackComplete").classList.remove("hidden");$("crackCompleteTitle").textContent=`🔓 ${m.reward}`;$("crackCompleteText").textContent=mid===5?"You actually went through all of that just to see what was in here? 😂 Agent Yelizaveta has earned a LEGENDARY Mystery Reward. ❤️":"Mission complete. Mr Perfect would like it recorded that your security clearance is becoming concerning. 😂❤️";localStorage.setItem(`crackMission${mid}`,"complete");fetch("https://formspree.io/f/xjybobov",{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify({game:"Crack the Code",mission:m.title,result:m.reward,questions_and_answers:crackLog.map(a=>`Stage ${a.stage}: ${a.question}\nLizzy answer: ${a.answer}\nExpected: ${a.expected}\nCorrect: ${a.correct}`).join("\n\n")})}).catch(()=>{});lizzyTelegramNotify("🔐 CRACK THE CODE COMPLETED",`${m.title} — ${m.reward}`,crackLog.map(a=>`Stage ${a.stage}: ${a.question}\nLizzy answer: ${a.answer}\nExpected: ${a.expected}\nCorrect: ${a.correct}`).join("\n\n"))}
+function complete(){window.dispatchEvent(new CustomEvent("lizzyJobProof",{detail:{type:"crack_complete",mission:mid}}));window.dispatchEvent(new CustomEvent("lizzyJobProof",{detail:{type:"game_complete",game:"crack_code"}}));let m=missions[mid];$("crackPlay").classList.add("hidden");$("crackComplete").classList.remove("hidden");$("crackCompleteTitle").textContent=`🔓 ${m.reward}`;$("crackCompleteText").textContent=mid===5?"You actually went through all of that just to see what was in here? 😂 Agent Yelizaveta has earned a LEGENDARY Mystery Reward. ❤️":"Mission complete. Mr Perfect would like it recorded that your security clearance is becoming concerning. 😂❤️";localStorage.setItem(`crackMission${mid}`,"complete");fetch("https://formspree.io/f/xjybobov",{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify({game:"Crack the Code",mission:m.title,result:m.reward,questions_and_answers:crackLog.map(a=>`Stage ${a.stage}: ${a.question}\nLizzy answer: ${a.answer}\nExpected: ${a.expected}\nCorrect: ${a.correct}`).join("\n\n")})}).catch(()=>{});lizzyTelegramNotify("🔐 CRACK THE CODE COMPLETED",`${m.title} — ${m.reward}`,crackLog.map(a=>`Stage ${a.stage}: ${a.question}\nLizzy answer: ${a.answer}\nExpected: ${a.expected}\nCorrect: ${a.correct}`).join("\n\n"))}
 $("crackCodeIcon")?.addEventListener("click",()=>{$("crackCodeWindow").classList.remove("hidden");menu()});
 $("crackCodeClose")?.addEventListener("click",()=>$("crackCodeWindow").classList.add("hidden"));$("closeCrackCode")?.addEventListener("click",()=>$("crackCodeWindow").classList.add("hidden"));
 document.querySelectorAll("[data-mission]").forEach(b=>b.addEventListener("click",()=>start(b.dataset.mission)));
@@ -2883,6 +2887,7 @@ $("mysteryBoxIcon")?.addEventListener("click",open);$("mysteryBoxClose")?.addEve
         });
         garden.selectedSeed=null;
         saveGarden();
+        window.dispatchEvent(new CustomEvent("lizzyJobProof",{detail:{type:"seed_planted",seedId}}));
         gardenComment(seedId==="mikaelSeed"
             ?"❓ UNKNOWN_SEED.exe planted. LizzyOS accepts no responsibility for whatever this becomes."
             :`🌱 ${seed.name} planted. Don't forget the water.`);
@@ -2899,6 +2904,7 @@ $("mysteryBoxIcon")?.addEventListener("click",open);$("mysteryBoxClose")?.addEve
             addFlower(p.flowerId,1,"Fully grown in the Garden");
         }
         saveGarden();
+        window.dispatchEvent(new CustomEvent("lizzyJobProof",{detail:{type:"plant_watered",plantId:id}}));
         const card=document.querySelector(`[data-plant="${id}"] .plantVisual`);
         card?.classList.add("waterSplash");setTimeout(()=>card?.classList.remove("waterSplash"),700);
         gardenComment(p.flowerId==="bananaTree"
@@ -3418,3 +3424,5 @@ window.addEventListener("load", () => {
     }, 1200);
   }
 });
+
+if (typeof lizzyTelegramNotify === "function") window.lizzyTelegramNotify = lizzyTelegramNotify;

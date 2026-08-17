@@ -577,6 +577,11 @@
                 <span>Token Jar</span>
             </div>
 
+            <div class="desktopIcon" id="seedStoreIcon">
+                <div class="desktopEmoji">🛒</div>
+                <span>Seed Store</span>
+            </div>
+
             <div class="desktopIcon calendarFolderIcon" id="calendarIcon">
                 <div class="desktopEmoji calendarFolderEmoji"><span class="folderCalendarBadge">📅</span></div>
                 <span>Our Date</span>
@@ -1392,5 +1397,70 @@ if (window.netlifyIdentity) {
 
 <script src="script.js"></script>
 
+
+        <div id="seedStoreWindow" class="desktopWindow hidden seedStoreWindow">
+            <div class="windowTop">
+                <div class="windowDots">
+                    <span class="windowCloseDot" id="seedStoreClose"></span>
+                    <span class="windowMinDot"></span><span class="windowMaxDot"></span>
+                </div>
+                <strong>🌱 Lizzy's Seed Store</strong>
+            </div>
+            <div class="seedStoreBody">
+                <div class="mickyWalletCard">
+                    <div><small>MICKY WALLET</small><h2>💵 <span id="mickyBalance">0</span> MB</h2></div>
+                    <button id="claimMickyAllowance">Claim Daily +2 MB</button>
+                </div>
+                <div id="mickyAllowanceStatus" class="seedStoreStatus"></div>
+                <h3>💼 Today's Micky Jobs</h3>
+                <p class="seedStoreIntro">Five missions are selected each day from 50 possible jobs. Complete them to earn Micky Bucs.</p>
+                <div id="mickyJobsList" class="mickyJobsGrid"></div>
+                <h3>🛍️ Seed Shop</h3>
+                <p class="seedStoreIntro">Purchased seeds are added directly to your existing Garden inventory.</p>
+                <div id="seedShopList" class="seedShopGrid"></div>
+                <div id="seedStoreStatus" class="seedStoreStatus"></div>
+                <div class="storeExpansionTabs">
+                    <button data-store-tab="extras">✨ Extras</button>
+                    <button data-store-tab="bank">🏦 Micky Bank</button>
+                    <button data-store-tab="achievements">🏆 Achievements</button>
+                    <button data-store-tab="secret">🔒 Secret Shelf</button>
+                </div>
+                <section id="storeExtrasPanel" class="storeExpansionPanel">
+                    <h3>✨ Store Extras</h3>
+                    <div id="classifiedItemCard" class="classifiedItemCard"></div>
+                    <div id="storeExtrasList" class="seedShopGrid"></div>
+                </section>
+                <section id="mickyBankPanel" class="storeExpansionPanel hidden">
+                    <h3>🏦 Bank of Micky</h3>
+                    <div class="bankCard">
+                        <p>Wallet: <strong><span id="bankWalletBalance">0</span> MB</strong></p>
+                        <p>Savings: <strong><span id="bankSavingsBalance">0</span> MB</strong></p>
+                        <div class="bankButtons">
+                            <button data-bank="deposit">Deposit 5 MB</button>
+                            <button data-bank="withdraw">Withdraw 5 MB</button>
+                        </div>
+                        <small>Keep at least 15 MB saved for 7 days to claim a +2 MB savings bonus.</small>
+                        <button id="claimSavingsBonus">Claim Weekly Savings Bonus</button>
+                    </div>
+                </section>
+                <section id="storeAchievementsPanel" class="storeExpansionPanel hidden">
+                    <h3>🏆 Micky Bucs Achievements</h3>
+                    <div id="storeAchievementsList" class="achievementGrid"></div>
+                </section>
+                <section id="secretShelfPanel" class="storeExpansionPanel hidden">
+                    <h3>🔒 Mikael's Secret Shelf</h3>
+                    <p class="seedStoreIntro">These cannot be bought with Micky Bucs. Mikael controls when they unlock.</p>
+                    <div class="secretShelfGrid">
+                        <div class="secretItem">🔒 <strong>Classified Seed</strong><small>LOCKED</small></div>
+                        <div class="secretItem">🔒 <strong>Unreleased Letter</strong><small>LOCKED</small></div>
+                        <div class="secretItem">🔒 <strong>Secret Reward</strong><small>LOCKED</small></div>
+                    </div>
+                </section>
+
+                <button id="closeSeedStore" class="secondaryButton">Close Store</button>
+            </div>
+        </div>
+
+<script src="seed-store.js"></script>
 </body>
 </html>
