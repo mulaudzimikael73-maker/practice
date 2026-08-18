@@ -486,3 +486,54 @@ window.addEventListener("lizzyStoreRefresh",()=>setTimeout(()=>{renderMyExtras()
 window.addEventListener("lizzyExtrasChanged",()=>setTimeout(()=>{renderMyExtras();deliverAndDecorate()},60));
 })();
 
+
+
+
+/* =========================================================
+   SECRET SHELF DELIVERY GUARANTEE V2
+   Letter #001 -> Open When / Purchased Letters
+   Mystery Reward -> Token Jar / Mikael's Tokens / UNO Reverse
+   Idempotent: never duplicates an already-delivered reward.
+   ========================================================= */
+(()=>{
+"use strict";
+const read=(k,f)=>{try{const v=localStorage.getItem(k);return v===null?f:JSON.parse(v)}catch(e){return f}};
+const write=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
+const SHELF="lizzySecretShelfV1",LETTERS="lizzyPurchasedLettersV1",TOKENS="lizzyMikaelTokensV1";
+const LETTER_ID="letter_001";
+const LETTER_TITLE="Unreleased Letter #001";
+
+function reconcileSecretShelfDelivery(){
+ const s=read(SHELF,{owned:{}});
+ // Letter: if ownership exists, guarantee a Purchased Letters record exists.
+ if(s.owned?.[LETTER_ID]){
+   const list=read(LETTERS,[]);
+   if(!list.some(x=>x.id===LETTER_ID)){
+     // Pull the authoritative letter content from the already-rendered purchased record if
+     // possible; otherwise the main grant() will create it during normal accepted purchase.
+     const existingText=document.querySelector("#purchasedLettersBox .purchasedLetter pre")?.textContent||"";
+     if(existingText) list.push({id:LETTER_ID,title:LETTER_TITLE,content:existingText});
+     write(LETTERS,list);
+   }
+   try{renderLetters();}catch(e){}
+ }
+ // Mystery Reward: ownership guarantees exactly one UNO Reverse entitlement.
+ if(s.owned?.mystery_reward){
+   const t=read(TOKENS,{inventory:{},history:[]});
+   t.inventory=t.inventory||{};t.history=t.history||[];
+   const delivered=t.history.some(h=>h?.source==="Mystery Reward"&&h?.token==="UNO Reverse");
+   if(!delivered){
+     t.inventory["UNO Reverse"]=Number(t.inventory["UNO Reverse"]||0)+1;
+     t.history.push({type:"earned",token:"UNO Reverse",source:"Mystery Reward",at:new Date().toISOString(),reconciled:true});
+     write(TOKENS,t);
+   }
+   try{renderMikaelTokens();}catch(e){}
+ }
+}
+setTimeout(reconcileSecretShelfDelivery,700);
+window.addEventListener("focus",reconcileSecretShelfDelivery);
+window.addEventListener("lizzyStoreRefresh",()=>setTimeout(reconcileSecretShelfDelivery,80));
+document.getElementById("openWhenIcon")?.addEventListener("click",()=>setTimeout(reconcileSecretShelfDelivery,80));
+document.getElementById("tokenJarIcon")?.addEventListener("click",()=>setTimeout(reconcileSecretShelfDelivery,80));
+})();
+
