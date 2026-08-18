@@ -124,7 +124,8 @@ function notify(type,title,details){
  return Promise.resolve(false);
 }
 
-/* Original Micky Jobs verification remains unchanged. */
+/* ORIGINAL MICKY JOBS VERIFICATION PRESERVED.
+   The original completeJob() above remains the only task completion path. */
 
 /* Store extras */
 const EXTRAS=[
@@ -158,7 +159,8 @@ function renderExtras(){
  const host=$("storeExtrasList");
  if(host)host.innerHTML=EXTRAS.map(x=>`<div class="seedShopCard"><h4>${x.name}</h4><div class="seedPrice">💵 ${x.price} MB</div><button data-extra="${x.id}">Buy</button></div>`).join("");
  host?.querySelectorAll("[data-extra]").forEach(b=>b.onclick=()=>buyExtra(EXTRAS.find(x=>x.id===b.dataset.extra)));
- const box=$("classifiedItemCard"); if(box)box.innerHTML="";
+ const classified=$("classifiedItemCard"); if(classified)classified.innerHTML="";
+ window.dispatchEvent(new Event("lizzyExtrasChanged"));
 }
 
 /* Bank */
@@ -212,130 +214,275 @@ renderExtras();renderBank();renderAchievements();
 })();
 
 
-/* STORE FINAL V3 */
+/* =========================================================
+   SECRET SHELF — REAL WEBSITE FINAL
+   Does NOT modify tasks.
+   ========================================================= */
 (()=>{
 "use strict";
 const $=id=>document.getElementById(id);
-const CONTENT={"letter1": "Lizzy,\n\nThere are quite a few things I notice about you that I probably don't actually say enough — partly because I know you'll find some way to argue with me about them, and partly because sometimes it's easier to just notice these things quietly.\n\nI notice how easy it is to talk to you.\n\nSomehow a normal conversation can turn into us debating something completely ridiculous, making fun of each other, talking about something serious, and then immediately going back to nonsense like nothing happened. 😂\n\nAnd I really like that.\n\nI notice your intelligence too. Not just in the obvious ways, but in how you think about things and how you have your own opinions. Even though this unfortunately means you sometimes believe you're right when you're very clearly arguing with Mr Perfect. 😌\n\nI notice the little reactions you have when something makes you laugh. The attitude when I've said something cheeky. The moments where you're trying very hard not to give me the satisfaction of knowing I've made you smile.\n\nI notice how beautiful you are — and yes, before you start arguing with the letter, you cannot argue with a document you've already paid Micky Bucs for. No refunds.\n\nBut more than that, I notice how much I've enjoyed actually getting to know you.\n\nNot Agent Yelizaveta. Not Little Miss Attitude. Not The Hater™. Just Lizzy.\n\nThe person behind all the jokes, arguments, ridiculous nicknames and bullying allegations.\n\nAnd somewhere along the way, without really trying to, you've become someone whose messages I look forward to, someone I genuinely enjoy spending time with, and someone whose little things I've apparently started noticing enough to write an entire classified letter about them.\n\nThere are probably plenty more things I notice that aren't written here. Some of them I'll tell you eventually. Some you'll probably figure out yourself. And some might have to remain classified for now. 🤫\n\nBut I suppose the main thing I don't always say is actually pretty simple:\n\nI'm really glad I got to know you, Lizzy. ❤️\n\nAnd I'm looking forward to noticing a lot more.\n\n— Mikael\na.k.a. Mr Perfect 😌\n\nP.S. Before you say anything — you willingly spent Micky Bucs to read this. So technically, you paid to hear me be nice to you.\n\nThat's embarrassing for you, really. 😂", "file2": "LIZZYOS INTELLIGENCE DIVISION\nCASE: #002-H8R — THE HATER INVESTIGATION\nCLASSIFICATION: TOP SECRET 🔴\nSUBJECT: Agent Yelizaveta\nALIAS: Little Miss Attitude\nINVESTIGATING OFFICER: Agent Mikhail Petrov\n\nLizzyOS has detected an unusually high level of hater activity originating from Agent Yelizaveta. Following numerous suspicious comments, questionable opinions and completely unnecessary attacks on Mikael, a formal investigation was launched.\n\nSubject has also openly expressed a general dislike of men. This raises an important question: How did Mikael somehow survive the selection process?\n\nOFFICIAL CHARGES\n01 — Unprovoked Mikael Slander. GUILTY.\n02 — Excessive Attitude. VERY GUILTY.\n03 — Being a Professional Hater. GUILTY WITH DISTINCTION. 🏆\n04 — Refusing to Admit When Mikael Is Right. GUILTY.\n05 — The Mr Perfect Incident. Evidence confirms that “Mr Perfect” originated from the subject herself. EXTREMELY GUILTY. 😌\n\nBEHAVIOURAL ASSESSMENT\nHater Level: 98%\nAttitude: 97%\nStubbornness: [SYSTEM OVERLOAD]\nAbility to argue: Elite\nLikelihood of admitting Mikael is right: 2%\nLikelihood of arguing with this report: 100%\n\nFINAL VERDICT: GUILTY ON ALL COUNTS.\nSENTENCE: Continued association with Mikael. No possibility of parole. 😂\n\nCASE STATUS: CLOSED*\n*Subject will almost certainly provide enough evidence to reopen this investigation.*", "file3": "LIZZYOS SPECIAL INVESTIGATIONS UNIT\nCASE: #003-MP — OPERATION: MR PERFECT\nCLASSIFICATION: ULTRA SECRET 🔴\n\nAgent Yelizaveta referred to Mikhail as “MR PERFECT.” This was not a nickname created by Mikael. It came directly from Lizzy herself.\n\nCENTRAL QUESTION:\nWhy would a woman with such a well-documented history of hating men willingly give one of them the title Mr Perfect?\n\nTHEORY #001 — Temporary Loss of Judgement\nProbability: 8%.\n\nTHEORY #002 — Sarcasm\nLizzyOS ruling: BORING. NEXT THEORY.\n\nTHEORY #003 — THE DANCE INCIDENT 🕺🏾\nIntelligence reports indicate that Agent Mikhail possesses exceptional dancing abilities.\nTechnique: Incredible\nRhythm: Unmatched\nFootwork: World class\nConfidence: Possibly excessive\nEffect on Agent Yelizaveta: Significant\n\nInvestigators believe there is a strong possibility that Mikael's amazing dance skills won her heart. Agent Yelizaveta's objection has already been rejected. 😂\n\nTHEORY #004 — She Secretly Thinks Mikael Is Amazing\nExhibit A: She called him Mr Perfect.\nExhibit B: She continues talking to him despite allegedly being a professional hater.\nExhibit C: The aforementioned dancing.\nExhibit D: [REDACTED]\nExhibit E: [REDACTED]\nExhibit F: Why are you still reading this file, Lizzy? 👀\n\nMIKHAIL PETROV ASSESSMENT\nCheekiness: 96%\nConfidence: 99%\nDancing: 100% 🕺🏾\nAbility to annoy Lizzy: Elite\nActually Perfect: Under investigation\nBelieves he's perfect: Unfortunately, yes.\n\nCRITICAL CONTRADICTION\nFACT ONE: Lizzy hates men.\nFACT TWO: Mikael is a man.\nFACT THREE: Lizzy called Mikael Mr Perfect.\n\nLeading theory: D — ALL OF THE ABOVE.\n\nCASE STATUS: UNSOLVED 🔐\nDenial will be recorded as additional evidence."};
-const W="lizzyMickyBucsV1",J="lizzyMickyJobsV1";
-const K={proof:"lizzyMickyProofV2",shelf:"lizzySecretShelfV1",letters:"lizzyPurchasedLettersV1",mTokens:"lizzyMikaelTokensV1"};
-const read=(k,f)=>{try{let v=localStorage.getItem(k);return v===null?f:JSON.parse(v)}catch(e){return f}};
-const write=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
-const today=()=>new Date().toISOString().slice(0,10),wallet=()=>Number(localStorage.getItem(W)||0),setWallet=n=>localStorage.setItem(W,String(Math.max(0,n)));
-const worker=window.LIZZY_TELEGRAM_WORKER_URL||"https://lizzyos-notifications.mulaudzimikael73.workers.dev/";
-/* Original Micky Jobs verification remains authoritative. */
-const ITEMS=[
-{id:"letter_001",icon:"💌",publicName:"Unreleased Letter #001",kind:"letter",content:CONTENT.letter},
-{id:"mystery_reward",icon:"🎁",publicName:"Mystery Reward",kind:"mikael_token",content:CONTENT.uno}
-];
-const shelf=()=>read(K.shelf,{owned:{},bids:{}}),saveShelf=s=>write(K.shelf,s);
-function renderShelf(){
- const h=$("secretShelfPanel");if(!h)return;
- let s=shelf();
- const cards=ITEMS.map(i=>{
-   let o=s.owned[i.id],b=s.bids[i.id];
-   let status=o?"OWNED 🔓":b?.status==="pending"?"OFFER PENDING ⏳":b?.status==="countered"?`MIKAEL COUNTERED: ${b.counter} MB`:"NEGOTIATION OPEN";
-   let controls=o?"":`<input type="number" min="1" data-bid-input="${i.id}" placeholder="${b?.counter?`Counter ${b.counter} MB`:"Your offer in MB"}"><button data-bid="${i.id}">Submit Offer</button>`;
-   return `<div class="secretItem"><div style="font-size:32px">${i.icon}</div><strong>${i.publicName}</strong><small>${status}</small>${controls}</div>`;
- }).join("");
- h.innerHTML=`<h3>🔒 Mikael's Secret Shelf</h3><p class="seedStoreIntro">Two classified items. No fixed prices — make Mikael an offer.</p><div class="secretShelfGrid">${cards}</div>`;
- h.querySelectorAll("[data-bid]").forEach(b=>b.onclick=()=>submitBid(b.dataset.bid));
-}
-async function submitBid(id){let inp=document.querySelector(`[data-bid-input="${CSS.escape(id)}"]`),amount=Math.floor(Number(inp?.value));if(!amount||amount<1)return alert("Enter an offer first.");if(amount>wallet())return alert("You cannot bid more than your current balance.");let item=ITEMS.find(x=>x.id===id),s=shelf(),bid={id:`bid_${Date.now()}_${Math.random().toString(36).slice(2,7)}`,itemId:id,item:item.publicName,amount,status:"pending",createdAt:new Date().toISOString()};s.bids[id]=bid;saveShelf(s);renderShelf();try{await fetch(worker,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"secret_bid",...bid})})}catch(e){}window.lizzyTelegramNotify?.("💰 SECRET SHELF BID",item.publicName,`Lizzy offered ${amount} MB\nBid ID: ${bid.id}`)}
-function grant(item,price){if(wallet()<price)return false;setWallet(wallet()-price);let s=shelf();s.owned[item.id]={at:new Date().toISOString(),price};saveShelf(s);if(item.kind==="letter"){let l=read(K.letters,[]);if(!l.some(x=>x.id===item.id))l.push({id:item.id,title:item.publicName,content:item.content});write(K.letters,l);renderLetters()}if(item.kind==="mikael_token"){let t=read(K.mTokens,{inventory:{},history:[]});t.inventory["UNO Reverse"]=Number(t.inventory["UNO Reverse"]||0)+1;write(K.mTokens,t);renderMikaelTokens()}if(item.kind==="vault"){let v=read("lizzyVaultRewardsV1",[]);v.push({id:"mrperfect_file",title:"Classified File #003 — Operation: Mr Perfect",content:CONTENT.file3});write("lizzyVaultRewardsV1",v)}return true}
-async function poll(){let s=shelf();for(const item of ITEMS){let b=s.bids[item.id];if(!b||!["pending","countered"].includes(b.status))continue;try{let r=await fetch(`${worker}?action=bid_status&bidId=${encodeURIComponent(b.id)}`);if(!r.ok)continue;let d=await r.json();if(d.status==="accepted"&&!s.owned[item.id]){let price=Number(d.price||b.amount);if(grant(item,price)){b.status="accepted";s.bids[item.id]=b;saveShelf(s)}}else if(d.status==="rejected"){b.status="rejected";s.bids[item.id]=b;saveShelf(s)}else if(d.status==="countered"){b.status="countered";b.counter=Number(d.price);s.bids[item.id]=b;saveShelf(s)}}catch(e){}}renderShelf()}
-function renderLetters(){let w=$("openWhenWindow")||$("openWhenFolderWindow");if(!w)return;let b=$("purchasedLettersBox");if(!b){b=document.createElement("div");b.id="purchasedLettersBox";w.appendChild(b)}let l=read(K.letters,[]);b.innerHTML=l.length?'<h3>🛍️ Purchased Letters</h3>'+l.map(x=>`<details class="purchasedLetter"><summary>💌 ${x.title}</summary><pre>${x.content}</pre></details>`).join(""):""}
-function renderMikaelTokens(){let w=$("tokenJarWindow");if(!w)return;let b=$("mikaelTokensBox");if(!b){b=document.createElement("div");b.id="mikaelTokensBox";w.appendChild(b)}let t=read(K.mTokens,{inventory:{}}),n=Number(t.inventory["UNO Reverse"]||0);b.innerHTML=`<h3>🕴️ Mikael's Tokens</h3>${n?`<div class="tokenCard"><div class="tokenCardEmoji">🔄</div><div><strong>UNO Reverse</strong><p>Mikael has the power: one playful, reasonable request for Lizzy.</p></div><div class="tokenCount">×${n}</div></div>`:'<div class="memoryMessage">No Mikael Tokens unlocked yet.</div>'}`}
-$("seedStoreIcon")?.addEventListener("click",()=>setTimeout(renderShelf,50));$("openWhenIcon")?.addEventListener("click",()=>setTimeout(renderLetters,50));$("tokenJarIcon")?.addEventListener("click",()=>setTimeout(renderMikaelTokens,50));setInterval(poll,20000);renderShelf();renderLetters();renderMikaelTokens();
-})();
-
-/* REAL WEBSITE EXTRAS DELIVERY — task verification untouched */
-(() => {
-"use strict";
 const read=(k,f)=>{try{const v=localStorage.getItem(k);return v===null?f:JSON.parse(v)}catch(e){return f}};
 const write=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
-function refreshExtras(){
- const x=read("lizzyStoreExtrasV1",{owned:{}}),o=x.owned||{},g=read("lizzyGardenV1",null),ledger=read("lizzyExtrasDeliveryLedgerV1",{});
- if(g&&typeof g==="object"){g.seeds=g.seeds||{};while(Number(ledger.mystery_pack||0)<Number(o.mystery_pack||0)){const pool=["tulipSeed","roseSeed","jacarandaSeed","sunflowerSeed","lilySeed"];const id=pool[Math.floor(Math.random()*pool.length)];g.seeds[id]=Number(g.seeds[id]||0)+1;ledger.mystery_pack=Number(ledger.mystery_pack||0)+1}write("lizzyGardenV1",g);write("lizzyExtrasDeliveryLedgerV1",ledger)}
- const root=document.getElementById("gardenWindow")||document.querySelector(".gardenWindow");if(!root)return;
- let fx=document.getElementById("lizzyRealExtrasFx");if(!fx){fx=document.createElement("div");fx.id="lizzyRealExtrasFx";fx.className="lizzyRealExtrasFx";root.appendChild(fx)}fx.innerHTML="";
- if(o.fairy_lights)fx.innerHTML+=`<div class="realFairyLights"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>`;
- if(o.butterflies)fx.innerHTML+=`<span class="realButterfly rb1">🦋</span><span class="realButterfly rb2">🦋</span>`;
- if(o.falling_petals)fx.innerHTML+=`<span class="realPetal rp1">🌸</span><span class="realPetal rp2">🌸</span><span class="realPetal rp3">🌸</span>`;
- const pot=o.heart_pot?"heart":o.gotham_pot?"gotham":o.moon_pot?"moon":null;
- document.querySelectorAll(".gardenPlot .plantVisual").forEach(v=>{v.querySelector(".realCustomPot")?.remove();if(pot)v.insertAdjacentHTML("beforeend",`<span class="realCustomPot ${pot}">${pot==="heart"?"♥":pot==="gotham"?"🦇":"🌙"}</span>`)});
+const WALLET="lizzyMickyBucsV1";
+const SHELF="lizzySecretShelfV1";
+const LETTERS="lizzyPurchasedLettersV1";
+const MTOKENS="lizzyMikaelTokensV1";
+const WORKER=window.LIZZY_TELEGRAM_WORKER_URL||"https://lizzyos-notifications.mulaudzimikael73.workers.dev/";
+
+const LETTER001=`Lizzy,
+
+There are quite a few things I notice about you that I probably don't actually say enough — partly because I know you'll find some way to argue with me about them, and partly because sometimes it's easier to just notice these things quietly.
+
+I notice how easy it is to talk to you.
+
+Somehow a normal conversation can turn into us debating something completely ridiculous, making fun of each other, talking about something serious, and then immediately going back to nonsense like nothing happened. 😂
+
+And I really like that.
+
+I notice your intelligence too. Not just in the obvious ways, but in how you think about things and how you have your own opinions. Even though this unfortunately means you sometimes believe you're right when you're very clearly arguing with Mr Perfect. 😌
+
+I notice the little reactions you have when something makes you laugh. The attitude when I've said something cheeky. The moments where you're trying very hard not to give me the satisfaction of knowing I've made you smile.
+
+I notice how beautiful you are — and yes, before you start arguing with the letter, you cannot argue with a document you've already paid Micky Bucs for. No refunds.
+
+But more than that, I notice how much I've enjoyed actually getting to know you.
+
+Not Agent Yelizaveta. Not Little Miss Attitude. Not The Hater™. Just Lizzy.
+
+The person behind all the jokes, arguments, ridiculous nicknames and bullying allegations.
+
+And somewhere along the way, without really trying to, you've become someone whose messages I look forward to, someone I genuinely enjoy spending time with, and someone whose little things I've apparently started noticing enough to write an entire classified letter about them.
+
+There are probably plenty more things I notice that aren't written here. Some of them I'll tell you eventually. Some you'll probably figure out yourself. And some might have to remain classified for now. 🤫
+
+But I suppose the main thing I don't always say is actually pretty simple:
+
+I'm really glad I got to know you, Lizzy. ❤️
+
+And I'm looking forward to noticing a lot more.
+
+— Mikael
+a.k.a. Mr Perfect 😌
+
+P.S. Before you say anything — you willingly spent Micky Bucs to read this. So technically, you paid to hear me be nice to you.
+
+That's embarrassing for you, really. 😂`;
+
+const ITEMS=[
+ {id:"letter_001",icon:"💌",publicName:"Unreleased Letter #001",kind:"letter",content:LETTER001},
+ {id:"mystery_reward",icon:"🎁",publicName:"Mystery Reward",kind:"mikael_token"}
+];
+
+const wallet=()=>Number(localStorage.getItem(WALLET)||0);
+const setWallet=n=>localStorage.setItem(WALLET,String(Math.max(0,Math.floor(Number(n)||0))));
+const shelf=()=>read(SHELF,{owned:{},bids:{}});
+const saveShelf=s=>write(SHELF,s);
+
+function renderShelf(){
+ const host=$("secretShelfPanel");if(!host)return;
+ const s=shelf();
+ host.innerHTML=`<h3>🔒 Mikael's Secret Shelf</h3>
+ <p class="seedStoreIntro">Two classified items. No fixed prices — make Mikael an offer.</p>
+ <div class="secretShelfGrid">${ITEMS.map(item=>{
+   const owned=!!s.owned?.[item.id],bid=s.bids?.[item.id];
+   let status=owned?"OWNED 🔓":"NEGOTIATION OPEN";
+   if(!owned&&bid?.status==="pending")status="OFFER PENDING ⏳";
+   if(!owned&&bid?.status==="countered")status=`MIKAEL COUNTERED: ${bid.counterOffer} MB`;
+   if(!owned&&bid?.status==="rejected")status="OFFER REJECTED — TRY AGAIN";
+   const controls=owned?"":`
+    <input type="number" min="1" data-bid-input="${item.id}" placeholder="${bid?.counterOffer?`Counter ${bid.counterOffer} MB`:"Your offer in MB"}">
+    <button data-bid="${item.id}">${bid?.status==="countered"?"Send Counter Offer":"Submit Offer"}</button>`;
+   const dest=owned&&item.kind==="letter"?`<small class="ownedDestination">💌 Saved to Open When → Purchased Letters</small>`:
+              owned&&item.kind==="mikael_token"?`<small class="ownedDestination">🔄 Revealed as UNO Reverse → Token Jar</small>`:"";
+   return `<div class="secretItem"><div style="font-size:32px">${item.icon}</div><strong>${item.publicName}</strong><small>${status}</small>${controls}${dest}</div>`;
+ }).join("")}</div>`;
+ host.querySelectorAll("[data-bid]").forEach(btn=>btn.onclick=()=>submitBid(btn.dataset.bid));
 }
-setTimeout(refreshExtras,500);document.getElementById("gardenIcon")?.addEventListener("click",()=>setTimeout(refreshExtras,100));window.addEventListener("lizzyStoreRefresh",refreshExtras);
+
+async function submitBid(id){
+ const item=ITEMS.find(x=>x.id===id);if(!item)return;
+ const input=document.querySelector(`[data-bid-input="${CSS.escape(id)}"]`);
+ const amount=Math.floor(Number(input?.value));
+ if(!amount||amount<1)return alert("Enter an offer first.");
+ if(amount>wallet())return alert("You cannot offer more Micky Bucs than you currently have.");
+ try{
+   const res=await fetch(WORKER,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
+     type:"secret_shelf_bid",item:item.id,offer:amount
+   })});
+   const data=await res.json();
+   if(!res.ok||!data.success||!data.claimId)throw new Error(data.error||"Offer failed");
+   const s=shelf();
+   s.bids=s.bids||{};
+   s.bids[id]={claimId:data.claimId,amount,status:"pending",createdAt:new Date().toISOString()};
+   saveShelf(s);renderShelf();
+ }catch(e){
+   console.error(e);
+   alert("The offer could not be sent. Please try again.");
+ }
+}
+
+function grant(item,price){
+ const s=shelf();
+ if(s.owned?.[item.id])return true;
+ price=Math.floor(Number(price)||0);
+ if(price<1||wallet()<price)return false;
+ setWallet(wallet()-price);
+ s.owned=s.owned||{};
+ s.owned[item.id]={at:new Date().toISOString(),price};
+ saveShelf(s);
+
+ if(item.kind==="letter"){
+   const list=read(LETTERS,[]);
+   if(!list.some(x=>x.id===item.id))list.push({id:item.id,title:item.publicName,content:item.content});
+   write(LETTERS,list);
+   renderLetters();
+ }
+ if(item.kind==="mikael_token"){
+   const t=read(MTOKENS,{inventory:{},history:[]});
+   t.inventory=t.inventory||{};t.history=t.history||[];
+   t.inventory["UNO Reverse"]=Number(t.inventory["UNO Reverse"]||0)+1;
+   t.history.push({type:"earned",token:"UNO Reverse",source:"Mystery Reward",at:new Date().toISOString()});
+   write(MTOKENS,t);
+   renderMikaelTokens();
+ }
+ window.dispatchEvent(new Event("lizzyStoreRefresh"));
+ return true;
+}
+
+async function pollShelf(){
+ const s=shelf();let dirty=false;
+ for(const item of ITEMS){
+   const bid=s.bids?.[item.id];
+   if(!bid?.claimId||s.owned?.[item.id]||!["pending","countered"].includes(bid.status))continue;
+   try{
+     const r=await fetch(`${WORKER}?claimId=${encodeURIComponent(bid.claimId)}`,{cache:"no-store"});
+     if(!r.ok)continue;
+     const data=await r.json(),c=data.claim||data;
+     if(c.status==="accepted"){
+       const price=Number(c.offer??bid.amount);
+       if(grant(item,price)){bid.status="accepted";dirty=true;}
+     }else if(c.status==="rejected"){bid.status="rejected";dirty=true;}
+     else if(c.status==="countered"){
+       bid.status="countered";
+       bid.counterOffer=Number(c.counterOffer);
+       dirty=true;
+     }
+   }catch(e){}
+ }
+ if(dirty)saveShelf(s);
+ renderShelf();
+}
+
+function renderLetters(){
+ const win=$("openWhenWindow")||$("openWhenFolderWindow");if(!win)return;
+ const host=win.querySelector(".windowScroll")||win;
+ let box=$("purchasedLettersBox");
+ if(!box){box=document.createElement("section");box.id="purchasedLettersBox";host.appendChild(box);}
+ const list=read(LETTERS,[]);
+ box.innerHTML=list.length?`<h3>🛍️ Purchased Letters</h3>${list.map(x=>`<details class="purchasedLetter"><summary>💌 ${x.title}</summary><pre>${x.content}</pre></details>`).join("")}`:"";
+}
+
+function renderMikaelTokens(){
+ const win=$("tokenJarWindow");if(!win)return;
+ const host=win.querySelector(".windowScroll")||win;
+ let box=$("mikaelTokensBox");
+ if(!box){box=document.createElement("section");box.id="mikaelTokensBox";host.appendChild(box);}
+ const t=read(MTOKENS,{inventory:{}}),n=Number(t.inventory?.["UNO Reverse"]||0);
+ box.innerHTML=n?`<h3>🕴️ Mikael's Tokens</h3><div class="tokenCard"><div class="tokenCardEmoji">🔄</div><div><strong>UNO Reverse</strong><p>Mikael has the power: one playful, reasonable request for Lizzy.</p></div><div class="tokenCount">×${n}</div></div>`:"";
+}
+
+$("seedStoreIcon")?.addEventListener("click",()=>setTimeout(renderShelf,60));
+$("openWhenIcon")?.addEventListener("click",()=>setTimeout(renderLetters,60));
+$("tokenJarIcon")?.addEventListener("click",()=>setTimeout(renderMikaelTokens,60));
+setInterval(pollShelf,15000);
+renderShelf();renderLetters();renderMikaelTokens();
 })();
 
 
 
 /* =========================================================
-   REAL SITE FIX — PURCHASED EXTRAS + NAME-A-PLANT PASS
+   PURCHASED EXTRAS — REAL WEBSITE FINAL
    ========================================================= */
-(() => {
+(()=>{
 "use strict";
 const $=id=>document.getElementById(id);
 const read=(k,f)=>{try{const v=localStorage.getItem(k);return v===null?f:JSON.parse(v)}catch(e){return f}};
 const write=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
-const X="lizzyStoreExtrasV1", NAMES="lizzyCustomPlantNamesV1";
+const EXTRA="lizzyStoreExtrasV1", NAMES="lizzyCustomPlantNamesV1";
+const LABELS={mystery_pack:"🎁 Mystery Seed Pack",heart_pot:"💗 Heart Pot",gotham_pot:"🦇 Gotham Pot",moon_pot:"🌙 Moon Pot",fairy_lights:"✨ Fairy Lights",butterflies:"🦋 Garden Butterflies",falling_petals:"🌸 Falling Petals",name_plant:"🏷️ Name-a-Plant Pass",discount25:"🎟️ 25% Seed Coupon"};
 
-const LABELS={
- heart_pot:"💗 Heart Pot",gotham_pot:"🦇 Gotham Pot",moon_pot:"🌙 Moon Pot",
- fairy_lights:"✨ Fairy Lights",butterflies:"🦋 Garden Butterflies",
- falling_petals:"🌸 Falling Petals",mystery_pack:"🎁 Mystery Seed Pack",
- name_plant:"🏷️ Name-a-Plant Pass",discount25:"🎟️ 25% Seed Coupon"
-};
-
-function extrasHost(){
- const panel=$("storeExtrasPanel")||$("seedStoreWindow");
- if(!panel)return null;
+function renderMyExtras(){
+ const panel=$("storeExtrasPanel");if(!panel)return;
  let box=$("purchasedExtrasBox");
- if(!box){box=document.createElement("section");box.id="purchasedExtrasBox";box.className="purchasedExtrasBox";panel.appendChild(box)}
- return box;
-}
-function renderOwnedExtras(){
- const box=extrasHost();if(!box)return;
- const x=read(X,{owned:{},coupons:[]}),owned=x.owned||{};
- const rows=Object.entries(owned).filter(([,n])=>Number(n)>0);
- box.innerHTML=`<h3>🎒 My Extras</h3>${rows.length?rows.map(([id,n])=>`
- <div class="ownedExtraRow"><span><strong>${LABELS[id]||id}</strong> ×${n}</span>
- ${id==="name_plant"?'<button id="useNamePlantPass">Use Pass</button>':""}</div>`).join(""):'<p class="seedStoreIntro">Purchased extras will appear here.</p>'}`;
+ if(!box){box=document.createElement("section");box.id="purchasedExtrasBox";box.className="purchasedExtrasBox";panel.appendChild(box);}
+ const x=read(EXTRA,{owned:{},coupons:[]}),rows=Object.entries(x.owned||{}).filter(([,n])=>Number(n)>0);
+ box.innerHTML=`<h3>🎒 My Extras</h3>${rows.length?rows.map(([id,n])=>`<div class="ownedExtraRow"><span><strong>${LABELS[id]||id}</strong> ×${n}</span>${id==="name_plant"?'<button id="useNamePlantPass">Use Pass</button>':""}</div>`).join(""):'<p class="seedStoreIntro">Purchased extras will appear here.</p>'}`;
  $("useNamePlantPass")?.addEventListener("click",useNamePass);
 }
+
 function useNamePass(){
- const x=read(X,{owned:{},coupons:[]});
- if(Number(x.owned?.name_plant||0)<1)return alert("You do not have a Name-a-Plant Pass.");
+ const x=read(EXTRA,{owned:{},coupons:[]});
+ if(Number(x.owned?.name_plant||0)<1)return alert("No Name-a-Plant Pass available.");
  const g=read("lizzyGardenV1",null);
  if(!g?.plants?.length)return alert("Plant something in the Garden first 🌱");
- const options=g.plants.map((p,i)=>`${i+1}. ${p.customName||p.flowerId||"Plant"}`).join("\n");
- const pick=Number(prompt(`Which plant would you like to name?\n\n${options}\n\nEnter its number:`));
- if(!Number.isInteger(pick)||pick<1||pick>g.plants.length)return;
- const plant=g.plants[pick-1];
- const name=(prompt("What would you like to name this plant?")||"").trim();
- if(!name)return;
  const names=read(NAMES,{});
- names[plant.id]=name;write(NAMES,names);
- x.owned.name_plant=Number(x.owned.name_plant)-1;write(X,x);
- applyNames();renderOwnedExtras();
- window.lizzyTelegramNotify?.("🏷️ NAME-A-PLANT PASS USED",name,"Lizzy named one of her Garden plants.");
- alert(`🌷 Plant named "${name}"!`);
+ const choices=g.plants.map((p,i)=>`${i+1}. ${names[p.id]||p.flowerId||"Plant"}`).join("\n");
+ const num=Number(prompt(`Choose a plant to name:\n\n${choices}\n\nEnter the number:`));
+ if(!Number.isInteger(num)||num<1||num>g.plants.length)return;
+ const p=g.plants[num-1],name=(prompt("What should this plant be called?")||"").trim();
+ if(!name)return;
+ names[p.id]=name;write(NAMES,names);
+ x.owned.name_plant=Math.max(0,Number(x.owned.name_plant)-1);write(EXTRA,x);
+ applyNames();renderMyExtras();
+ window.lizzyTelegramNotify?.("🏷️ NAME-A-PLANT PASS USED",name,"Lizzy named a plant in her Garden.");
 }
+
 function applyNames(){
  const names=read(NAMES,{});
  document.querySelectorAll(".gardenPlot[data-plant]").forEach(plot=>{
-   const n=names[plot.dataset.plant];if(!n)return;
-   const strong=plot.querySelector(".plantMeta strong");if(strong)strong.textContent=n;
+   const name=names[plot.dataset.plant];if(!name)return;
+   const title=plot.querySelector(".plantMeta strong");if(title)title.textContent=name;
  });
 }
+
+function deliverAndDecorate(){
+ const x=read(EXTRA,{owned:{},coupons:[]}),o=x.owned||{},g=read("lizzyGardenV1",null),ledger=read("lizzyExtrasDeliveryLedgerV2",{});
+ if(g&&typeof g==="object"){
+   g.seeds=g.seeds||{};
+   while(Number(ledger.mystery_pack||0)<Number(o.mystery_pack||0)){
+     const pool=["tulipSeed","roseSeed","jacarandaSeed","sunflowerSeed","lilySeed"];
+     const id=pool[Math.floor(Math.random()*pool.length)];
+     g.seeds[id]=Number(g.seeds[id]||0)+1;
+     ledger.mystery_pack=Number(ledger.mystery_pack||0)+1;
+   }
+   write("lizzyGardenV1",g);write("lizzyExtrasDeliveryLedgerV2",ledger);
+ }
+ const root=$("gardenWindow")||document.querySelector(".gardenWindow");if(root){
+   let fx=$("lizzyRealExtrasFx");if(!fx){fx=document.createElement("div");fx.id="lizzyRealExtrasFx";fx.className="lizzyRealExtrasFx";root.appendChild(fx);}
+   fx.innerHTML="";
+   if(o.fairy_lights)fx.innerHTML+=`<div class="realFairyLights"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>`;
+   if(o.butterflies)fx.innerHTML+=`<span class="realButterfly rb1">🦋</span><span class="realButterfly rb2">🦋</span>`;
+   if(o.falling_petals)fx.innerHTML+=`<span class="realPetal rp1">🌸</span><span class="realPetal rp2">🌸</span><span class="realPetal rp3">🌸</span>`;
+   const pot=o.heart_pot?"heart":o.gotham_pot?"gotham":o.moon_pot?"moon":null;
+   document.querySelectorAll(".gardenPlot .plantVisual").forEach(v=>{
+     v.querySelector(".realCustomPot")?.remove();
+     if(pot)v.insertAdjacentHTML("beforeend",`<span class="realCustomPot ${pot}">${pot==="heart"?"♥":pot==="gotham"?"🦇":"🌙"}</span>`);
+   });
+ }
+ applyNames();renderMyExtras();
+}
+
 let obs;
 function watchGarden(){
  const host=$("gardenPlots");if(!host)return;
- obs?.disconnect();obs=new MutationObserver(()=>setTimeout(applyNames,20));obs.observe(host,{childList:true,subtree:true});applyNames();
+ obs?.disconnect();obs=new MutationObserver(()=>setTimeout(()=>{applyNames();deliverAndDecorate()},30));
+ obs.observe(host,{childList:true,subtree:true});
 }
-setTimeout(()=>{renderOwnedExtras();watchGarden()},400);
-$("seedStoreIcon")?.addEventListener("click",()=>setTimeout(renderOwnedExtras,80));
-$("gardenIcon")?.addEventListener("click",()=>setTimeout(()=>{watchGarden();applyNames()},80));
-window.addEventListener("lizzyStoreRefresh",()=>setTimeout(renderOwnedExtras,50));
+
+setTimeout(()=>{renderMyExtras();deliverAndDecorate();watchGarden()},500);
+$("seedStoreIcon")?.addEventListener("click",()=>setTimeout(renderMyExtras,80));
+$("gardenIcon")?.addEventListener("click",()=>setTimeout(()=>{deliverAndDecorate();watchGarden()},100));
+window.addEventListener("lizzyStoreRefresh",()=>setTimeout(()=>{renderMyExtras();deliverAndDecorate()},60));
+window.addEventListener("lizzyExtrasChanged",()=>setTimeout(()=>{renderMyExtras();deliverAndDecorate()},60));
 })();
 
