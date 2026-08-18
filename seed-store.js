@@ -124,104 +124,7 @@ function notify(type,title,details){
  return Promise.resolve(false);
 }
 
-/* ---- Verified completion engine ----
-   Website actions are auto-verified.
-   Real-world tasks submit a claim to Mikael instead of paying instantly.
-*/
-const AUTO_MAP={
- visit_garden:"garden_open", open_token_jar:"token_jar_open",
- daily_reward:"daily_reward", streak_check:"daily_reward",
- play_would:"would_rather_complete", play_crack:"crack_complete",
- visit_store:"store_open", buy_seed:"store_purchase"
-};
-function currentJobs(){return read(JOBSKEY,{date:"",selected:[],completed:{}})}
-function rewardFor(id){
- // Read reward from cards rendered by original module to avoid replacing its 50-job catalogue.
- const btn=document.querySelector(`[data-job="${CSS.escape(id)}"]`);
- const card=btn?.closest(".mickyJobCard");
- const m=card?.querySelector(".mickyJobReward")?.textContent.match(/\+(\d+)/);
- return m?Number(m[1]):5;
-}
-function titleFor(id){
- const btn=document.querySelector(`[data-job="${CSS.escape(id)}"]`);
- return btn?.closest(".mickyJobCard")?.querySelector("h4")?.textContent.replace(/^🎯\s*/,"")||id;
-}
-function payVerified(id,source){
- const st=currentJobs();
- if(st.date!==dateKey() || !st.selected?.includes(id) || st.completed?.[id]) return false;
- const r=rewardFor(id), title=titleFor(id);
- st.completed[id]={at:new Date().toISOString(),reward:r,verified:true,source};
- write(JOBSKEY,st); setWallet(wallet()+r); stat("earned",r); stat("jobs",1);
- notify("🔐 VERIFIED JOB COMPLETE",title,`Verification: AUTO VERIFIED\nSource: ${source}\nEarned: +${r} MB\nBalance: ${wallet()} MB`);
- window.dispatchEvent(new Event("lizzyStoreRefresh"));
- return true;
-}
-function autoProof(type){
- const st=currentJobs(); if(st.date!==dateKey()) return;
- (st.selected||[]).forEach(id=>{if(AUTO_MAP[id]===type) payVerified(id,type)});
-}
-window.addEventListener("lizzyJobProof",e=>autoProof(e.detail?.type));
-window.addEventListener("lizzyDailyRewardClaimed",()=>autoProof("daily_reward"));
-$("gardenIcon")?.addEventListener("click",()=>autoProof("garden_open"));
-$("tokenJarIcon")?.addEventListener("click",()=>autoProof("token_jar_open"));
-$("seedStoreIcon")?.addEventListener("click",()=>autoProof("store_open"));
-window.addEventListener("lizzySeedStorePurchase",()=>autoProof("store_purchase"));
-
-/* Replace easy self-complete buttons for non-auto jobs with approval submission.
-   Existing completed jobs remain completed and are never changed.
-*/
-async function submitForApproval(id){
- const st=currentJobs(); if(st.completed?.[id]) return;
- const pending=read(V2.pending,{});
- if(pending[id]?.date===dateKey() && pending[id]?.status==="pending") return;
- const claim={claimId:uid(),jobId:id,title:titleFor(id),reward:rewardFor(id),date:dateKey(),status:"pending"};
- pending[id]=claim; write(V2.pending,pending);
- const body={action:"submit_claim",...claim};
- try{
-   const res=await fetch(WORKER,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
-   if(!res.ok) throw new Error("worker");
-   notify("🕵🏾 JOB APPROVAL REQUEST",claim.title,`Claim ID: ${claim.claimId}\nReward: ${claim.reward} MB\nStatus: AWAITING MIKAEL APPROVAL`);
- }catch(e){
-   // Still keep claim pending locally; Telegram fallback ensures Mikael sees it.
-   notify("🕵🏾 JOB APPROVAL REQUEST",claim.title,`Claim ID: ${claim.claimId}\nReward: ${claim.reward} MB\nStatus: AWAITING MIKAEL APPROVAL\nUse the approval Worker upgrade to approve/reject from Telegram.`);
- }
- renderVerification();
-}
-async function pollClaims(){
- const pending=read(V2.pending,{});
- for(const [id,c] of Object.entries(pending)){
-   if(c.status!=="pending") continue;
-   try{
-     const u=`${WORKER}?action=claim_status&claimId=${encodeURIComponent(c.claimId)}`;
-     const res=await fetch(u); if(!res.ok) continue;
-     const data=await res.json();
-     if(data.status==="approved"){
-       c.status="approved"; pending[id]=c; write(V2.pending,pending);
-       payVerified(id,"mikael_telegram_approval");
-     }else if(data.status==="rejected"){c.status="rejected";pending[id]=c;write(V2.pending,pending)}
-   }catch(e){}
- }
- renderVerification();
-}
-function renderVerification(){
- const st=currentJobs(), pending=read(V2.pending,{});
- document.querySelectorAll("[data-job]").forEach(btn=>{
-   const id=btn.dataset.job;if(st.completed?.[id]) return;
-   const card=btn.closest(".mickyJobCard"); if(!card)return;
-   card.querySelector(".verifyBadge")?.remove();
-   const badge=document.createElement("div");badge.className="verifyBadge";
-   if(AUTO_MAP[id]){
-     badge.textContent="🟢 AUTO VERIFIED"; btn.textContent="Complete the action"; btn.disabled=true;
-   }else{
-     badge.textContent="🔴 MIKAEL APPROVAL";
-     const p=pending[id];
-     if(p?.date===dateKey()&&p.status==="pending"){btn.textContent="Awaiting Mikael ⏳";btn.disabled=true;card.classList.add("jobPending")}
-     else if(p?.date===dateKey()&&p.status==="rejected"){btn.textContent="Rejected — Resubmit";btn.disabled=false;btn.onclick=()=>submitForApproval(id)}
-     else{btn.textContent="Submit for Approval";btn.disabled=false;btn.onclick=()=>submitForApproval(id)}
-   }
-   card.insertBefore(badge,card.querySelector(".mickyJobReward"));
- });
-}
+/* Original Micky Jobs verification remains unchanged. */
 
 /* Store extras */
 const EXTRAS=[
@@ -251,12 +154,11 @@ function buyExtra(item){
  notify("🛍️ STORE EXTRA PURCHASE",item.name,`Paid: ${item.price} MB\nBalance: ${wallet()} MB`);
  renderExtras();renderBank();
 }
-function classifiedToday(){return CLASSIFIED[Math.abs([...dateKey()].reduce((a,c)=>a+c.charCodeAt(0),0))%CLASSIFIED.length]}
 function renderExtras(){
- const host=$("storeExtrasList"); if(host)host.innerHTML=EXTRAS.map(x=>`<div class="seedShopCard"><h4>${x.name}</h4><div class="seedPrice">💵 ${x.price} MB</div><button data-extra="${x.id}">Buy</button></div>`).join("");
+ const host=$("storeExtrasList");
+ if(host)host.innerHTML=EXTRAS.map(x=>`<div class="seedShopCard"><h4>${x.name}</h4><div class="seedPrice">💵 ${x.price} MB</div><button data-extra="${x.id}">Buy</button></div>`).join("");
  host?.querySelectorAll("[data-extra]").forEach(b=>b.onclick=()=>buyExtra(EXTRAS.find(x=>x.id===b.dataset.extra)));
- const c=classifiedToday(), box=$("classifiedItemCard");
- if(box){box.innerHTML=`<strong>🔐 TODAY'S CLASSIFIED ITEM</strong><h4>${c.name}</h4><p>Available today only.</p><button id="buyClassified">Buy for ${c.price} MB</button>`;$("buyClassified").onclick=()=>buyExtra({...c,kind:"classified"})}
+ const box=$("classifiedItemCard"); if(box)box.innerHTML="";
 }
 
 /* Bank */
@@ -304,21 +206,9 @@ document.querySelectorAll("[data-store-tab]").forEach(b=>b.addEventListener("cli
 }));
 document.querySelectorAll("[data-bank]").forEach(b=>b.onclick=()=>bankMove(b.dataset.bank));
 $("claimSavingsBonus")?.addEventListener("click",claimBonus);
-window.addEventListener("lizzyStoreRefresh",()=>{renderVerification();renderBank();checkAchievements()});
-$("seedStoreIcon")?.addEventListener("click",()=>setTimeout(()=>{renderVerification();renderExtras();renderBank();checkAchievements();pollClaims()},30));
-
-/* The old "Mark Complete" handlers were attached before this module.
-   Capture clicks first and block unverified payout. */
-document.addEventListener("click",e=>{
- const btn=e.target.closest?.("[data-job]"); if(!btn)return;
- const id=btn.dataset.job, st=currentJobs(); if(st.completed?.[id])return;
- e.preventDefault();e.stopImmediatePropagation();
- if(AUTO_MAP[id]) return;
- submitForApproval(id);
-},true);
-
-renderExtras();renderBank();renderAchievements();setTimeout(renderVerification,50);
-setInterval(pollClaims,30000);
+window.addEventListener("lizzyStoreRefresh",()=>{renderBank();checkAchievements()});
+$("seedStoreIcon")?.addEventListener("click",()=>setTimeout(()=>{renderExtras();renderBank();checkAchievements()},30));
+renderExtras();renderBank();renderAchievements();
 })();
 
 
@@ -333,27 +223,11 @@ const read=(k,f)=>{try{let v=localStorage.getItem(k);return v===null?f:JSON.pars
 const write=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
 const today=()=>new Date().toISOString().slice(0,10),wallet=()=>Number(localStorage.getItem(W)||0),setWallet=n=>localStorage.setItem(W,String(Math.max(0,n)));
 const worker=window.LIZZY_TELEGRAM_WORKER_URL||"https://lizzyos-notifications.mulaudzimikael73.workers.dev/";
-function state(){return read(J,{date:"",selected:[],completed:{}})}
-function info(id){const b=document.querySelector(`[data-job="${CSS.escape(id)}"]`),c=b?.closest(".mickyJobCard");return{title:c?.querySelector("h4")?.textContent.replace(/^🎯\s*/,"")||id,reward:Number(c?.querySelector(".mickyJobReward")?.textContent.match(/\+(\d+)/)?.[1]||5)}}
-function award(id,source){let s=state();if(s.date!==today()||!s.selected?.includes(id)||s.completed?.[id])return;let x=info(id);s.completed[id]={at:new Date().toISOString(),reward:x.reward,verified:true,source};write(J,s);setWallet(wallet()+x.reward);window.lizzyTelegramNotify?.("🔐 VERIFIED JOB COMPLETE",x.title,`Auto verified: ${source}\n+${x.reward} MB\nBalance: ${wallet()} MB`);window.dispatchEvent(new Event("lizzyStoreRefresh"))}
-function proof(type,d={}){
- let p=read(K.proof,{date:today(),water:0,plant:0,games:[]});if(p.date!==today())p={date:today(),water:0,plant:0,games:[]};
- if(type==="plant_watered"){p.water++;award("water_one",type);if(p.water>=2)award("water_two","2 plants");if(p.water>=3)award("water_three","3 plants")}
- if(type==="seed_planted"){p.plant++;award("plant_seed",type);if(p.plant>=2)award("plant_two","2 seeds")}
- if(type==="game_complete"){if(d.game&&!p.games.includes(d.game))p.games.push(d.game);const m={mikhail_quiz:"play_mikhail",would_rather:"play_would",crack_code:"play_crack",tic_tac_toe:"play_ttt",heart_catch:"play_heart",lizzy_quiz:"play_lizzy_quiz"};if(m[d.game])award(m[d.game],d.game);if(d.game==="mikhail_quiz"&&d.perfect)award("perfect_mikhail","perfect");if(d.game==="would_rather"&&d.perfect)award("perfect_would","5/5");if(p.games.length>=2)award("play_two_games","2 different games");if(p.games.length>=3)award("play_three_games","3 different games")}
- if(type==="ttt_win")award("win_ttt","actual win");
- const direct={garden_open:["visit_garden","garden_photo"],store_open:["visit_store"],token_jar_open:["open_token_jar","organize_tokens"],store_purchase:["buy_seed"],daily_reward:["daily_reward","streak_check"],token_redeemed:["redeem_token"],readme_open:["open_readme"],date_open:["open_date"],letter_open:["open_letter"],mission_open:["open_mission"],recycle_open:["open_recycle"],crack_complete:["play_crack"]};
- (direct[type]||[]).forEach(x=>award(x,type));write(K.proof,p)
-}
-window.addEventListener("lizzyJobProof",e=>proof(e.detail?.type,e.detail||{}));window.addEventListener("lizzyDailyRewardClaimed",()=>proof("daily_reward"));window.addEventListener("lizzySeedStorePurchase",()=>proof("store_purchase"));
-[["lizzyGardenIcon","garden_open"],["seedStoreIcon","store_open"],["tokenJarIcon","token_jar_open"],["readMeIcon","readme_open"],["calendarIcon","date_open"],["openWhenIcon","letter_open"],["missionIcon","mission_open"],["recycleBinIcon","recycle_open"]].forEach(([i,t])=>$(i)?.addEventListener("click",()=>proof(t)));
-
+/* Original Micky Jobs verification remains authoritative. */
 const ITEMS=[
-{id:"hater_file",icon:"📁",name:"Classified File #002 — The Hater Investigation",kind:"file",content:CONTENT.file2},
-{id:"letter_001",icon:"💌",name:"Unreleased Letter #001 — Things I Notice But Don't Always Say",kind:"letter",content:CONTENT.letter1},
-{id:"uno_reverse",icon:"🔄",name:"UNO Reverse Token",kind:"mikael_token"},
-{id:"wildcard",icon:"🃏",name:"Mikael Wildcard",kind:"wildcard"},
-{id:"vault",icon:"🔐",name:"The Vault — ???",kind:"vault"}];
+{id:"letter_001",icon:"💌",publicName:"Unreleased Letter #001",kind:"letter",content:CONTENT.letter},
+{id:"mystery_reward",icon:"🎁",publicName:"Mystery Reward",kind:"mikael_token",content:CONTENT.uno}
+];
 const shelf=()=>read(K.shelf,{owned:{},bids:{}}),saveShelf=s=>write(K.shelf,s);
 function renderShelf(){
  const h=$("secretShelfPanel");if(!h)return;
@@ -362,15 +236,106 @@ function renderShelf(){
    let o=s.owned[i.id],b=s.bids[i.id];
    let status=o?"OWNED 🔓":b?.status==="pending"?"OFFER PENDING ⏳":b?.status==="countered"?`MIKAEL COUNTERED: ${b.counter} MB`:"NEGOTIATION OPEN";
    let controls=o?"":`<input type="number" min="1" data-bid-input="${i.id}" placeholder="${b?.counter?`Counter ${b.counter} MB`:"Your offer in MB"}"><button data-bid="${i.id}">Submit Offer</button>`;
-   return `<div class="secretItem"><div style="font-size:32px">${i.icon}</div><strong>${i.name}</strong><small>${status}</small>${controls}</div>`;
+   return `<div class="secretItem"><div style="font-size:32px">${i.icon}</div><strong>${i.publicName}</strong><small>${status}</small>${controls}</div>`;
  }).join("");
- h.innerHTML=`<h3>🔒 Mikael's Secret Shelf</h3><p class="seedStoreIntro">Exactly five classified items. No fixed prices — make Mikael an offer.</p><div class="secretShelfGrid">${cards}</div>`;
+ h.innerHTML=`<h3>🔒 Mikael's Secret Shelf</h3><p class="seedStoreIntro">Two classified items. No fixed prices — make Mikael an offer.</p><div class="secretShelfGrid">${cards}</div>`;
  h.querySelectorAll("[data-bid]").forEach(b=>b.onclick=()=>submitBid(b.dataset.bid));
 }
-async function submitBid(id){let inp=document.querySelector(`[data-bid-input="${CSS.escape(id)}"]`),amount=Math.floor(Number(inp?.value));if(!amount||amount<1)return alert("Enter an offer first.");if(amount>wallet())return alert("You cannot bid more than your current balance.");let item=ITEMS.find(x=>x.id===id),s=shelf(),bid={id:`bid_${Date.now()}_${Math.random().toString(36).slice(2,7)}`,itemId:id,item:item.name,amount,status:"pending",createdAt:new Date().toISOString()};s.bids[id]=bid;saveShelf(s);renderShelf();try{await fetch(worker,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"secret_bid",...bid})})}catch(e){}window.lizzyTelegramNotify?.("💰 SECRET SHELF BID",item.name,`Lizzy offered ${amount} MB\nBid ID: ${bid.id}`)}
-function grant(item,price){if(wallet()<price)return false;setWallet(wallet()-price);let s=shelf();s.owned[item.id]={at:new Date().toISOString(),price};saveShelf(s);if(item.kind==="letter"){let l=read(K.letters,[]);if(!l.some(x=>x.id===item.id))l.push({id:item.id,title:item.name,content:item.content});write(K.letters,l);renderLetters()}if(item.kind==="mikael_token"){let t=read(K.mTokens,{inventory:{},history:[]});t.inventory["UNO Reverse"]=Number(t.inventory["UNO Reverse"]||0)+1;write(K.mTokens,t);renderMikaelTokens()}if(item.kind==="vault"){let v=read("lizzyVaultRewardsV1",[]);v.push({id:"mrperfect_file",title:"Classified File #003 — Operation: Mr Perfect",content:CONTENT.file3});write("lizzyVaultRewardsV1",v)}return true}
+async function submitBid(id){let inp=document.querySelector(`[data-bid-input="${CSS.escape(id)}"]`),amount=Math.floor(Number(inp?.value));if(!amount||amount<1)return alert("Enter an offer first.");if(amount>wallet())return alert("You cannot bid more than your current balance.");let item=ITEMS.find(x=>x.id===id),s=shelf(),bid={id:`bid_${Date.now()}_${Math.random().toString(36).slice(2,7)}`,itemId:id,item:item.publicName,amount,status:"pending",createdAt:new Date().toISOString()};s.bids[id]=bid;saveShelf(s);renderShelf();try{await fetch(worker,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({action:"secret_bid",...bid})})}catch(e){}window.lizzyTelegramNotify?.("💰 SECRET SHELF BID",item.publicName,`Lizzy offered ${amount} MB\nBid ID: ${bid.id}`)}
+function grant(item,price){if(wallet()<price)return false;setWallet(wallet()-price);let s=shelf();s.owned[item.id]={at:new Date().toISOString(),price};saveShelf(s);if(item.kind==="letter"){let l=read(K.letters,[]);if(!l.some(x=>x.id===item.id))l.push({id:item.id,title:item.publicName,content:item.content});write(K.letters,l);renderLetters()}if(item.kind==="mikael_token"){let t=read(K.mTokens,{inventory:{},history:[]});t.inventory["UNO Reverse"]=Number(t.inventory["UNO Reverse"]||0)+1;write(K.mTokens,t);renderMikaelTokens()}if(item.kind==="vault"){let v=read("lizzyVaultRewardsV1",[]);v.push({id:"mrperfect_file",title:"Classified File #003 — Operation: Mr Perfect",content:CONTENT.file3});write("lizzyVaultRewardsV1",v)}return true}
 async function poll(){let s=shelf();for(const item of ITEMS){let b=s.bids[item.id];if(!b||!["pending","countered"].includes(b.status))continue;try{let r=await fetch(`${worker}?action=bid_status&bidId=${encodeURIComponent(b.id)}`);if(!r.ok)continue;let d=await r.json();if(d.status==="accepted"&&!s.owned[item.id]){let price=Number(d.price||b.amount);if(grant(item,price)){b.status="accepted";s.bids[item.id]=b;saveShelf(s)}}else if(d.status==="rejected"){b.status="rejected";s.bids[item.id]=b;saveShelf(s)}else if(d.status==="countered"){b.status="countered";b.counter=Number(d.price);s.bids[item.id]=b;saveShelf(s)}}catch(e){}}renderShelf()}
 function renderLetters(){let w=$("openWhenWindow")||$("openWhenFolderWindow");if(!w)return;let b=$("purchasedLettersBox");if(!b){b=document.createElement("div");b.id="purchasedLettersBox";w.appendChild(b)}let l=read(K.letters,[]);b.innerHTML=l.length?'<h3>🛍️ Purchased Letters</h3>'+l.map(x=>`<details class="purchasedLetter"><summary>💌 ${x.title}</summary><pre>${x.content}</pre></details>`).join(""):""}
 function renderMikaelTokens(){let w=$("tokenJarWindow");if(!w)return;let b=$("mikaelTokensBox");if(!b){b=document.createElement("div");b.id="mikaelTokensBox";w.appendChild(b)}let t=read(K.mTokens,{inventory:{}}),n=Number(t.inventory["UNO Reverse"]||0);b.innerHTML=`<h3>🕴️ Mikael's Tokens</h3>${n?`<div class="tokenCard"><div class="tokenCardEmoji">🔄</div><div><strong>UNO Reverse</strong><p>Mikael has the power: one playful, reasonable request for Lizzy.</p></div><div class="tokenCount">×${n}</div></div>`:'<div class="memoryMessage">No Mikael Tokens unlocked yet.</div>'}`}
 $("seedStoreIcon")?.addEventListener("click",()=>setTimeout(renderShelf,50));$("openWhenIcon")?.addEventListener("click",()=>setTimeout(renderLetters,50));$("tokenJarIcon")?.addEventListener("click",()=>setTimeout(renderMikaelTokens,50));setInterval(poll,20000);renderShelf();renderLetters();renderMikaelTokens();
 })();
+
+/* REAL WEBSITE EXTRAS DELIVERY — task verification untouched */
+(() => {
+"use strict";
+const read=(k,f)=>{try{const v=localStorage.getItem(k);return v===null?f:JSON.parse(v)}catch(e){return f}};
+const write=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
+function refreshExtras(){
+ const x=read("lizzyStoreExtrasV1",{owned:{}}),o=x.owned||{},g=read("lizzyGardenV1",null),ledger=read("lizzyExtrasDeliveryLedgerV1",{});
+ if(g&&typeof g==="object"){g.seeds=g.seeds||{};while(Number(ledger.mystery_pack||0)<Number(o.mystery_pack||0)){const pool=["tulipSeed","roseSeed","jacarandaSeed","sunflowerSeed","lilySeed"];const id=pool[Math.floor(Math.random()*pool.length)];g.seeds[id]=Number(g.seeds[id]||0)+1;ledger.mystery_pack=Number(ledger.mystery_pack||0)+1}write("lizzyGardenV1",g);write("lizzyExtrasDeliveryLedgerV1",ledger)}
+ const root=document.getElementById("gardenWindow")||document.querySelector(".gardenWindow");if(!root)return;
+ let fx=document.getElementById("lizzyRealExtrasFx");if(!fx){fx=document.createElement("div");fx.id="lizzyRealExtrasFx";fx.className="lizzyRealExtrasFx";root.appendChild(fx)}fx.innerHTML="";
+ if(o.fairy_lights)fx.innerHTML+=`<div class="realFairyLights"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>`;
+ if(o.butterflies)fx.innerHTML+=`<span class="realButterfly rb1">🦋</span><span class="realButterfly rb2">🦋</span>`;
+ if(o.falling_petals)fx.innerHTML+=`<span class="realPetal rp1">🌸</span><span class="realPetal rp2">🌸</span><span class="realPetal rp3">🌸</span>`;
+ const pot=o.heart_pot?"heart":o.gotham_pot?"gotham":o.moon_pot?"moon":null;
+ document.querySelectorAll(".gardenPlot .plantVisual").forEach(v=>{v.querySelector(".realCustomPot")?.remove();if(pot)v.insertAdjacentHTML("beforeend",`<span class="realCustomPot ${pot}">${pot==="heart"?"♥":pot==="gotham"?"🦇":"🌙"}</span>`)});
+}
+setTimeout(refreshExtras,500);document.getElementById("gardenIcon")?.addEventListener("click",()=>setTimeout(refreshExtras,100));window.addEventListener("lizzyStoreRefresh",refreshExtras);
+})();
+
+
+
+/* =========================================================
+   REAL SITE FIX — PURCHASED EXTRAS + NAME-A-PLANT PASS
+   ========================================================= */
+(() => {
+"use strict";
+const $=id=>document.getElementById(id);
+const read=(k,f)=>{try{const v=localStorage.getItem(k);return v===null?f:JSON.parse(v)}catch(e){return f}};
+const write=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
+const X="lizzyStoreExtrasV1", NAMES="lizzyCustomPlantNamesV1";
+
+const LABELS={
+ heart_pot:"💗 Heart Pot",gotham_pot:"🦇 Gotham Pot",moon_pot:"🌙 Moon Pot",
+ fairy_lights:"✨ Fairy Lights",butterflies:"🦋 Garden Butterflies",
+ falling_petals:"🌸 Falling Petals",mystery_pack:"🎁 Mystery Seed Pack",
+ name_plant:"🏷️ Name-a-Plant Pass",discount25:"🎟️ 25% Seed Coupon"
+};
+
+function extrasHost(){
+ const panel=$("storeExtrasPanel")||$("seedStoreWindow");
+ if(!panel)return null;
+ let box=$("purchasedExtrasBox");
+ if(!box){box=document.createElement("section");box.id="purchasedExtrasBox";box.className="purchasedExtrasBox";panel.appendChild(box)}
+ return box;
+}
+function renderOwnedExtras(){
+ const box=extrasHost();if(!box)return;
+ const x=read(X,{owned:{},coupons:[]}),owned=x.owned||{};
+ const rows=Object.entries(owned).filter(([,n])=>Number(n)>0);
+ box.innerHTML=`<h3>🎒 My Extras</h3>${rows.length?rows.map(([id,n])=>`
+ <div class="ownedExtraRow"><span><strong>${LABELS[id]||id}</strong> ×${n}</span>
+ ${id==="name_plant"?'<button id="useNamePlantPass">Use Pass</button>':""}</div>`).join(""):'<p class="seedStoreIntro">Purchased extras will appear here.</p>'}`;
+ $("useNamePlantPass")?.addEventListener("click",useNamePass);
+}
+function useNamePass(){
+ const x=read(X,{owned:{},coupons:[]});
+ if(Number(x.owned?.name_plant||0)<1)return alert("You do not have a Name-a-Plant Pass.");
+ const g=read("lizzyGardenV1",null);
+ if(!g?.plants?.length)return alert("Plant something in the Garden first 🌱");
+ const options=g.plants.map((p,i)=>`${i+1}. ${p.customName||p.flowerId||"Plant"}`).join("\n");
+ const pick=Number(prompt(`Which plant would you like to name?\n\n${options}\n\nEnter its number:`));
+ if(!Number.isInteger(pick)||pick<1||pick>g.plants.length)return;
+ const plant=g.plants[pick-1];
+ const name=(prompt("What would you like to name this plant?")||"").trim();
+ if(!name)return;
+ const names=read(NAMES,{});
+ names[plant.id]=name;write(NAMES,names);
+ x.owned.name_plant=Number(x.owned.name_plant)-1;write(X,x);
+ applyNames();renderOwnedExtras();
+ window.lizzyTelegramNotify?.("🏷️ NAME-A-PLANT PASS USED",name,"Lizzy named one of her Garden plants.");
+ alert(`🌷 Plant named "${name}"!`);
+}
+function applyNames(){
+ const names=read(NAMES,{});
+ document.querySelectorAll(".gardenPlot[data-plant]").forEach(plot=>{
+   const n=names[plot.dataset.plant];if(!n)return;
+   const strong=plot.querySelector(".plantMeta strong");if(strong)strong.textContent=n;
+ });
+}
+let obs;
+function watchGarden(){
+ const host=$("gardenPlots");if(!host)return;
+ obs?.disconnect();obs=new MutationObserver(()=>setTimeout(applyNames,20));obs.observe(host,{childList:true,subtree:true});applyNames();
+}
+setTimeout(()=>{renderOwnedExtras();watchGarden()},400);
+$("seedStoreIcon")?.addEventListener("click",()=>setTimeout(renderOwnedExtras,80));
+$("gardenIcon")?.addEventListener("click",()=>setTimeout(()=>{watchGarden();applyNames()},80));
+window.addEventListener("lizzyStoreRefresh",()=>setTimeout(renderOwnedExtras,50));
+})();
+
