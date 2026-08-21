@@ -3323,3 +3323,19 @@ color:#ff5ca8;
 .plantVisual{position:relative}.realCustomPot{position:absolute;left:50%;bottom:-24px;transform:translateX(-50%);width:44px;height:30px;display:flex;align-items:center;justify-content:center;z-index:3}
 .realCustomPot.heart{background:#e85c9b;color:#fff;clip-path:polygon(50% 100%,5% 48%,5% 22%,22% 5%,50% 23%,78% 5%,95% 22%,95% 48%)}.realCustomPot.gotham{background:#17171b;color:#ffd65a;border-radius:4px 4px 12px 12px}.realCustomPot.moon{background:#343b78;color:#fff3a5;border-radius:4px 4px 12px 12px}
 @keyframes realGlow{to{transform:scale(1.2);opacity:.55}}@keyframes realFly{50%{transform:translate(45px,-25px)}}@keyframes realFall{to{transform:translateY(650px) rotate(300deg);opacity:.2}}
+
+
+/* Crack the Code — live scavenger mission evidence */
+.missionInjectedClue{
+  width:100%;margin:14px 0;padding:16px;border:2px dashed rgba(255,255,255,.75);
+  border-radius:16px;background:rgba(71,36,116,.88);color:#fff;text-align:left;
+  box-shadow:0 0 0 3px rgba(255,255,255,.08),0 0 24px rgba(255,255,255,.16);
+  animation:missionEvidencePulse 1.6s ease-in-out infinite alternate;cursor:pointer;
+}
+.missionInjectedClue b,.missionInjectedClue span,.missionInjectedClue strong,.missionInjectedClue small,.missionInjectedClue em{display:block}
+.missionInjectedClue span{margin-top:5px;opacity:.85}.missionInjectedClue strong{font-size:26px;margin:8px 0}
+.missionInjectedClue small{line-height:1.45;margin-bottom:7px}.missionInjectedClue em{font-size:12px;opacity:.75}
+.missionProgressMini{display:grid;gap:5px;margin-top:12px;padding:10px;border-radius:12px;background:rgba(255,255,255,.08)}
+.missionProgressMini span{display:block}
+.impostorProfiles{display:grid;gap:9px}.impostorProfiles p{padding:10px;border-radius:12px;background:rgba(255,255,255,.08)}
+@keyframes missionEvidencePulse{from{transform:scale(.995);filter:brightness(.95)}to{transform:scale(1);filter:brightness(1.12)}}

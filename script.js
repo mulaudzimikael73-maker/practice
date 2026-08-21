@@ -2260,10 +2260,15 @@ $("wouldMikaelRatherIcon")?.addEventListener("click",()=>{$("wouldMikaelRatherWi
 })();
 
 // =========================================================
-// CRACK THE CODE — FIVE CLASSIFIED MISSIONS
+// CRACK THE CODE — CLASSIFIED MISSIONS 1–12
+// Missions 7 and 10 can inject temporary scavenger evidence.
+// Only one mission is active at a time. Progress survives refresh.
 // =========================================================
 (()=>{
 const $=x=>document.getElementById(x);
+const ACTIVE="lizzyCrackActiveMissionV2", FOUND="lizzyCrackFoundV2";
+const read=(k,f)=>{try{const v=localStorage.getItem(k);return v===null?f:JSON.parse(v)}catch(e){return f}};
+const write=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
 const missions={
 1:{title:"🔐 Security Breach",reward:"LIZZYOS SECURITY CLEARANCE: MAXIMUM",stages:[
 {q:`<h3>Stage 1 — Mr Perfect Cipher</h3><div class="cipher">20 • 8 • 5 • 13 • 2 • 9 • 14 • 11 • 15 • 19 • 9</div><p>A begins with 1. Decode the name, then enter the number of letters in it.</p>`,a:["11"],hint:"A=1, B=2, C=3..."},
@@ -2277,59 +2282,198 @@ const missions={
 {q:`<h3>Fragment II — Why Does This Exist?</h3><p>Find the folder that explains why this ridiculous operating system exists.</p><p>Enter the folder name.</p>`,a:["read me","readme"],hint:"You normally open this before using something."},
 {q:`<h3>Fragment III — Emergency Comedy</h3><p>Which Open When letter activates the LizzyOS Emergency Comedy Protocol?</p>`,a:["need to laugh","laugh","open when you need to laugh"],hint:"😂"},
 {q:`<h3>Fragment IV — Colour Authentication</h3><p>Mr Perfect's favourite colour provides the final authentication fragment. Enter the colour.</p>`,a:["purple"],hint:"It's also in the Mikhail Quiz."},
-{q:`<h3>Reconstruct the Missing File</h3><div class="cipher">P • E • R • 16 &nbsp;&nbsp; + &nbsp;&nbsp; ???FECT</div><p>One fragment is pretending to be a number. A=1. Reconstruct the word LizzyOS associates with Mikael.</p>`,a:["mr perfect","perfect"],hint:"16=P. PERP + ... Think of Mikael's completely unbiased nickname."}
+{q:`<h3>Reconstruct the Missing File</h3><div class="cipher">P • E • R • 16 &nbsp;&nbsp; + &nbsp;&nbsp; ???FECT</div><p>One fragment is pretending to be a number. A=1. Reconstruct the word LizzyOS associates with Mikael.</p>`,a:["mr perfect","perfect"],hint:"16=P. Think of Mikael's completely unbiased nickname."}
 ]},
 3:{title:"📺 TV Multiverse Meltdown",reward:"MULTIVERSE RESTORED",stages:[
 {q:`<h3>Universe 1 — The Office</h3><p>Which paper company does Michael Scott manage a branch of?</p>`,a:["dunder mifflin"],hint:"Scranton's finest paper company."},
-{q:`<h3>Universe 2 — Brooklyn Nine-Nine</h3><p>Which precinct is the show centred around? Reduce its two digits: add them, then add the resulting digits until one digit remains.</p>`,a:["9"],hint:"99 → 18 → 9."},
+{q:`<h3>Universe 2 — Brooklyn Nine-Nine</h3><p>Which precinct is the show centred around? Reduce its two digits until one digit remains.</p>`,a:["9"],hint:"99 → 18 → 9."},
 {q:`<h3>Universe 3 — Gilmore Girls</h3><p>Who says “I got hit by a deer!”? Convert her first name to A=1 and enter the smallest letter value.</p>`,a:["15"],hint:"Rory → R=18, O=15, R=18, Y=25."},
 {q:`<h3>Universe 4 — High School Musical</h3><p>The Wildcats represent which school?</p>`,a:["east high","east high school"],hint:"Troy Bolton's school."},
-{q:`<h3>Multiverse Lock</h3><p>Take <b>EAST</b> using A=1: 5+1+19+20. Reduce the total to one digit. Combine it with the reduced Brooklyn precinct digit.</p><p>Enter the two-digit code in universe order: B99 then HSM.</p>`,a:["99"],hint:"Both universes reduce to 9."}
+{q:`<h3>Multiverse Lock</h3><p>Take EAST using A=1: 5+1+19+20. Reduce it to one digit. Combine it with the reduced Brooklyn precinct digit, B99 first.</p>`,a:["99"],hint:"Both reduce to 9."}
 ]},
 4:{title:"🌍 Agent General Knowledge Exam",reward:"GENERAL KNOWLEDGE CLEARANCE: APPROVED",stages:[
-{q:`<h3>Geography</h3><p>What is the largest country in the world by area? Enter the square of the number of letters in its English name.</p>`,a:["36"],hint:"Russia has 6 letters. 6²."},
-{q:`<h3>Science</h3><p>Au is the chemical symbol for which element? Enter its atomic number.</p>`,a:["79"],hint:"Gold."},
-{q:`<h3>History</h3><p>In what year did World War II end? Add all four digits and enter the result.</p>`,a:["19"],hint:"1945 → 1+9+4+5."},
-{q:`<h3>Space</h3><p>Which planet is known as the Red Planet? Convert its name with A=1, then subtract the smallest letter value from the largest.</p>`,a:["18"],hint:"MARS → 13,1,18,19 → 19−1."},
-{q:`<h3>Final Knowledge Lock</h3><div class="cipher">36 • 79 • 19 • 18</div><p>Only the last digit of each fragment survived. Enter the four-digit code.</p>`,a:["6998"],hint:"6 • 9 • 9 • 8."}
+{q:`<h3>Geography</h3><p>Largest country in the world by area? Enter the square of the number of letters in its English name.</p>`,a:["36"],hint:"Russia has 6 letters."},
+{q:`<h3>Science</h3><p>Au is which element? Enter its atomic number.</p>`,a:["79"],hint:"Gold."},
+{q:`<h3>History</h3><p>In what year did World War II end? Add all four digits.</p>`,a:["19"],hint:"1945."},
+{q:`<h3>Space</h3><p>Which planet is the Red Planet? Convert its name with A=1, then subtract the smallest value from the largest.</p>`,a:["18"],hint:"MARS → 19−1."},
+{q:`<h3>Final Knowledge Lock</h3><div class="cipher">36 • 79 • 19 • 18</div><p>Use only the last digit of each fragment.</p>`,a:["6998"],hint:"6 • 9 • 9 • 8."}
 ]},
 5:{title:"❤️ LizzyOS Treasure Hunt",reward:"LEGENDARY TREASURE UNLOCKED",stages:[
-{q:`<h3>Key I — Postponement Department 📅</h3><p>Where does Lizzy keep postponing Mr Perfect? Enter the name of the desktop feature.</p>`,a:["calendar","calender"],hint:"Dates and times live here."},
-{q:`<h3>Key II — Forbidden Names 🗑️</h3><p>Find the place containing things Mikael isn't supposed to call Lizzy. Which banned nickname is specifically about her eyesight?</p>`,a:["four eyes","4 eyes"],hint:"👓"},
-{q:`<h3>Key III — Television Intercept 📺</h3><p>“That's what she said!” belongs to which show? Then enter the number of letters in the word OFFICE.</p>`,a:["6"],hint:"The Office → OFFICE has 6 letters."},
-{q:`<h3>Key IV — Mr Perfect Authentication 🏀</h3><p>Enter the number Mikael wore on his high-school basketball jersey.</p>`,a:["4"],hint:"It's in the hard Mikhail Quiz."},
-{q:`<h3>Final Treasure Lock</h3><p>Three symbols point to the final location:</p><div class="cipher">🌸 + 💌 + 🫂</div><p>Which Open When letter does the final symbol point to?</p>`,a:["need a hug","hug","open when you need a hug"],hint:"The 🫂 animation gives it away."}
-]}};
+{q:`<h3>Key I — Postponement Department 📅</h3><p>Where does Lizzy keep postponing Mr Perfect?</p>`,a:["calendar","calender"],hint:"Dates and times live here."},
+{q:`<h3>Key II — Forbidden Names 🗑️</h3><p>Which banned nickname is specifically about her eyesight?</p>`,a:["four eyes","4 eyes"],hint:"👓"},
+{q:`<h3>Key III — Television Intercept 📺</h3><p>“That's what she said!” belongs to which show? Enter the number of letters in OFFICE.</p>`,a:["6"],hint:"OFFICE has 6 letters."},
+{q:`<h3>Key IV — Mr Perfect Authentication 🏀</h3><p>Enter the number Mikael wore on his high-school basketball jersey.</p>`,a:["4"],hint:"High-school jersey number."},
+{q:`<h3>Final Treasure Lock</h3><div class="cipher">🌸 + 💌 + 🫂</div><p>Which Open When letter does the final symbol point to?</p>`,a:["need a hug","hug","open when you need a hug"],hint:"🫂"}
+]},
+6:{title:"🕴️ Operation Miknak",reward:"MIKNАK ARCHIVE AUTHENTICATED",stages:[
+{q:`<h3>Question 1 — Childhood Identifier</h3><div class="cipher">MI _ NA _</div><p>Enter Mikael's full childhood nickname.</p>`,a:["miknak"],hint:"Two missing letters are the same."},
+{q:`<h3>Question 2 — First Sport</h3><p>What was Mikael's first sport?</p><p>A. Basketball &nbsp; B. Soccer &nbsp; C. Cricket &nbsp; D. Rugby</p>`,a:["cricket","c"],hint:"Think bat, ball and wickets."},
+{q:`<h3>Question 3 — Childhood Obsession</h3><div class="cipher">B _ B &nbsp; THE &nbsp; B _ ILDER</div><p>Complete the name.</p>`,a:["bob the builder"],hint:"Can we fix it?"},
+{q:`<h3>Question 4 — The Number</h3><p>One number is connected to Mikael's high-school basketball history. The other is simply his favourite.</p><p><b>Clue 1:</b> It is not the number connected to his high-school jersey.<br><b>Clue 2:</b> It is smaller than that number.<br><b>Clue 3:</b> It is the only even prime number.</p><p>What is Mikael's favourite number?</p>`,a:["2","two"],hint:"Only one even number is prime."},
+{q:`<h3>Question 5 — Official Assessment</h3><p>Mikael claims to be:</p><p>A. Okay &nbsp; B. Pretty good &nbsp; C. Amazing &nbsp; D. Humble</p>`,a:["amazing","c"],hint:"This answer was supplied by an extremely unbiased source."},
+{q:`<h3>Final Code</h3><p>Enter: letters in <b>MIKNAK</b> • letters in <b>CRICKET</b> • Mikael's favourite number • letters in <b>AMAZING</b>.</p>`,a:["6727"],hint:"6 • 7 • 2 • 7"}
+]},
+7:{title:"🖥️ The Corrupted Desktop",reward:"DESKTOP SECURITY FRAGMENTS RESTORED",scavenger:true,stages:[
+{q:`<h3>Scavenger Hunt Activated</h3><p>Five security fragments have been scattered through LizzyOS.</p><p>Search, in order if you like: <b>Bank → Garden → Token Jar → Open When → CLASSIFIED</b>.</p><p>When you see a glowing <b>MISSION FRAGMENT</b>, click it to recover it.</p><div id="crackScavengerStatus"></div>`,a:["ready"],auto:true,hint:"The fragments only appear while this mission is active."},
+{q:`<h3>Final Security Lock</h3><p>All five fragments must be recovered before this code will work.</p><p>Enter the fragments in order: Bank • Garden • Token Jar • Open When • CLASSIFIED.</p><div id="crackScavengerStatus"></div>`,a:["42961"],requires:["m7_bank","m7_garden","m7_tokens","m7_letters","m7_classified"],hint:"Re-open the five locations and click each mission fragment."}
+]},
+8:{title:"🛰️ Agent Yelizaveta: Intercepted",reward:"INTERCEPTED IDENTITY CONFIRMED",stages:[
+{q:`<h3>Transmission I</h3><div class="cipher">20-8-5 / 16-5-18-6-5-3-20 / 15-14-5</div><p>A=1. Decode the transmission.</p>`,a:["the perfect one"],hint:"20=T, 8=H, 5=E..."},
+{q:`<h3>Identify the Individual</h3><p>Who is “THE PERFECT ONE” inside LizzyOS?</p>`,a:["mikael","mr perfect"],hint:"Lizzy gave him the nickname."},
+{q:`<h3>Transmission II</h3><div class="cipher">13 – 9 – 11 – 14 – 1 – 11</div><p>Decode the childhood identifier.</p>`,a:["miknak"],hint:"A=1 again."}
+]},
+9:{title:"🏀 The Number Four",reward:"#4 RECORD AUTHENTICATED",stages:[
+{q:`<h3>Question 1</h3><p>Is 4 Mikael's favourite number?</p>`,a:["no","n"],hint:"Meaningful does not mean favourite."},
+{q:`<h3>Question 2</h3><p>Which number actually is Mikael's favourite?</p>`,a:["2","two"],hint:"Only even prime number."},
+{q:`<h3>Question 3</h3><p>Why is <b>4</b> important to Mikael?</p><p>A. It was his first football number<br>B. Mikael wore #4 in high school<br>C. He was born on the 4th<br>D. It is his favourite number</p>`,a:["b","mikael wore 4 in high school","mikael wore #4 in high school","he wore 4 in high school"],hint:"It was on his high-school jersey."},
+{q:`<h3>Secondary Connection</h3><p>Someone else close to Mikael also wore #4 in basketball. Who?</p><p>A. His brother &nbsp; B. His best friend &nbsp; C. His sister &nbsp; D. Lizzy</p>`,a:["c","his sister","sister"],hint:"Family connection."},
+{q:`<h3>Final Code</h3><p>Favourite number • meaningful number • family basketball number.</p>`,a:["244"],hint:"2 • 4 • 4"}
+]},
+10:{title:"🕵️ The Impostor File",reward:"REAL MIKAEL PROFILE RESTORED",scavenger:true,stages:[
+{q:`<h3>Security Alert — Fake Mikael Profile</h3><p>Four profile records exist. Only three have been recovered.</p>
+<div class="impostorProfiles">
+<p><b>PROFILE A</b><br>Food: Burger/Pasta • Drink: Coke • Favourite number: 2 • Game: FIFA</p>
+<p><b>PROFILE B</b><br>Dream car: Porsche 911 • Fear: Hyena • First sport: Cricket • Favourite number: 4</p>
+<p><b>PROFILE C</b><br>Comedian: Trevor Noah • Actor: Steve Carell • Childhood obsession: Bob the Builder • Dream career: Name Partner at a Law Firm</p>
+</div>
+<p><b>PROFILE D is missing.</b> Search somewhere deleted files would go and recover it.</p><div id="crackScavengerStatus"></div>`,a:["profile d"],requires:["m10_profile_d"],hint:"Deleted files → Recycle Bin."},
+{q:`<h3>Authentication I</h3><p>Which statement is TRUE?</p><p>A. Mikael has broken a bone<br>B. Mikael has knitted a scarf<br>C. Mikael hates sleeping in socks<br>D. Mikael loves warm water</p>`,a:["b","he has knitted a scarf","mikael has knitted a scarf"],hint:"One unexpectedly wholesome skill."},
+{q:`<h3>Authentication II</h3><p>Which statement is TRUE?</p><p>A. Mikael has never been bitten by a dog<br>B. Mikael hates chess<br>C. Mikael has been abseiling<br>D. Mikael hates dipping fries in ketchup</p>`,a:["c","mikael has been abseiling","he has been abseiling"],hint:"Think heights."},
+{q:`<h3>Authentication III</h3><div class="cipher">MIK_AK</div><p>Complete the childhood identifier.</p>`,a:["miknak","n"],hint:"MIKNAK."},
+{q:`<h3>Final Identity Code</h3><p>Favourite number + meaningful number + number of letters in MIKNAK.</p>`,a:["246"],hint:"2 • 4 • 6"}
+]},
+11:{title:"🧠 Mikael Knowledge Protocol",reward:"MIKAEL KNOWLEDGE CLEARANCE APPROVED",stages:[
+{q:`<h3>Authentication I — Food</h3><p>Name either of Mikael's favourite foods.</p>`,a:["pasta","burger","a burger"],hint:"One is Italian; one usually comes with fries."},
+{q:`<h3>Authentication II — Fear</h3><p>Which animal is Mikael randomly afraid of?</p>`,a:["hyena","hyenas"],hint:"Laughing predator."},
+{q:`<h3>Authentication III — Career</h3><div class="cipher">NAME _______ AT A LAW FIRM</div><p>Complete Mikael's dream career.</p>`,a:["partner","name partner"],hint:"His name goes on the firm."},
+{q:`<h3>Authentication IV — Vehicle</h3><div class="cipher">PORSCHE ___</div><p>Complete the dream car.</p>`,a:["911","porsche 911"],hint:"Three digits."},
+{q:`<h3>Authentication V — Strange Behaviour</h3><p>Which is TRUE?</p><p>A. Mikael hates sleeping in socks<br>B. Mikael has never knitted anything<br>C. Mikael cannot drink warm water<br>D. Mikael hates ice cream</p>`,a:["c","cannot drink warm water","mikael cannot drink warm water"],hint:"Temperature problem."},
+{q:`<h3>Final Protocol</h3><p>Porsche number • favourite number • meaningful number.</p>`,a:["91124"],hint:"911 • 2 • 4"}
+]},
+12:{title:"🗄️ Vault Breach",reward:"VAULT CLEARANCE +1",stages:[
+{q:`<h3>Key I — Origin</h3><p>Before basketball and soccer entered the investigation, what sport did Mikael first play? Enter the number of letters in the sport.</p>`,a:["7"],hint:"CRICKET."},
+{q:`<h3>Key II — The Number</h3><p>Mikael's favourite number.</p>`,a:["2","two"],hint:"Not #4."},
+{q:`<h3>Key III — The Builder</h3><div class="cipher">BOB THE _______</div><p>Complete it, then enter the number of letters in the missing word.</p>`,a:["7"],hint:"BUILDER has 7 letters."},
+{q:`<h3>Key IV — The Enemy</h3><p>Mikael's primary-school ______ eventually became his best friend in high school. Enter the number of letters in the missing word.</p>`,a:["5"],hint:"ENEMY."},
+{q:`<h3>Key V — The Myth</h3><p>Who said: “If I didn't know better I would say she's a myth”?</p><p>A. Lizzy &nbsp; B. Mikael &nbsp; C. Michael Scott &nbsp; D. LizzyOS</p><p>Enter the number of letters in the speaker's first name.</p>`,a:["6"],hint:"Mikael."},
+{q:`<h3>Final Vault Breach Code</h3><p>Enter Keys I–V in order.</p>`,a:["72756"],hint:"7 • 2 • 7 • 5 • 6"}
+]}
+};
+
+const scavengerDefs={
+7:[
+ {id:"m7_bank",host:"#mickyBankPanel",value:"4",label:"FRAGMENT I — BANK"},
+ {id:"m7_garden",host:"#lizzyGardenWindow .gardenApp",value:"2",label:"FRAGMENT II — GARDEN"},
+ {id:"m7_tokens",host:"#tokenJarWindow .tokenJarApp",value:"9",label:"FRAGMENT III — TOKEN JAR"},
+ {id:"m7_letters",host:"#openWhenWindow .windowScroll",value:"6",label:"FRAGMENT IV — OPEN WHEN"},
+ {id:"m7_classified",host:"#classifiedArchivePanel, #classifiedFolderWindow .windowScroll, #secretShelfPanel",value:"1",label:"FRAGMENT V — CLASSIFIED"}
+],
+10:[
+ {id:"m10_profile_d",host:"#recycleBinWindow .windowScroll",value:"PROFILE D",label:"RECOVERED PROFILE D",
+  extra:"Night owl • Cheers up with ice cream • Good at making people laugh • Terrible at golf"}
+]};
+
 let mid=1,stage=0,attempts=0,crackLog=[];
-function norm(v){return v.toLowerCase().trim().replace(/[^\w\s]/g,"").replace(/\s+/g," ")}
-function menu(){$("crackMenu").classList.remove("hidden");$("crackPlay").classList.add("hidden");$("crackComplete").classList.add("hidden")}
-function start(id){mid=Number(id);stage=0;attempts=0;crackLog=[];$("crackMenu").classList.add("hidden");$("crackComplete").classList.add("hidden");$("crackPlay").classList.remove("hidden");render()}
-function render(){let m=missions[mid],s=m.stages[stage];$("crackMissionTitle").textContent=m.title;$("crackStage").textContent=`Stage ${stage+1}/${m.stages.length}`;$("crackPuzzle").innerHTML=s.q;$("crackAnswer").value="";$("crackFeedback").textContent="";$("crackAnswer").focus()}
-function submit(){let s=missions[mid].stages[stage],raw=$("crackAnswer").value,v=norm(raw),ok=s.a.some(a=>norm(a)===v);crackLog.push({stage:stage+1,question:$("crackPuzzle").innerText.replace(/\s+/g," ").trim(),answer:raw||"(blank)",expected:s.a.join(" / "),correct:ok?"Yes":"No"});if(ok){attempts=0;$("crackFeedback").textContent="✅ DECRYPTED. Accessing next layer...";setTimeout(()=>{stage++;stage<missions[mid].stages.length?render():complete()},650)}else{attempts++;$("crackFeedback").textContent=attempts>=3?"🚨 INTRUDER DETECTED. Agent clearance temporarily questioned. Try the hint. 😭":"❌ ACCESS DENIED. Incorrect code."}}
-function complete(){window.dispatchEvent(new CustomEvent("lizzyJobProof",{detail:{type:"crack_complete",mission:mid}}));window.dispatchEvent(new CustomEvent("lizzyJobProof",{detail:{type:"game_complete",game:"crack_code"}}));let m=missions[mid];$("crackPlay").classList.add("hidden");$("crackComplete").classList.remove("hidden");$("crackCompleteTitle").textContent=`🔓 ${m.reward}`;$("crackCompleteText").textContent=mid===5?"You actually went through all of that just to see what was in here? 😂 Agent Yelizaveta has earned a LEGENDARY Mystery Reward. ❤️":"Mission complete. Mr Perfect would like it recorded that your security clearance is becoming concerning. 😂❤️";localStorage.setItem(`crackMission${mid}`,"complete");fetch("https://formspree.io/f/xjybobov",{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify({game:"Crack the Code",mission:m.title,result:m.reward,questions_and_answers:crackLog.map(a=>`Stage ${a.stage}: ${a.question}\nLizzy answer: ${a.answer}\nExpected: ${a.expected}\nCorrect: ${a.correct}`).join("\n\n")})}).catch(()=>{});lizzyTelegramNotify("🔐 CRACK THE CODE COMPLETED",`${m.title} — ${m.reward}`,crackLog.map(a=>`Stage ${a.stage}: ${a.question}\nLizzy answer: ${a.answer}\nExpected: ${a.expected}\nCorrect: ${a.correct}`).join("\n\n"))}
-$("crackCodeIcon")?.addEventListener("click",()=>{$("crackCodeWindow").classList.remove("hidden");menu()});
-$("crackCodeClose")?.addEventListener("click",()=>$("crackCodeWindow").classList.add("hidden"));$("closeCrackCode")?.addEventListener("click",()=>$("crackCodeWindow").classList.add("hidden"));
+
+function norm(v){return String(v||"").toLowerCase().trim().replace(/[^\w\s]/g,"").replace(/\s+/g," ")}
+function found(){return read(FOUND,{})}
+function markFound(id){
+ const f=found();f[id]=true;write(FOUND,f);renderScavengerStatus();injectScavenger();
+}
+function activeMission(){return Number(localStorage.getItem(ACTIVE)||0)}
+function setActive(id){localStorage.setItem(ACTIVE,String(id));injectScavenger()}
+function clearActive(){localStorage.removeItem(ACTIVE);document.querySelectorAll(".missionInjectedClue").forEach(x=>x.remove())}
+
+function renderScavengerStatus(){
+ const box=$("crackScavengerStatus");if(!box)return;
+ const defs=scavengerDefs[mid]||[],f=found();
+ box.innerHTML=defs.length?`<div class="missionProgressMini">${defs.map(d=>`<span>${f[d.id]?"✅":"⬜"} ${d.label}</span>`).join("")}</div>`:"";
+}
+
+function injectScavenger(){
+ document.querySelectorAll(".missionInjectedClue").forEach(x=>x.remove());
+ const id=activeMission(),defs=scavengerDefs[id]||[],f=found();
+ defs.forEach(d=>{
+   if(f[d.id])return;
+   const host=document.querySelector(d.host);if(!host)return;
+   const card=document.createElement("button");
+   card.type="button";card.className="missionInjectedClue";
+   card.innerHTML=`<b>🕵🏾 MISSION EVIDENCE</b><span>${d.label}</span><strong>${d.value}</strong>${d.extra?`<small>${d.extra}</small>`:""}<em>Click to recover</em>`;
+   card.addEventListener("click",()=>{markFound(d.id);card.remove();});
+   host.appendChild(card);
+ });
+ renderScavengerStatus();
+}
+
+function menu(){
+ $("crackMenu").classList.remove("hidden");$("crackPlay").classList.add("hidden");$("crackComplete").classList.add("hidden");
+}
+function start(id){
+ mid=Number(id);stage=0;attempts=0;crackLog=[];setActive(mid);
+ $("crackMenu").classList.add("hidden");$("crackComplete").classList.add("hidden");$("crackPlay").classList.remove("hidden");render();
+}
+function render(){
+ let m=missions[mid],s=m.stages[stage];
+ $("crackMissionTitle").textContent=m.title;$("crackStage").textContent=`Stage ${stage+1}/${m.stages.length}`;
+ $("crackPuzzle").innerHTML=s.q;$("crackAnswer").value="";$("crackFeedback").textContent="";
+ renderScavengerStatus();injectScavenger();
+ if(s.auto){
+   $("crackAnswer").placeholder="Type READY when you have read the instructions";
+ }else $("crackAnswer").placeholder="Enter answer / code";
+ $("crackAnswer").focus();
+}
+function requirementsMet(s){
+ const f=found();return !(s.requires||[]).some(id=>!f[id]);
+}
+function submit(){
+ let s=missions[mid].stages[stage],raw=$("crackAnswer").value,v=norm(raw);
+ if(!requirementsMet(s)){
+   $("crackFeedback").textContent="🔎 Evidence still missing. Search LizzyOS and recover every required mission item first.";
+   injectScavenger();return;
+ }
+ let ok=s.a.some(a=>norm(a)===v);
+ crackLog.push({stage:stage+1,question:$("crackPuzzle").innerText.replace(/\s+/g," ").trim(),answer:raw||"(blank)",expected:s.a.join(" / "),correct:ok?"Yes":"No"});
+ if(ok){
+   attempts=0;$("crackFeedback").textContent="✅ DECRYPTED. Accessing next layer...";
+   setTimeout(()=>{stage++;stage<missions[mid].stages.length?render():complete()},650);
+ }else{
+   attempts++;$("crackFeedback").textContent=attempts>=3?"🚨 INTRUDER DETECTED. Try the hint. 😭":"❌ ACCESS DENIED. Incorrect code.";
+ }
+}
+function complete(){
+ window.dispatchEvent(new CustomEvent("lizzyJobProof",{detail:{type:"crack_complete",mission:mid}}));
+ window.dispatchEvent(new CustomEvent("lizzyJobProof",{detail:{type:"game_complete",game:"crack_code"}}));
+ let m=missions[mid];
+ $("crackPlay").classList.add("hidden");$("crackComplete").classList.remove("hidden");
+ $("crackCompleteTitle").textContent=`🔓 ${m.reward}`;
+ $("crackCompleteText").textContent=mid===12?"Vault Breach complete. LizzyOS has recorded a clearance upgrade. Mikael is reportedly being dramatic about the security failure. 😂":"Mission complete. Mr Perfect would like it recorded that your security clearance is becoming concerning. 😂❤️";
+ localStorage.setItem(`crackMission${mid}`,"complete");
+ if(mid===12){
+   const current=Math.max(0,Number(localStorage.getItem("lizzyVaultClearance")||0));
+   localStorage.setItem("lizzyVaultClearance",String(Math.min(3,current+1)));
+ }
+ clearActive();
+ fetch("https://formspree.io/f/xjybobov",{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify({game:"Crack the Code",mission:m.title,result:m.reward,questions_and_answers:crackLog.map(a=>`Stage ${a.stage}: ${a.question}\nLizzy answer: ${a.answer}\nExpected: ${a.expected}\nCorrect: ${a.correct}`).join("\n\n")})}).catch(()=>{});
+ lizzyTelegramNotify("🔐 CRACK THE CODE COMPLETED",`${m.title} — ${m.reward}`,crackLog.map(a=>`Stage ${a.stage}: ${a.question}\nLizzy answer: ${a.answer}\nExpected: ${a.expected}\nCorrect: ${a.correct}`).join("\n\n"));
+}
+$("crackCodeIcon")?.addEventListener("click",()=>{$("crackCodeWindow").classList.remove("hidden");menu();injectScavenger()});
+$("crackCodeClose")?.addEventListener("click",()=>$("crackCodeWindow").classList.add("hidden"));
+$("closeCrackCode")?.addEventListener("click",()=>$("crackCodeWindow").classList.add("hidden"));
 document.querySelectorAll("[data-mission]").forEach(b=>b.addEventListener("click",()=>start(b.dataset.mission)));
-$("crackSubmit")?.addEventListener("click",submit);$("crackAnswer")?.addEventListener("keydown",e=>{if(e.key==="Enter")submit()});
+$("crackSubmit")?.addEventListener("click",submit);
+$("crackAnswer")?.addEventListener("keydown",e=>{if(e.key==="Enter")submit()});
 $("crackHint")?.addEventListener("click",()=>{$("crackFeedback").textContent="💡 "+missions[mid].stages[stage].hint});
-$("crackBack")?.addEventListener("click",menu);$("crackAnother")?.addEventListener("click",menu);
+$("crackBack")?.addEventListener("click",()=>{clearActive();menu()});
+$("crackAnother")?.addEventListener("click",menu);
+
+// Re-inject evidence after desktop windows are opened/redrawn.
+document.addEventListener("click",()=>setTimeout(injectScavenger,80));
+window.addEventListener("focus",injectScavenger);
+setTimeout(injectScavenger,500);
 })();
 
 
-
-// One-time live progress preservation: restore the existing 4-day streak after deployment.
-// Never lowers or overwrites a streak that is already 4 or higher.
-(() => {
-  const migrationKey = "lizzyPreserveStreak4MigrationV1";
-  if (!localStorage.getItem(migrationKey)) {
-    const current = Number(localStorage.getItem("lizzyMysteryStreak") || 0);
-    if (current < 4) {
-      localStorage.setItem("lizzyMysteryStreak", "4");
-      // Do not mark today's reward as opened; this only restores the displayed/progress streak.
-    }
-    localStorage.setItem(migrationKey, "done");
-  }
-})();
+// STREAK SAFETY: no hard-coded migration. Existing saved streak/claim state is authoritative.
 
 // DAILY REWARDS + STRICT CONSECUTIVE STREAK
 (()=>{
