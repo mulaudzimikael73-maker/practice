@@ -24,95 +24,105 @@ function home(){
   <button data-site="lessons"><span>🧠</span><b>Life Lessons with Micky</b><small>Qualifications: Trust Me.</small></button>
  </div></div>`;
 }
-const BANK_SESSION="lizzyBankLoggedInV1";
+const BANK_SESSION="lizzyBankLoggedInV2";
 const BANK_PASSWORD="MRPERFECT";
+const BANK_WALLET_KEY="lizzyMickyBucsV1";
+const BANK_STATE_KEY="lizzyMickyBankV1";
+const BANK_WEEK=7*24*60*60*1000;
+
+function bankRead(key,fallback){
+ try{const raw=localStorage.getItem(key);return raw===null?fallback:JSON.parse(raw)}
+ catch(e){return fallback}
+}
+function bankWrite(key,value){localStorage.setItem(key,JSON.stringify(value))}
+function bankWallet(){return Number(bankRead(BANK_WALLET_KEY,0))||0}
+function bankSetWallet(n){
+ bankWrite(BANK_WALLET_KEY,Math.max(0,Number(n)||0));
+ window.dispatchEvent(new Event("lizzyStoreRefresh"));
+}
+function bankState(){
+ const raw=bankRead(BANK_STATE_KEY,{savings:0,qualifyingSince:null,lastBonus:null});
+ return {
+   savings:Number(raw?.savings||0),
+   qualifyingSince:raw?.qualifyingSince||null,
+   lastBonus:raw?.lastBonus||null
+ };
+}
+function bankSave(s){
+ bankWrite(BANK_STATE_KEY,s);
+ window.dispatchEvent(new Event("lizzyStoreRefresh"));
+}
+async function bankNotify(title,details){
+ return notify("🏦 BANK OF MICKY",title,details);
+}
 function bank(){
  setAddress("https://bankofmicky.lizzy");
- if(sessionStorage.getItem(BANK_SESSION)==="yes") return bankDashboard();
+ if(sessionStorage.getItem(BANK_SESSION)==="yes")return bankDashboard();
  $("browserPage").innerHTML=`<div class="bankLoginPage">
-   <div class="bankLoginBrand">🏦</div>
-   <h1>Bank of Micky</h1>
-   <p class="bankTagline">Private Banking • Definitely Regulated™</p>
-   <div class="bankLoginCard">
-     <label>Client</label><div class="bankClient">Lebone Elizabeth Kganyago</div>
-     <label for="bankPassword">Online Banking Password</label>
-     <input id="bankPassword" type="password" autocomplete="off" placeholder="Enter password">
-     <button id="bankLoginBtn">Sign In</button>
-     <p id="bankLoginStatus" class="bankLoginStatus"></p>
-   </div>
-   <small class="bankFinePrint">Bank of Micky will never ask you to send your Micky Bucs to a prince.</small>
+ <div class="bankLoginBrand">🏦</div><h1>Bank of Micky</h1>
+ <p class="bankTagline">Private Banking • Definitely Regulated™</p>
+ <div class="bankLoginCard">
+ <label>Client</label><div class="bankClient">Lebone Elizabeth Kganyago</div>
+ <label for="bankPassword">Online Banking Password</label>
+ <input id="bankPassword" type="password" autocomplete="off" placeholder="Enter password">
+ <button id="bankLoginBtn" type="button">Sign In</button>
+ <p id="bankLoginStatus" class="bankLoginStatus"></p></div>
+ <small class="bankFinePrint">Bank of Micky will never ask you to send your Micky Bucs to a prince.</small>
  </div>`;
  setTimeout(()=>$("bankPassword")?.focus(),50);
 }
 function bankLogin(){
  const input=$("bankPassword"),status=$("bankLoginStatus");
  const attempt=(input?.value||"").trim().toUpperCase().replace(/\s+/g,"");
- if(attempt===BANK_PASSWORD){
-   sessionStorage.setItem(BANK_SESSION,"yes");
-   bankDashboard();
- }else{
-   if(status)status.textContent="❌ Incorrect password. Access denied.";
-   if(input){input.value="";input.focus()}
- }
+ if(attempt===BANK_PASSWORD){sessionStorage.setItem(BANK_SESSION,"yes");bankDashboard()}
+ else{if(status)status.textContent="❌ Incorrect password. Access denied.";if(input){input.value="";input.focus()}}
 }
-function bonusText(s){
- const week=7*24*60*60*1000;
+function bankBonusText(s){
  if(s.savings<15)return `Save ${15-s.savings} more MB to start qualifying for the weekly bonus.`;
- if(!s.qualifyingSince)return "Your 7-day savings timer will begin once the bank refreshes.";
- const elapsed=Date.now()-s.qualifyingSince;
- if(elapsed<week){
-   const days=Math.ceil((week-elapsed)/(24*60*60*1000));
-   return `${days} day${days===1?"":"s"} remaining until the +2 MB bonus can be claimed.`;
- }
- if(s.lastBonus && Date.now()-s.lastBonus<week)return "This week's savings bonus has already been claimed.";
- return "🎉 Your +2 MB weekly savings bonus is ready to claim.";
+ if(!s.qualifyingSince)return "Savings timer will start now.";
+ const elapsed=Date.now()-Number(s.qualifyingSince);
+ if(elapsed<BANK_WEEK){const d=Math.ceil((BANK_WEEK-elapsed)/86400000);return `${d} day${d===1?"":"s"} remaining until the +2 MB bonus.`}
+ if(s.lastBonus&&Date.now()-Number(s.lastBonus)<BANK_WEEK)return "This week's savings bonus has already been claimed.";
+ return "🎉 Your +2 MB weekly savings bonus is ready.";
 }
 function bankDashboard(message=""){
- const api=window.LizzyBankAPI;
- if(!api){
-   $("browserPage").innerHTML=`<div class="bankLoginPage"><h1>🏦 Bank of Micky</h1><div class="bankNotice">Bank services are loading. Please refresh LizzyOS once.</div></div>`;
+ const s=bankState(),w=bankWallet();
+ $("browserPage").innerHTML=`<div class="bankSite">
+ <div class="bankSiteHeader"><div><small>BANK OF MICKY</small><h2>Good day, Lizzy 👋</h2></div><button id="bankLogout" type="button">Log Out</button></div>
+ <div class="bankAccountCard"><small>AVAILABLE MICKY BUCS</small><div class="bankBigBalance">${w} <span>MB</span></div><div class="bankAccountNo">Everyday Wallet • **** 0002</div></div>
+ <div class="bankGrid"><div class="bankMiniCard"><small>SAVINGS</small><strong>${s.savings} MB</strong><span>Bank of Micky Savings</span></div><div class="bankMiniCard"><small>WEEKLY BONUS</small><strong>+2 MB</strong><span>${bankBonusText(s)}</span></div></div>
+ <div class="bankActions"><button type="button" data-web-bank="deposit">↓ Deposit 5 MB</button><button type="button" data-web-bank="withdraw">↑ Withdraw 5 MB</button><button type="button" data-web-bank="bonus">🎁 Claim Weekly Bonus</button></div>
+ ${message?`<div class="bankWebStatus">${message}</div>`:""}
+ <div class="bankRules"><b>How savings work</b><p>Move 5 MB at a time between your wallet and savings. Keep at least 15 MB saved for 7 days to qualify for the +2 MB weekly bonus.</p></div></div>`;
+}
+async function bankAction(action){
+ let s=bankState(),w=bankWallet();
+ if(action==="deposit"){
+   if(w<5)return bankDashboard("😭 You need at least 5 MB in your wallet to deposit.");
+   w-=5;s.savings+=5;
+   if(s.savings>=15&&!s.qualifyingSince)s.qualifyingSince=Date.now();
+   bankSetWallet(w);bankSave(s);
+   bankDashboard("✅ 5 MB deposited into savings.");
+   bankNotify("Deposit",`5 MB\nWallet: ${w} MB\nSavings: ${s.savings} MB`);
    return;
  }
- const s=api.getState();
- $("browserPage").innerHTML=`<div class="bankSite">
-   <div class="bankSiteHeader"><div><small>BANK OF MICKY</small><h2>Good day, Lizzy 👋</h2></div><button id="bankLogout">Log Out</button></div>
-   <div class="bankAccountCard">
-     <small>AVAILABLE MICKY BUCS</small>
-     <div class="bankBigBalance">${s.wallet} <span>MB</span></div>
-     <div class="bankAccountNo">Everyday Wallet • **** 0002</div>
-   </div>
-   <div class="bankGrid">
-     <div class="bankMiniCard"><small>SAVINGS</small><strong>${s.savings} MB</strong><span>Bank of Micky Savings</span></div>
-     <div class="bankMiniCard"><small>WEEKLY BONUS</small><strong>+2 MB</strong><span>${bonusText(s)}</span></div>
-   </div>
-   <div class="bankActions">
-     <button data-web-bank="deposit">↓ Deposit 5 MB</button>
-     <button data-web-bank="withdraw">↑ Withdraw 5 MB</button>
-     <button data-web-bank="bonus">🎁 Claim Weekly Bonus</button>
-   </div>
-   ${message?`<div class="bankWebStatus">${message}</div>`:""}
-   <div class="bankRules"><b>How savings work</b><p>Move 5 MB at a time between your wallet and savings. Keep at least 15 MB saved for 7 days to qualify for the +2 MB weekly bonus.</p></div>
- </div>`;
-}
-function bankAction(action){
- const api=window.LizzyBankAPI;
- if(!api)return bankDashboard("⚠️ Bank services are unavailable.");
- const before=api.getState();
- if(action==="deposit"){
-   if(before.wallet<5)return bankDashboard("😭 You need at least 5 MB in your wallet to deposit.");
-   api.deposit(); return bankDashboard("✅ 5 MB deposited into savings.");
- }
  if(action==="withdraw"){
-   if(before.savings<5)return bankDashboard("😭 You need at least 5 MB in savings to withdraw.");
-   api.withdraw(); return bankDashboard("✅ 5 MB withdrawn back to your wallet.");
+   if(s.savings<5)return bankDashboard("😭 You need at least 5 MB in savings to withdraw.");
+   s.savings-=5;w+=5;
+   if(s.savings<15)s.qualifyingSince=null;
+   bankSetWallet(w);bankSave(s);
+   bankDashboard("✅ 5 MB withdrawn back to your wallet.");
+   bankNotify("Withdrawal",`5 MB\nWallet: ${w} MB\nSavings: ${s.savings} MB`);
+   return;
  }
  if(action==="bonus"){
-   const week=7*24*60*60*1000;
-   if(before.savings<15||!before.qualifyingSince||Date.now()-before.qualifyingSince<week)
+   if(s.savings<15||!s.qualifyingSince||Date.now()-Number(s.qualifyingSince)<BANK_WEEK)
      return bankDashboard("🔒 Keep at least 15 MB saved for 7 days before claiming the bonus.");
-   if(before.lastBonus&&Date.now()-before.lastBonus<week)
+   if(s.lastBonus&&Date.now()-Number(s.lastBonus)<BANK_WEEK)
      return bankDashboard("⏳ This week's savings bonus has already been claimed.");
-   api.claimBonus(); return bankDashboard("🎉 Weekly savings bonus claimed: +2 MB!");
+   s.lastBonus=Date.now();w+=2;bankSave(s);bankSetWallet(w);
+   bankDashboard("🎉 Weekly savings bonus claimed: +2 MB!");
+   bankNotify("Weekly bonus claimed",`+2 MB\nWallet: ${w} MB\nSavings: ${s.savings} MB`);
  }
 }
 function state(){try{return JSON.parse(localStorage.getItem(VKEY)||'{"helpful":0,"useless":0}')}catch{return {helpful:0,useless:0}}}
