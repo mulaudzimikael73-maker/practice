@@ -24,9 +24,96 @@ function home(){
   <button data-site="lessons"><span>🧠</span><b>Life Lessons with Micky</b><small>Qualifications: Trust Me.</small></button>
  </div></div>`;
 }
+const BANK_SESSION="lizzyBankLoggedInV1";
+const BANK_PASSWORD="MRPERFECT";
 function bank(){
  setAddress("https://bankofmicky.lizzy");
- $("browserPage").innerHTML=`<div class="bankLanding"><div class="bankLogo">🏦</div><h1>Bank of Micky</h1><p>Definitely a legitimate financial institution™</p><div class="bankNotice">🔐 <b>Online Banking is being repackaged here.</b><br>Your existing balance has NOT been changed. The working bank will be connected to this login after this browser test.</div><button data-site="home">Return to Lizzy Search</button></div>`;
+ if(sessionStorage.getItem(BANK_SESSION)==="yes") return bankDashboard();
+ $("browserPage").innerHTML=`<div class="bankLoginPage">
+   <div class="bankLoginBrand">🏦</div>
+   <h1>Bank of Micky</h1>
+   <p class="bankTagline">Private Banking • Definitely Regulated™</p>
+   <div class="bankLoginCard">
+     <label>Client</label><div class="bankClient">Lebone Elizabeth Kganyago</div>
+     <label for="bankPassword">Online Banking Password</label>
+     <input id="bankPassword" type="password" autocomplete="off" placeholder="Enter password">
+     <button id="bankLoginBtn">Sign In</button>
+     <p id="bankLoginStatus" class="bankLoginStatus"></p>
+   </div>
+   <small class="bankFinePrint">Bank of Micky will never ask you to send your Micky Bucs to a prince.</small>
+ </div>`;
+ setTimeout(()=>$("bankPassword")?.focus(),50);
+}
+function bankLogin(){
+ const input=$("bankPassword"),status=$("bankLoginStatus");
+ const attempt=(input?.value||"").trim().toUpperCase().replace(/\s+/g,"");
+ if(attempt===BANK_PASSWORD){
+   sessionStorage.setItem(BANK_SESSION,"yes");
+   bankDashboard();
+ }else{
+   if(status)status.textContent="❌ Incorrect password. Access denied.";
+   if(input){input.value="";input.focus()}
+ }
+}
+function bonusText(s){
+ const week=7*24*60*60*1000;
+ if(s.savings<15)return `Save ${15-s.savings} more MB to start qualifying for the weekly bonus.`;
+ if(!s.qualifyingSince)return "Your 7-day savings timer will begin once the bank refreshes.";
+ const elapsed=Date.now()-s.qualifyingSince;
+ if(elapsed<week){
+   const days=Math.ceil((week-elapsed)/(24*60*60*1000));
+   return `${days} day${days===1?"":"s"} remaining until the +2 MB bonus can be claimed.`;
+ }
+ if(s.lastBonus && Date.now()-s.lastBonus<week)return "This week's savings bonus has already been claimed.";
+ return "🎉 Your +2 MB weekly savings bonus is ready to claim.";
+}
+function bankDashboard(message=""){
+ const api=window.LizzyBankAPI;
+ if(!api){
+   $("browserPage").innerHTML=`<div class="bankLoginPage"><h1>🏦 Bank of Micky</h1><div class="bankNotice">Bank services are loading. Please refresh LizzyOS once.</div></div>`;
+   return;
+ }
+ const s=api.getState();
+ $("browserPage").innerHTML=`<div class="bankSite">
+   <div class="bankSiteHeader"><div><small>BANK OF MICKY</small><h2>Good day, Lizzy 👋</h2></div><button id="bankLogout">Log Out</button></div>
+   <div class="bankAccountCard">
+     <small>AVAILABLE MICKY BUCS</small>
+     <div class="bankBigBalance">${s.wallet} <span>MB</span></div>
+     <div class="bankAccountNo">Everyday Wallet • **** 0002</div>
+   </div>
+   <div class="bankGrid">
+     <div class="bankMiniCard"><small>SAVINGS</small><strong>${s.savings} MB</strong><span>Bank of Micky Savings</span></div>
+     <div class="bankMiniCard"><small>WEEKLY BONUS</small><strong>+2 MB</strong><span>${bonusText(s)}</span></div>
+   </div>
+   <div class="bankActions">
+     <button data-web-bank="deposit">↓ Deposit 5 MB</button>
+     <button data-web-bank="withdraw">↑ Withdraw 5 MB</button>
+     <button data-web-bank="bonus">🎁 Claim Weekly Bonus</button>
+   </div>
+   ${message?`<div class="bankWebStatus">${message}</div>`:""}
+   <div class="bankRules"><b>How savings work</b><p>Move 5 MB at a time between your wallet and savings. Keep at least 15 MB saved for 7 days to qualify for the +2 MB weekly bonus.</p></div>
+ </div>`;
+}
+function bankAction(action){
+ const api=window.LizzyBankAPI;
+ if(!api)return bankDashboard("⚠️ Bank services are unavailable.");
+ const before=api.getState();
+ if(action==="deposit"){
+   if(before.wallet<5)return bankDashboard("😭 You need at least 5 MB in your wallet to deposit.");
+   api.deposit(); return bankDashboard("✅ 5 MB deposited into savings.");
+ }
+ if(action==="withdraw"){
+   if(before.savings<5)return bankDashboard("😭 You need at least 5 MB in savings to withdraw.");
+   api.withdraw(); return bankDashboard("✅ 5 MB withdrawn back to your wallet.");
+ }
+ if(action==="bonus"){
+   const week=7*24*60*60*1000;
+   if(before.savings<15||!before.qualifyingSince||Date.now()-before.qualifyingSince<week)
+     return bankDashboard("🔒 Keep at least 15 MB saved for 7 days before claiming the bonus.");
+   if(before.lastBonus&&Date.now()-before.lastBonus<week)
+     return bankDashboard("⏳ This week's savings bonus has already been claimed.");
+   api.claimBonus(); return bankDashboard("🎉 Weekly savings bonus claimed: +2 MB!");
+ }
 }
 function state(){try{return JSON.parse(localStorage.getItem(VKEY)||'{"helpful":0,"useless":0}')}catch{return {helpful:0,useless:0}}}
 function lesson(){
@@ -57,9 +144,16 @@ $("browserBack")?.addEventListener("click",home);
 $("browserPage")?.addEventListener("click",e=>{
  const site=e.target.closest("[data-site]")?.dataset.site;
  if(site==="bank")bank(); else if(site==="lessons")lesson(); else if(site==="home")home();
+ if(e.target.closest("#bankLoginBtn")) bankLogin();
+ if(e.target.closest("#bankLogout")){sessionStorage.removeItem(BANK_SESSION);bank();}
+ const bankAct=e.target.closest("[data-web-bank]")?.dataset.webBank;
+ if(bankAct)bankAction(bankAct);
  const v=e.target.closest("[data-vote]")?.dataset.vote;
  if(v)vote(v);
  if(e.target.closest("#anotherLesson")){let n=current;while(n===current&&LESSONS.length>1)n=Math.floor(Math.random()*LESSONS.length);current=n;lesson()}
+});
+$("browserPage")?.addEventListener("keydown",e=>{
+ if(e.key==="Enter" && e.target?.id==="bankPassword")bankLogin();
 });
 console.log("LizzyOS Internet: ONLINE", LESSONS.length, "lessons");
 })();

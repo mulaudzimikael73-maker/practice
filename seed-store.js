@@ -210,6 +210,23 @@ document.querySelectorAll("[data-bank]").forEach(b=>b.onclick=()=>bankMove(b.dat
 $("claimSavingsBonus")?.addEventListener("click",claimBonus);
 window.addEventListener("lizzyStoreRefresh",()=>{renderBank();checkAchievements()});
 $("seedStoreIcon")?.addEventListener("click",()=>setTimeout(()=>{renderExtras();renderBank();checkAchievements()},30));
+
+window.LizzyBankAPI={
+  getState(){
+    const b=bank();
+    return {
+      wallet:wallet(),
+      savings:Number(b.savings||0),
+      qualifyingSince:b.qualifyingSince||null,
+      lastBonus:b.lastBonus||null
+    };
+  },
+  deposit(){bankMove("deposit");return this.getState();},
+  withdraw(){bankMove("withdraw");return this.getState();},
+  claimBonus(){claimBonus();return this.getState();},
+  refresh(){renderBank();return this.getState();}
+};
+window.dispatchEvent(new Event("lizzyBankReady"));
 renderExtras();renderBank();renderAchievements();
 })();
 
@@ -535,5 +552,53 @@ window.addEventListener("focus",reconcileSecretShelfDelivery);
 window.addEventListener("lizzyStoreRefresh",()=>setTimeout(reconcileSecretShelfDelivery,80));
 document.getElementById("openWhenIcon")?.addEventListener("click",()=>setTimeout(reconcileSecretShelfDelivery,80));
 document.getElementById("tokenJarIcon")?.addEventListener("click",()=>setTimeout(reconcileSecretShelfDelivery,80));
+})();
+
+
+
+
+/* =========================================================
+   REAL SITE DAY-7 NON-DESTRUCTIVE UPDATE GUARD V3
+   Lizzy has ALREADY claimed Day 7.
+   This module snapshots existing persistent state only.
+   It NEVER resets balances, streaks, rewards, Garden or tokens.
+   ========================================================= */
+(()=>{
+"use strict";
+const SNAP="lizzyRealDay7PreUpdateSnapshotV3";
+if(localStorage.getItem(SNAP))return;
+
+const preservePatterns=[
+ /^lizzy/i,
+ /micky/i,
+ /garden/i,
+ /seed/i,
+ /token/i,
+ /reward/i,
+ /streak/i,
+ /mystery/i,
+ /bank/i,
+ /shelf/i,
+ /letter/i,
+ /extra/i,
+ /coupon/i,
+ /job/i,
+ /achievement/i
+];
+
+const snapshot={
+ createdAt:new Date().toISOString(),
+ note:"Pre-update snapshot after Lizzy claimed Day 7. Read-only backup; no live values changed.",
+ values:{}
+};
+
+for(let i=0;i<localStorage.length;i++){
+ const key=localStorage.key(i);
+ if(key && preservePatterns.some(rx=>rx.test(key))){
+   const value=localStorage.getItem(key);
+   if(value!==null)snapshot.values[key]=value;
+ }
+}
+localStorage.setItem(SNAP,JSON.stringify(snapshot));
 })();
 
