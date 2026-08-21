@@ -3390,3 +3390,60 @@ body.mikaelProfileActive #livingDesktopIcon:after{content:"MIKAEL";position:abso
  #internetWindow .wisdomCard{padding:12px 18px;margin:7px 0 8px}
  #internetWindow .wisdomCard blockquote{font-size:clamp(16px,1.8vw,21px);margin:8px 0}
 }
+
+/* LIFE LESSONS — FORCE CONTROLS + RATING INTO VIEW */
+#internetWindow .browserChrome{
+  height:430px !important;
+  min-height:430px !important;
+}
+#internetWindow .browserPage{
+  height:365px !important;
+  min-height:0 !important;
+  overflow-y:auto !important;
+  padding:10px 18px 12px !important;
+}
+#internetWindow .lifeLessonsPage{
+  max-width:650px !important;
+  padding:0 0 8px !important;
+}
+#internetWindow .wisdomBrand{
+  font-size:18px !important;
+  margin:2px 0 3px !important;
+}
+#internetWindow .wisdomSub{
+  font-size:11px !important;
+  margin:2px 0 6px !important;
+}
+#internetWindow .wisdomCard{
+  padding:10px 16px !important;
+  margin:6px 0 7px !important;
+  min-height:0 !important;
+}
+#internetWindow .wisdomCard small{font-size:10px !important}
+#internetWindow .wisdomCard blockquote{
+  font-size:18px !important;
+  line-height:1.22 !important;
+  margin:7px 0 !important;
+}
+#internetWindow .wisdomCard cite{font-size:11px !important}
+#internetWindow .wisdomButtons{
+  position:static !important;
+  padding:3px 0 !important;
+  margin:0 !important;
+  background:none !important;
+}
+#internetWindow .wisdomButtons button{
+  padding:7px 10px !important;
+  font-size:11px !important;
+}
+#internetWindow .wisdomRating{
+  display:block !important;
+  visibility:visible !important;
+  opacity:1 !important;
+  margin:6px 0 2px !important;
+  padding:7px 10px !important;
+  border-radius:10px !important;
+  background:rgba(255,255,255,.12) !important;
+  font-size:11px !important;
+  line-height:1.2 !important;
+}
