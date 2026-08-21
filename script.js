@@ -2373,7 +2373,7 @@ const scavengerDefs={
  {id:"m7_garden",host:"#lizzyGardenWindow .gardenApp",value:"2",label:"FRAGMENT II — GARDEN"},
  {id:"m7_tokens",host:"#tokenJarWindow .tokenJarApp",value:"9",label:"FRAGMENT III — TOKEN JAR"},
  {id:"m7_letters",host:"#openWhenWindow .windowScroll",value:"6",label:"FRAGMENT IV — OPEN WHEN"},
- {id:"m7_classified",host:"#classifiedArchivePanel, #classifiedFolderWindow .windowScroll, #missionClassifiedEvidenceHost, #secretShelfPanel",value:"1",label:"FRAGMENT V — CLASSIFIED"}
+ {id:"m7_classified",host:"#classifiedArchivePanel, #classifiedFolderWindow .windowScroll, #missionClassifiedEvidenceHost",value:"1",label:"FRAGMENT V — CLASSIFIED"}
 ],
 10:[
  {id:"m10_profile_d",host:"#recycleBinWindow .windowScroll",value:"PROFILE D",label:"RECOVERED PROFILE D",
@@ -2399,7 +2399,7 @@ function renderScavengerStatus(){
 
 function ensureMissionFallbackLocation(id,label,emoji){
  let icon=document.getElementById(id+"Icon"),win=document.getElementById(id+"Window");
- const desktop=document.querySelector(".desktopIcons");
+ const desktop=document.querySelector("#desktopArea")||document.querySelector(".desktopIcons")||document.querySelector("#desktop");
  if(!icon && desktop){
    icon=document.createElement("div");icon.id=id+"Icon";icon.className="desktopIcon missionOnlyClassified";
    icon.innerHTML=`<div class="desktopEmoji">${emoji}</div><span>${label}</span>`;desktop.appendChild(icon);
@@ -2424,26 +2424,40 @@ function ensureOlderMissionLocations(){
 }
 function ensureMissionClassifiedLocation(){
  if(activeMission()!==7)return;
+
+ // If the full Living Desktop already has a permanent CLASSIFIED folder,
+ // Mission 7 uses it. Otherwise create a temporary one on the REAL #desktopArea.
  if(document.querySelector("#classifiedArchivePanel, #classifiedFolderWindow"))return;
+
  let icon=document.getElementById("missionClassifiedIcon");
  let win=document.getElementById("missionClassifiedWindow");
- const desktop=document.querySelector(".desktopIcons");
- if(!icon && desktop){
+ const desktop=document.querySelector("#desktopArea")||document.querySelector("#desktop");
+ if(!desktop)return;
+
+ if(!icon){
    icon=document.createElement("div");
-   icon.id="missionClassifiedIcon";icon.className="desktopIcon missionOnlyClassified";
-   icon.innerHTML='<div class="desktopEmoji">🗃️</div><span>CLASSIFIED</span>';
+   icon.id="missionClassifiedIcon";
+   icon.className="desktopIcon missionOnlyClassified";
+   icon.setAttribute("role","button");
+   icon.setAttribute("tabindex","0");
+   icon.innerHTML='<div class="desktopEmoji">🗃️</div><span>CLASSIFIED</span><small class="missionFolderBadge">MISSION</small>';
    desktop.appendChild(icon);
  }
  if(!win){
    win=document.createElement("div");
-   win.id="missionClassifiedWindow";win.className="desktopWindow hidden";
-   win.innerHTML='<div class="windowTop"><div class="windowDots"><span class="windowCloseDot" id="missionClassifiedClose"></span><span class="windowMinDot"></span><span class="windowMaxDot"></span></div><h2>🗃️ CLASSIFIED</h2></div><div class="windowScroll"><p class="memoryMessage">Temporary mission clearance granted. Recover the security fragment.</p><div id="missionClassifiedEvidenceHost"></div></div><button id="missionClassifiedCloseBtn" class="windowCloseButton">Close</button>';
+   win.id="missionClassifiedWindow";
+   win.className="desktopWindow hidden";
+   win.innerHTML='<div class="windowTop"><div class="windowDots"><span class="windowCloseDot" id="missionClassifiedClose"></span><span class="windowMinDot"></span><span class="windowMaxDot"></span></div><h2>🗃️ CLASSIFIED</h2></div><div class="windowScroll"><p class="memoryMessage">⚠️ Temporary Mission 7 clearance granted.</p><p>One corrupted-desktop fragment has been detected in this folder.</p><div id="missionClassifiedEvidenceHost"></div></div><button id="missionClassifiedCloseBtn" class="windowCloseButton">Close</button>';
    document.body.appendChild(win);
  }
- const open=()=>{win.classList.remove("hidden");setTimeout(injectScavenger,20)};
- icon?.addEventListener("click",open);
- document.getElementById("missionClassifiedClose")?.addEventListener("click",()=>win.classList.add("hidden"));
- document.getElementById("missionClassifiedCloseBtn")?.addEventListener("click",()=>win.classList.add("hidden"));
+ const open=()=>{
+   win.classList.remove("hidden");
+   setTimeout(injectScavenger,30);
+ };
+ icon.onclick=open;
+ icon.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();open();}};
+ document.getElementById("missionClassifiedClose").onclick=()=>win.classList.add("hidden");
+ document.getElementById("missionClassifiedCloseBtn").onclick=()=>win.classList.add("hidden");
 }
 function removeMissionOnlyLocations(){
  ["missionClassified","missionCalendar","missionQuiz","missionTV"].forEach(id=>{

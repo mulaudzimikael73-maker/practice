@@ -3339,3 +3339,9 @@ color:#ff5ca8;
 .missionProgressMini span{display:block}
 .impostorProfiles{display:grid;gap:9px}.impostorProfiles p{padding:10px;border-radius:12px;background:rgba(255,255,255,.08)}
 @keyframes missionEvidencePulse{from{transform:scale(.995);filter:brightness(.95)}to{transform:scale(1);filter:brightness(1.12)}}
+
+/* Mission 7 — guaranteed temporary CLASSIFIED folder */
+#missionClassifiedIcon{position:relative!important;display:flex!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;cursor:pointer!important;z-index:40!important}
+#missionClassifiedIcon .missionFolderBadge{position:absolute;top:-7px;right:-10px;padding:3px 6px;border-radius:999px;background:#fff;color:#3e245d;font-size:9px;font-weight:900;letter-spacing:.4px;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+#missionClassifiedWindow{z-index:10050!important}
+#missionClassifiedEvidenceHost .missionInjectedClue{display:block!important;visibility:visible!important;opacity:1!important}
