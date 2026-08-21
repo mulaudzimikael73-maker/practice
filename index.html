@@ -8,7 +8,7 @@
 
     <title>Lizzy ❤️</title>
 
-    <link rel="stylesheet" href="style.css?v=20260821-bank-selfcontained-final">
+    <link rel="stylesheet" href="style.css?v=20260821-lizzy-mail-2way">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
 
@@ -569,6 +569,7 @@
             <div class="desktopIcon livingDesktopIcon" id="classifiedFolderIcon"><div class="desktopEmoji">🗃️</div><span>CLASSIFIED</span></div>
             <div class="desktopIcon livingDesktopIcon" id="livingDesktopIcon"><div class="desktopEmoji">🖥️</div><span>Living Desktop</span></div>
             <div class="desktopIcon livingDesktopIcon" id="internetIcon"><div class="desktopEmoji">🌐</div><span>Internet</span></div>
+            <div class="desktopIcon livingDesktopIcon" id="lizzyMailIcon"><div class="desktopEmoji">💌</div><span>Lizzy Mail</span><span id="lizzyMailUnreadDot" class="mailDesktopDot hidden">NEW</span></div>
 
             <div class="desktopIcon" id="lizzyGardenIcon">
                 <div class="desktopEmoji">🌷</div>
@@ -961,6 +962,16 @@
  <div class="windowTop"><div class="windowDots"><span class="windowCloseDot" id="classifiedFolderClose"></span><span class="windowMinDot"></span><span class="windowMaxDot"></span></div><h2>🗃️ CLASSIFIED</h2></div>
  <div class="windowScroll"><p class="memoryMessage">🔒 Purchased dossiers and classified files are stored here.</p><div id="classifiedArchivePanel"></div></div>
  <button class="windowCloseButton" id="classifiedFolderCloseBtn">Close</button>
+</div>
+
+<div id="lizzyMailWindow" class="desktopWindow hidden">
+ <div class="windowTop"><div class="windowDots"><span class="windowCloseDot" id="lizzyMailClose"></span><span class="windowMinDot"></span><span class="windowMaxDot"></span></div><h2>💌 Lizzy Mail</h2></div>
+ <div class="lizzyMailApp">
+   <div class="mailAppHeader"><div><small>LIZZYOS PRIVATE MESSAGING</small><h2>Mikael 💜</h2><span id="lizzyMailConnection">Checking for replies…</span></div><button id="lizzyMailRefresh" type="button">↻ Refresh</button></div>
+   <div id="lizzyMailThread" class="lizzyMailThread"><div class="mailEmpty">No messages yet. Say something to Mr Perfect. 💌</div></div>
+   <div class="mailComposer"><textarea id="lizzyMailMessage" maxlength="800" placeholder="Message Mikael..."></textarea><div class="mailComposerBottom"><span id="lizzyMailCount">0 / 800</span><button id="sendLizzyMail" type="button">Send 💗</button></div><div id="lizzyMailStatus"></div></div>
+ </div>
+ <button class="windowCloseButton" id="lizzyMailCloseBtn">Close</button>
 </div>
 
 <div id="internetWindow" class="desktopWindow hidden">
@@ -1440,7 +1451,7 @@ if (window.netlifyIdentity) {
 </div>
 
 <script src="script.js?v=20260821-open-when-telegram-fixed"></script>
-<script src="living-desktop.js?v=20260821-visible-internet-fix"></script>
+<script src="living-desktop.js?v=20260821-lizzy-mail-2way"></script>
 <script src="internet.js?v=20260821-bank-selfcontained-final"></script>
 
 

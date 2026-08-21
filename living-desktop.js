@@ -77,3 +77,85 @@ bind("rareMikael","click",()=>{const e=$("rareMikael");e.classList.add("hidden")
 
 console.log("LizzyOS Living Desktop: ONLINE");
 })();
+
+// ===== LIZZY MAIL 2.0 — TELEGRAM TWO-WAY =====
+(()=>{
+"use strict";
+const $=id=>document.getElementById(id);
+const WORKER=window.LIZZY_TELEGRAM_WORKER_URL||"https://lizzyos-notifications.mulaudzimikael73.workers.dev/";
+const SEEN_KEY="lizzyMailSeenReplyIdsV1";
+let messages=[];
+let pollTimer=null;
+
+function seen(){try{return JSON.parse(localStorage.getItem(SEEN_KEY)||"[]")}catch{return []}}
+function saveSeen(ids){localStorage.setItem(SEEN_KEY,JSON.stringify(ids.slice(-100)))}
+function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function fmt(iso){try{return new Date(iso).toLocaleString([],{dateStyle:"short",timeStyle:"short"})}catch{return ""}}
+
+function render(){
+ const box=$("lizzyMailThread"); if(!box)return;
+ if(!messages.length){box.innerHTML='<div class="mailEmpty">No messages yet. Say something to Mr Perfect. 💌</div>';return}
+ box.innerHTML=messages.map(m=>{
+   const lizzy=`<div class="mailRow lizzy"><div class="mailBubble"><b>Lizzy</b><p>${esc(m.message)}</p><small>${fmt(m.createdAt)}</small></div></div>`;
+   const reply=m.reply?`<div class="mailRow mikael"><div class="mailBubble"><b>Mikael</b><p>${esc(m.reply)}</p><small>${fmt(m.repliedAt)}</small></div></div>`:"";
+   return lizzy+reply;
+ }).join("");
+ box.scrollTop=box.scrollHeight;
+}
+async function loadReplies(markNew=true){
+ try{
+   const r=await fetch(`${WORKER}?mailInbox=1&t=${Date.now()}`,{cache:"no-store"});
+   const d=await r.json();
+   if(!r.ok||!d.success)throw new Error(d.error||"Unable to load mail");
+   messages=Array.isArray(d.messages)?d.messages:[];
+   $("lizzyMailConnection").textContent="Connected to Mikael via Telegram ✓";
+   render();
+   const replyIds=messages.filter(m=>m.reply).map(m=>m.mailId);
+   const old=seen(), fresh=replyIds.filter(id=>!old.includes(id));
+   const open=!$("lizzyMailWindow")?.classList.contains("hidden");
+   if(markNew&&fresh.length&&!open){
+      $("lizzyMailUnreadDot")?.classList.remove("hidden");
+      window.showLivingToast?.("💌 New Lizzy Mail","Mikael replied to your message.");
+   }
+   if(open){saveSeen([...new Set([...old,...replyIds])]);$("lizzyMailUnreadDot")?.classList.add("hidden")}
+ }catch(e){
+   if($("lizzyMailConnection"))$("lizzyMailConnection").textContent="Reply connection unavailable";
+   console.warn("Lizzy Mail load failed",e);
+ }
+}
+async function send(){
+ const input=$("lizzyMailMessage"),status=$("lizzyMailStatus"),btn=$("sendLizzyMail");
+ const message=(input?.value||"").trim();
+ if(!message){status.textContent="Type a message first 💌";return}
+ btn.disabled=true;status.textContent="Sending to Mikael…";
+ try{
+   const r=await fetch(WORKER,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({type:"lizzy_mail",message,source:"LizzyOS"})});
+   const d=await r.json();
+   if(!r.ok||!d.success)throw new Error(d.error||"Send failed");
+   input.value="";$("lizzyMailCount").textContent="0 / 800";status.textContent="Sent to Mikael ✓";
+   await loadReplies(false);
+ }catch(e){status.textContent="❌ Message could not be sent. Try again."}
+ finally{btn.disabled=false}
+}
+function openMail(){
+ $("lizzyMailWindow")?.classList.remove("hidden");
+ $("lizzyMailUnreadDot")?.classList.add("hidden");
+ loadReplies(false).then(()=>{
+   const ids=messages.filter(m=>m.reply).map(m=>m.mailId);saveSeen([...new Set([...seen(),...ids])]);
+ });
+ setTimeout(()=>$("lizzyMailMessage")?.focus(),100);
+}
+function closeMail(){$("lizzyMailWindow")?.classList.add("hidden")}
+
+$("lizzyMailIcon")?.addEventListener("click",openMail);
+$("lizzyMailClose")?.addEventListener("click",closeMail);
+$("lizzyMailCloseBtn")?.addEventListener("click",closeMail);
+$("lizzyMailRefresh")?.addEventListener("click",()=>loadReplies(false));
+$("sendLizzyMail")?.addEventListener("click",send);
+$("lizzyMailMessage")?.addEventListener("input",e=>{$("lizzyMailCount").textContent=`${e.target.value.length} / 800`});
+$("lizzyMailMessage")?.addEventListener("keydown",e=>{if((e.ctrlKey||e.metaKey)&&e.key==="Enter")send()});
+setTimeout(()=>loadReplies(true),1000);
+pollTimer=setInterval(()=>loadReplies(true),15000);
+console.log("Lizzy Mail 2.0: ONLINE");
+})();
+
