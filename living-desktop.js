@@ -78,84 +78,146 @@ bind("rareMikael","click",()=>{const e=$("rareMikael");e.classList.add("hidden")
 console.log("LizzyOS Living Desktop: ONLINE");
 })();
 
-// ===== LIZZY MAIL 2.0 — TELEGRAM TWO-WAY =====
+// ===== DAILY LIZZY MAIL — MIKAEL MESSAGE OF THE DAY =====
 (()=>{
 "use strict";
 const $=id=>document.getElementById(id);
 const WORKER=window.LIZZY_TELEGRAM_WORKER_URL||"https://lizzyos-notifications.mulaudzimikael73.workers.dev/";
-const SEEN_KEY="lizzyMailSeenReplyIdsV1";
-let messages=[];
-let pollTimer=null;
+const MESSAGES=["I hope you have a great day today, Mabebeza 💜", "Good morning, Little Miss Attitude. I hope today is kind to you.", "No question today. I just hope you’re okay 🤍", "I hope something unexpectedly nice happens to you today.", "Just checking in. How are you actually doing today?", "How’s my favourite bully doing today?", "Mikael checking in 🫡 Are we surviving?", "I hope today gives you at least one really good reason to smile.", "How’s your heart today? Serious question for once.", "Just wanted to remind you that somebody is rooting for you today. It’s me unfortunately.", "I hope you slept well, Mabebeza.", "What kind of day are we having: good, manageable, or absolutely criminal?", "How are you feeling today, genuinely?", "You better have smiled at least once today.", "I hope today is soft with you 💜", "No interrogation today. Just have a beautiful day.", "Sending you a little Mikael-approved good luck for today.", "Whatever today looks like, I hope you’re being kind to yourself.", "Reminder: you’re actually doing pretty well.", "I hope you get good food, good news and absolutely no nonsense today.", "If today has been rubbish, I formally request that tomorrow behaves better.", "I hope you know how appreciated you are.", "Just passing through your inbox to say hi 💜", "Good afternoon, Mabebeza. I hope the world has behaved itself today.", "Today’s Lizzy Mail has no agenda. I just wanted to say I hope you’re good.", "Important: if animals could talk, which one would be the rudest?", "Would you rather fight one horse-sized duck or 100 duck-sized horses?", "If you had to be haunted by one celebrity, who are you choosing?", "If your life had a narrator, who would you want narrating it?", "Would you rather have fingers as long as your legs or legs as short as your fingers?", "What animal do you think has absolutely no business existing?", "If aliens landed today, what’s the first thing you’re showing them?", "Would you rather sneeze glitter or cry Coca-Cola?", "If you could permanently delete one word from existence, what would it be?", "What conspiracy theory could you invent right now and convince me is real?", "If vegetables could scream, would you still eat them?", "If Cody could talk for five minutes, what do you think he’d expose first?", "What is the most suspicious-looking animal?", "If you woke up invisible tomorrow, what’s the first thing you’d do?", "If you had to replace your hands with kitchen utensils, what are you picking?", "Which fruit would win in a fight?", "If your phone could expose one thing about you, what would finish you?", "Would you rather have a personal chef or someone who does absolutely all your laundry?", "What’s the stupidest superpower you can think of?", "If you were arrested and nobody told me why, what would I assume you did?", "If you had to live inside one TV show for a month, which one?", "What’s one completely normal thing that you think is actually weird?", "If you became president tomorrow, what ridiculous law are you introducing first?", "What food would you defend with your life?", "Would you accept R1 million if every chair you sat on made a fart noise forever?", "Tell me one thing that happened today that you haven’t told me yet.", "What was the best part of your day?", "What was the most annoying part of your day?", "Did anything make you laugh today?", "What’s one thing you’re looking forward to?", "What would make today 10% better?", "What’s taking up most of your brain today?", "What are you currently craving?", "Tell me something completely random about your day.", "What’s your current mood in exactly three words?", "Rate today out of 10.", "What was today’s biggest plot twist?", "Who annoyed you today? Names. I want names.", "What did you eat today and was it actually good?", "What’s one thing you accomplished today?", "Did you learn anything interesting today?", "What are you avoiding doing right now? 👀", "What’s something you wish you could skip today?", "If you could restart today from one specific moment, which one?", "What’s one tiny thing that made today better?", "What’s the funniest thing you heard today?", "What song describes today?", "What’s your social battery sitting at right now?", "Are you tired-tired or just ‘I don’t want to do anything’ tired?", "What’s one thing you need right now?", "Website inspection 👀 What’s your favourite LizzyOS feature right now?", "What feature on this website do you actually use the most?", "What should Mikael add to LizzyOS next?", "Which Open When letter is your favourite?", "Be honest: have you been wasting your Micky Bucs?", "How many Micky Bucs do you currently have? This is an audit.", "Have you checked your Garden today? 🌷", "What’s your favourite plant in the Garden?", "Have you found anything hidden that you think I don’t know you found? 👀", "What’s the funniest thing on LizzyOS?", "What’s the most useless feature on this website? 😭", "Which feature surprised you the most?", "Have you been inside the CLASSIFIED folder lately? 🤨", "Rate Life Lessons with Micky out of 10. Choose carefully.", "Has Life Lessons with Micky taught you anything useful yet? 😭", "What’s the worst Life Lesson you’ve received so far?", "What’s the best Life Lesson you’ve received?", "Which LizzyOS personality is your favourite?", "What would you change about LizzyOS if you had admin access?", "If you could add one completely ridiculous app to this desktop, what would it be?", "Which game on LizzyOS do you actually enjoy the most?", "Which Crack the Code mission gave you the most trouble?", "Have you checked the Secret Shelf recently? 👀", "What do you think should be sold in the Vault next?", "Do you actually read everything I hide on this website?", "What reward would you add to the Daily Rewards?", "What should be worth 100 Micky Bucs?", "Would you rather get 50 Micky Bucs or one completely unknown Classified File?", "What should I hide somewhere on the website next?", "Give LizzyOS a rating out of 10. Remember who built it.", "Do you miss me or are you going to lie?", "Are you still convinced I’m annoying?", "Current Mikael approval rating: 1–10.", "How much trouble have you caused today?", "Have you bullied anyone today or am I still your primary victim?", "Question for The Bully: what exactly have my knees done to deserve this?", "When exactly did bullying my knees become part of your personality?", "Do you accept that Mr Perfect is an objectively accurate nickname?", "They had a chance to be Mr Perfect. What happened? 😔", "How does it feel knowing you created the Mr Perfect problem yourself?", "Who’s more dramatic between us? Think carefully.", "Who is more annoying between us? There is a correct answer.", "Who wins more arguments?", "Who would survive longer on a deserted island?", "Who would get us kicked out of somewhere first?", "Who is more likely to start laughing during a serious conversation?", "Who is more stubborn?", "Who would survive longer without their phone?", "Who would spend R1,000 faster?", "Who gives better gifts?", "Who plans better dates?", "Who is more competitive?", "Who is secretly softer?", "Who would win a roast battle?", "Who apologises first after an argument?", "Good morning, Four Eyes 👓 How’s life?", "Specsy, what are we complaining about today?", "Mabebeza, what’s on your mind?", "Little Miss Attitude, please submit today’s attitude report.", "Mother of the Year, how are the children? 😭", "Jaden Smith, give me one unnecessarily deep thought for today.", "The OPP has entered Lizzy Mail. What chaos are we causing today?", "Blind as a Bat, have you managed to find the reply button? 😭", "The Bully, please provide evidence that you’ve been nice to me recently.", "Four Eyes, what are we seeing today? Hopefully everything.", "Specsy 🤓 what’s today's outfit rating?", "Mabebeza 💜 what are we eating if I magically appear with food?", "Jaden Smith, what does the current political and economic state of the world mean to you?", "Mother of the Year, please confirm all imaginary dependants have been fed.", "Little Miss Attitude, what has caused today's attitude?", "The OPP, are we behaving today or absolutely not?", "Four Eyes 👓 quick question: glasses on or glasses off right now?", "Specsy has been summoned. Please report to Lizzy Mail immediately.", "Mabebeza, I have nothing to ask. I just wanted to use Mabebeza.", "Blind as a Bat 😭 what’s something obvious you completely missed recently?", "Pasta or burger tonight? You have five seconds.", "If I arrived with food right now, what should I bring?", "What’s your current dream meal?", "What’s one food everybody loves that you think is overrated?", "What’s your most controversial food opinion?", "Would you rather have unlimited pasta or unlimited tequila?", "What is the superior pasta shape?", "If you could only eat one takeaway for a month, what are you choosing?", "What’s your emergency comfort meal?", "If dessert was mandatory tonight, what are we getting?", "What’s the best flavour of ice cream? This answer matters.", "Would you rather give up sweets for a month or tequila for a month?", "What food could you eat three days in a row without complaining?", "If I gave you R500 specifically for food right now, where are you going?", "What’s something you’ve been craving for absolutely no reason?", "Random reminder: you’re actually stunning.", "No question. I just wanted you to know I appreciate you.", "I hope you know you make me laugh a lot.", "I hope you get to feel properly proud of yourself today.", "You deserve more credit for the things you manage quietly.", "No jokes for this one: I genuinely hope you're doing okay.", "You make ordinary conversations much more entertaining.", "Just reminding you that I’m always in your corner.", "I hope you know you can always talk to me when something’s bothering you.", "You’re pretty cool sometimes. Don't let this message inflate your ego.", "I hope whatever you're worrying about gets a little easier.", "You’re allowed to have a slow day. Mr Perfect has approved it.", "Just wanted to say I’m glad I know you 💜", "I hope you see yourself a little more kindly today.", "There are a lot of things I admire about you. Unfortunately, I cannot tell you all at once because your ego.", "You looked beautiful today. I haven't seen you, but statistically I'm comfortable making that claim.", "If today feels heavy, you don't have to solve everything today.", "I hope future Lizzy looks back and is proud of current Lizzy.", "No need to reply to this one. I just hope you have a really good day.", "Just a reminder that you matter to people more than you probably realise.", "What’s something you could give a 20-minute presentation on with zero preparation?", "What’s one thing you wish you were ridiculously good at?", "What’s something you want to do at least once this year?", "If money wasn't involved, what would your dream day look like?", "What’s one place you really want to visit?", "What’s a song you wish you could hear for the first time again?", "Which fictional character would you genuinely be friends with?", "What’s one childhood thing you wish you could experience again?", "What’s something small that instantly improves your mood?", "If you could master one skill overnight, what would it be?", "What’s a random memory that always makes you laugh?", "What’s something you've changed your opinion about recently?", "If we had an entire day with absolutely no responsibilities, what are we doing?", "Tell me one thing about you that you think I still don't know.", "Final question from Mr Perfect: what should tomorrow’s Lizzy Mail ask you? 👀"];
+const STATE_KEY="lizzyDailyMailV1";
+const REPLY_KEY="lizzyDailyMailRepliesV1";
 
-function seen(){try{return JSON.parse(localStorage.getItem(SEEN_KEY)||"[]")}catch{return []}}
-function saveSeen(ids){localStorage.setItem(SEEN_KEY,JSON.stringify(ids.slice(-100)))}
-function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
-function fmt(iso){try{return new Date(iso).toLocaleString([],{dateStyle:"short",timeStyle:"short"})}catch{return ""}}
+function localDay(){
+  return new Date().toLocaleDateString("en-CA");
+}
+function read(k,f){try{const v=localStorage.getItem(k);return v===null?f:JSON.parse(v)}catch{return f}}
+function write(k,v){localStorage.setItem(k,JSON.stringify(v))}
+
+function chooseMessageForToday(){
+  const today=localDay();
+  let state=read(STATE_KEY,null);
+  if(state?.day===today && Number.isInteger(state.index) && MESSAGES[state.index]) return state;
+
+  const previousIndex=Number.isInteger(state?.index)?state.index:-1;
+
+  // Deterministic per date, but avoid immediately repeating yesterday.
+  let hash=0;
+  for(const ch of today) hash=(hash*31+ch.charCodeAt(0))>>>0;
+  let index=hash%MESSAGES.length;
+  if(index===previousIndex) index=(index+1)%MESSAGES.length;
+
+  state={day:today,index};
+  write(STATE_KEY,state);
+  return state;
+}
+
+function todayMessage(){
+  const s=chooseMessageForToday();
+  return {...s,message:MESSAGES[s.index]};
+}
+
+function alreadyReplied(){
+  const replies=read(REPLY_KEY,{});
+  return replies[localDay()]||null;
+}
 
 function render(){
- const box=$("lizzyMailThread"); if(!box)return;
- if(!messages.length){box.innerHTML='<div class="mailEmpty">No messages yet. Say something to Mr Perfect. 💌</div>';return}
- box.innerHTML=messages.map(m=>{
-   const lizzy=`<div class="mailRow lizzy"><div class="mailBubble"><b>Lizzy</b><p>${esc(m.message)}</p><small>${fmt(m.createdAt)}</small></div></div>`;
-   const reply=m.reply?`<div class="mailRow mikael"><div class="mailBubble"><b>Mikael</b><p>${esc(m.reply)}</p><small>${fmt(m.repliedAt)}</small></div></div>`:"";
-   return lizzy+reply;
- }).join("");
- box.scrollTop=box.scrollHeight;
+  const d=todayMessage();
+  if($("dailyMailMessage")) $("dailyMailMessage").textContent=d.message;
+  if($("dailyMailDate")) $("dailyMailDate").textContent=new Date().toLocaleDateString([],{weekday:"long",day:"numeric",month:"long",year:"numeric"});
+  const prev=alreadyReplied();
+  if(prev){
+    $("dailyMailReply").value=prev.reply;
+    $("dailyMailReply").disabled=true;
+    $("sendDailyMailReply").disabled=true;
+    $("dailyMailStatus").textContent="✓ Reply sent to Mikael today";
+    $("dailyMailReplyCount").textContent=`${prev.reply.length} / 800`;
+  }else{
+    $("dailyMailReply").disabled=false;
+    $("sendDailyMailReply").disabled=false;
+    $("dailyMailStatus").textContent="";
+  }
 }
-async function loadReplies(markNew=true){
- try{
-   const r=await fetch(`${WORKER}?mailInbox=1&t=${Date.now()}`,{cache:"no-store"});
-   const d=await r.json();
-   if(!r.ok||!d.success)throw new Error(d.error||"Unable to load mail");
-   messages=Array.isArray(d.messages)?d.messages:[];
-   $("lizzyMailConnection").textContent="Connected to Mikael via Telegram ✓";
-   render();
-   const replyIds=messages.filter(m=>m.reply).map(m=>m.mailId);
-   const old=seen(), fresh=replyIds.filter(id=>!old.includes(id));
-   const open=!$("lizzyMailWindow")?.classList.contains("hidden");
-   if(markNew&&fresh.length&&!open){
-      $("lizzyMailUnreadDot")?.classList.remove("hidden");
-      window.showLivingToast?.("💌 New Lizzy Mail","Mikael replied to your message.");
-   }
-   if(open){saveSeen([...new Set([...old,...replyIds])]);$("lizzyMailUnreadDot")?.classList.add("hidden")}
- }catch(e){
-   if($("lizzyMailConnection"))$("lizzyMailConnection").textContent="Reply connection unavailable";
-   console.warn("Lizzy Mail load failed",e);
- }
+
+async function sendReply(){
+  const d=todayMessage();
+  const input=$("dailyMailReply");
+  const status=$("dailyMailStatus");
+  const button=$("sendDailyMailReply");
+  const reply=(input?.value||"").trim();
+
+  if(!reply){
+    status.textContent="Type a reply first 💌";
+    return;
+  }
+
+  button.disabled=true;
+  status.textContent="Sending to Mikael…";
+
+  try{
+    const response=await fetch(WORKER,{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        type:"💌 LIZZY MAIL — DAILY REPLY",
+        title:`Lizzy replied to Daily Mail #${d.index+1}`,
+        details:
+          `TODAY'S MESSAGE FROM MIKAEL:\n${d.message}\n\n`+
+          `LIZZY'S REPLY:\n${reply}\n\n`+
+          `DATE: ${new Date().toLocaleString()}`,
+        meta:{
+          event:"daily_lizzy_mail_reply",
+          message_number:d.index+1,
+          daily_message:d.message,
+          reply:reply,
+          day:d.day
+        },
+        source:"LizzyOS"
+      })
+    });
+
+    if(!response.ok) throw new Error("Telegram notification failed");
+
+    const replies=read(REPLY_KEY,{});
+    replies[d.day]={reply,sentAt:new Date().toISOString(),messageIndex:d.index};
+    write(REPLY_KEY,replies);
+
+    status.textContent="✓ Sent to Mikael";
+    input.disabled=true;
+    button.disabled=true;
+  }catch(err){
+    console.warn(err);
+    status.textContent="❌ Could not send. Try again.";
+    button.disabled=false;
+  }
 }
-async function send(){
- const input=$("lizzyMailMessage"),status=$("lizzyMailStatus"),btn=$("sendLizzyMail");
- const message=(input?.value||"").trim();
- if(!message){status.textContent="Type a message first 💌";return}
- btn.disabled=true;status.textContent="Sending to Mikael…";
- try{
-   const r=await fetch(WORKER,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({type:"lizzy_mail",message,source:"LizzyOS"})});
-   const d=await r.json();
-   if(!r.ok||!d.success)throw new Error(d.error||"Send failed");
-   input.value="";$("lizzyMailCount").textContent="0 / 800";status.textContent="Sent to Mikael ✓";
-   await loadReplies(false);
- }catch(e){status.textContent="❌ Message could not be sent. Try again."}
- finally{btn.disabled=false}
-}
+
 function openMail(){
- $("lizzyMailWindow")?.classList.remove("hidden");
- $("lizzyMailUnreadDot")?.classList.add("hidden");
- loadReplies(false).then(()=>{
-   const ids=messages.filter(m=>m.reply).map(m=>m.mailId);saveSeen([...new Set([...seen(),...ids])]);
- });
- setTimeout(()=>$("lizzyMailMessage")?.focus(),100);
+  render();
+  $("lizzyMailWindow")?.classList.remove("hidden");
+  $("lizzyMailTodayDot")?.classList.add("hidden");
+  setTimeout(()=>$("dailyMailReply")?.focus(),100);
 }
-function closeMail(){$("lizzyMailWindow")?.classList.add("hidden")}
+function closeMail(){ $("lizzyMailWindow")?.classList.add("hidden"); }
 
 $("lizzyMailIcon")?.addEventListener("click",openMail);
 $("lizzyMailClose")?.addEventListener("click",closeMail);
 $("lizzyMailCloseBtn")?.addEventListener("click",closeMail);
-$("lizzyMailRefresh")?.addEventListener("click",()=>loadReplies(false));
-$("sendLizzyMail")?.addEventListener("click",send);
-$("lizzyMailMessage")?.addEventListener("input",e=>{$("lizzyMailCount").textContent=`${e.target.value.length} / 800`});
-$("lizzyMailMessage")?.addEventListener("keydown",e=>{if((e.ctrlKey||e.metaKey)&&e.key==="Enter")send()});
-setTimeout(()=>loadReplies(true),1000);
-pollTimer=setInterval(()=>loadReplies(true),15000);
-console.log("Lizzy Mail 2.0: ONLINE");
+$("sendDailyMailReply")?.addEventListener("click",sendReply);
+$("dailyMailReply")?.addEventListener("input",e=>{
+  $("dailyMailReplyCount").textContent=`${e.target.value.length} / 800`;
+});
+$("dailyMailReply")?.addEventListener("keydown",e=>{
+  if((e.ctrlKey||e.metaKey)&&e.key==="Enter")sendReply();
+});
+
+// Show TODAY badge once per new calendar day until opened.
+const viewedKey="lizzyDailyMailViewedV1";
+if(localStorage.getItem(viewedKey)!==localDay()){
+  $("lizzyMailTodayDot")?.classList.remove("hidden");
+}
+$("lizzyMailIcon")?.addEventListener("click",()=>localStorage.setItem(viewedKey,localDay()));
+
+console.log("Lizzy Mail Daily Messages: ONLINE", MESSAGES.length, "messages");
 })();
 
