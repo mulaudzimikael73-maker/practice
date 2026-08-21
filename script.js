@@ -2277,12 +2277,9 @@ const missions={
 {q:`<h3>Stage 4 — Agent Intercept</h3><div class="cipher">YMJWJ NX F XJHWJY</div><p>Caesar was here. Five steps separate you from the truth. After decoding it, decode <b>19 • 8 • 1 • 4 • 15 • 23</b>. Add the A=1 values of the first and last letters of that word.</p>`,a:["42"],hint:"The second word is SHADOW. S + W."},
 {q:`<h3>Stage 5 — Final Security Protocol</h3><div class="cipher">23 | 30 | 4 | 6 | 6 | 11</div><p>Use THE GREATEST, THE PAST and THE IDENTITY. Identity comes first, the past follows, greatness waits at the end. Then calculate (First × Second) + Third.</p>`,a:["67"],hint:"11, 4, 23 → (11×4)+23."}
 ]},
-2:{title:"🗂️ Missing Mr Perfect File",reward:"MR_PERFECT.exe RESTORED",stages:[
-{q:`<h3>Fragment I — Trash Retrieval</h3><p>The first fragment is somewhere LizzyOS sends things that should probably never be mentioned again.</p><p>What desktop folder should Agent Yelizaveta investigate?</p>`,a:["recycle bin","recyclebin"],hint:"Where deleted things go."},
-{q:`<h3>Fragment II — Why Does This Exist?</h3><p>Find the folder that explains why this ridiculous operating system exists.</p><p>Enter the folder name.</p>`,a:["read me","readme"],hint:"You normally open this before using something."},
-{q:`<h3>Fragment III — Emergency Comedy</h3><p>Which Open When letter activates the LizzyOS Emergency Comedy Protocol?</p>`,a:["need to laugh","laugh","open when you need to laugh"],hint:"😂"},
-{q:`<h3>Fragment IV — Colour Authentication</h3><p>Mr Perfect's favourite colour provides the final authentication fragment. Enter the colour.</p>`,a:["purple"],hint:"It's also in the Mikhail Quiz."},
-{q:`<h3>Reconstruct the Missing File</h3><div class="cipher">P • E • R • 16 &nbsp;&nbsp; + &nbsp;&nbsp; ???FECT</div><p>One fragment is pretending to be a number. A=1. Reconstruct the word LizzyOS associates with Mikael.</p>`,a:["mr perfect","perfect"],hint:"16=P. Think of Mikael's completely unbiased nickname."}
+2:{title:"🗂️ Missing Mr Perfect File",reward:"MR_PERFECT.exe RESTORED",scavenger:true,stages:[
+{q:`<h3>Live Recovery Hunt</h3><p>Four fragments of the missing Mr Perfect file have been injected into the real desktop.</p><p>Search <b>Recycle Bin → Read Me → Open When → Mikhail Quiz</b> and click each glowing MISSION EVIDENCE card.</p><div id="crackScavengerStatus"></div>`,a:["ready"],auto:true,hint:"The evidence only exists while this mission is active."},
+{q:`<h3>Reconstruct the Missing File</h3><p>All four recovered fragments are required before reconstruction.</p><div id="crackScavengerStatus"></div><div class="cipher">P • E • R • 16 &nbsp;&nbsp; + &nbsp;&nbsp; ???FECT</div><p>One fragment is pretending to be a number. A=1. Reconstruct the word LizzyOS associates with Mikael.</p>`,a:["mr perfect","perfect"],requires:["m2_recycle","m2_readme","m2_laugh","m2_colour"],hint:"16=P. Think of the nickname Lizzy gave Mikael."}
 ]},
 3:{title:"📺 TV Multiverse Meltdown",reward:"MULTIVERSE RESTORED",stages:[
 {q:`<h3>Universe 1 — The Office</h3><p>Which paper company does Michael Scott manage a branch of?</p>`,a:["dunder mifflin"],hint:"Scranton's finest paper company."},
@@ -2298,12 +2295,9 @@ const missions={
 {q:`<h3>Space</h3><p>Which planet is the Red Planet? Convert its name with A=1, then subtract the smallest value from the largest.</p>`,a:["18"],hint:"MARS → 19−1."},
 {q:`<h3>Final Knowledge Lock</h3><div class="cipher">36 • 79 • 19 • 18</div><p>Use only the last digit of each fragment.</p>`,a:["6998"],hint:"6 • 9 • 9 • 8."}
 ]},
-5:{title:"❤️ LizzyOS Treasure Hunt",reward:"LEGENDARY TREASURE UNLOCKED",stages:[
-{q:`<h3>Key I — Postponement Department 📅</h3><p>Where does Lizzy keep postponing Mr Perfect?</p>`,a:["calendar","calender"],hint:"Dates and times live here."},
-{q:`<h3>Key II — Forbidden Names 🗑️</h3><p>Which banned nickname is specifically about her eyesight?</p>`,a:["four eyes","4 eyes"],hint:"👓"},
-{q:`<h3>Key III — Television Intercept 📺</h3><p>“That's what she said!” belongs to which show? Enter the number of letters in OFFICE.</p>`,a:["6"],hint:"OFFICE has 6 letters."},
-{q:`<h3>Key IV — Mr Perfect Authentication 🏀</h3><p>Enter the number Mikael wore on his high-school basketball jersey.</p>`,a:["4"],hint:"High-school jersey number."},
-{q:`<h3>Final Treasure Lock</h3><div class="cipher">🌸 + 💌 + 🫂</div><p>Which Open When letter does the final symbol point to?</p>`,a:["need a hug","hug","open when you need a hug"],hint:"🫂"}
+5:{title:"❤️ LizzyOS Treasure Hunt",reward:"LEGENDARY TREASURE UNLOCKED",scavenger:true,stages:[
+{q:`<h3>Maximum-Security Treasure Hunt</h3><p>Five keys have been hidden across the real LizzyOS desktop.</p><p>Search <b>Calendar → Recycle Bin → TV/Read Me → Mikhail Quiz → Open When</b> and recover every glowing key.</p><div id="crackScavengerStatus"></div>`,a:["ready"],auto:true,hint:"Each key appears only while this mission is active."},
+{q:`<h3>Final Treasure Lock</h3><p>Recover all five keys first.</p><div id="crackScavengerStatus"></div><div class="cipher">CALENDAR • FOUR EYES • 6 • 4 • NEED A HUG</div><p>Enter the numeric lock made from: letters in CALENDAR • letters in EYES • TV key • jersey key • letters in HUG.</p>`,a:["84243"],requires:["m5_calendar","m5_recycle","m5_tv","m5_jersey","m5_hug"],hint:"8 • 4 • 6 • 4 • 3"}
 ]},
 6:{title:"🕴️ Operation Miknak",reward:"MIKNАK ARCHIVE AUTHENTICATED",stages:[
 {q:`<h3>Question 1 — Childhood Identifier</h3><div class="cipher">MI _ NA _</div><p>Enter Mikael's full childhood nickname.</p>`,a:["miknak"],hint:"Two missing letters are the same."},
@@ -2361,12 +2355,25 @@ const missions={
 };
 
 const scavengerDefs={
+2:[
+ {id:"m2_recycle",host:"#recycleBinWindow .windowScroll",value:"RECYCLE BIN",label:"FRAGMENT I — TRASH RETRIEVAL"},
+ {id:"m2_readme",host:"#readMeWindow .windowScroll",value:"READ ME",label:"FRAGMENT II — ORIGIN FILE"},
+ {id:"m2_laugh",host:"#openWhenWindow .windowScroll",value:"NEED TO LAUGH",label:"FRAGMENT III — EMERGENCY COMEDY"},
+ {id:"m2_colour",host:"#mikhailQuizWindow .windowScroll, #quizWindow .windowScroll, #missionQuizEvidenceHost, #readMeWindow .windowScroll",value:"PURPLE",label:"FRAGMENT IV — COLOUR AUTHENTICATION"}
+],
+5:[
+ {id:"m5_calendar",host:"#calendarWindow .windowScroll, #missionCalendarEvidenceHost",value:"CALENDAR",label:"KEY I — POSTPONEMENT DEPARTMENT"},
+ {id:"m5_recycle",host:"#recycleBinWindow .windowScroll",value:"FOUR EYES",label:"KEY II — FORBIDDEN NAME"},
+ {id:"m5_tv",host:"#tvWindow .windowScroll, #missionTVEvidenceHost, #readMeWindow .windowScroll",value:"THE OFFICE → 6",label:"KEY III — TV INTERCEPT"},
+ {id:"m5_jersey",host:"#mikhailQuizWindow .windowScroll, #quizWindow .windowScroll, #missionQuizEvidenceHost, #readMeWindow .windowScroll",value:"HIGH-SCHOOL JERSEY → 4",label:"KEY IV — MR PERFECT AUTH"},
+ {id:"m5_hug",host:"#openWhenWindow .windowScroll",value:"NEED A HUG",label:"KEY V — FINAL SYMBOL"}
+],
 7:[
  {id:"m7_bank",host:"#mickyBankPanel",value:"4",label:"FRAGMENT I — BANK"},
  {id:"m7_garden",host:"#lizzyGardenWindow .gardenApp",value:"2",label:"FRAGMENT II — GARDEN"},
  {id:"m7_tokens",host:"#tokenJarWindow .tokenJarApp",value:"9",label:"FRAGMENT III — TOKEN JAR"},
  {id:"m7_letters",host:"#openWhenWindow .windowScroll",value:"6",label:"FRAGMENT IV — OPEN WHEN"},
- {id:"m7_classified",host:"#classifiedArchivePanel, #classifiedFolderWindow .windowScroll, #secretShelfPanel",value:"1",label:"FRAGMENT V — CLASSIFIED"}
+ {id:"m7_classified",host:"#classifiedArchivePanel, #classifiedFolderWindow .windowScroll, #missionClassifiedEvidenceHost, #secretShelfPanel",value:"1",label:"FRAGMENT V — CLASSIFIED"}
 ],
 10:[
  {id:"m10_profile_d",host:"#recycleBinWindow .windowScroll",value:"PROFILE D",label:"RECOVERED PROFILE D",
@@ -2382,7 +2389,7 @@ function markFound(id){
 }
 function activeMission(){return Number(localStorage.getItem(ACTIVE)||0)}
 function setActive(id){localStorage.setItem(ACTIVE,String(id));injectScavenger()}
-function clearActive(){localStorage.removeItem(ACTIVE);document.querySelectorAll(".missionInjectedClue").forEach(x=>x.remove())}
+function clearActive(){localStorage.removeItem(ACTIVE);document.querySelectorAll(".missionInjectedClue").forEach(x=>x.remove());removeMissionOnlyLocations()}
 
 function renderScavengerStatus(){
  const box=$("crackScavengerStatus");if(!box)return;
@@ -2390,8 +2397,64 @@ function renderScavengerStatus(){
  box.innerHTML=defs.length?`<div class="missionProgressMini">${defs.map(d=>`<span>${f[d.id]?"✅":"⬜"} ${d.label}</span>`).join("")}</div>`:"";
 }
 
+function ensureMissionFallbackLocation(id,label,emoji){
+ let icon=document.getElementById(id+"Icon"),win=document.getElementById(id+"Window");
+ const desktop=document.querySelector(".desktopIcons");
+ if(!icon && desktop){
+   icon=document.createElement("div");icon.id=id+"Icon";icon.className="desktopIcon missionOnlyClassified";
+   icon.innerHTML=`<div class="desktopEmoji">${emoji}</div><span>${label}</span>`;desktop.appendChild(icon);
+ }
+ if(!win){
+   win=document.createElement("div");win.id=id+"Window";win.className="desktopWindow hidden";
+   win.innerHTML=`<div class="windowTop"><div class="windowDots"><span class="windowCloseDot"></span><span class="windowMinDot"></span><span class="windowMaxDot"></span></div><h2>${emoji} ${label}</h2></div><div class="windowScroll"><p class="memoryMessage">Temporary mission access.</p><div id="${id}EvidenceHost"></div></div><button class="windowCloseButton">Close</button>`;
+   document.body.appendChild(win);
+ }
+ icon.onclick=()=>{win.classList.remove("hidden");setTimeout(injectScavenger,20)};
+ win.querySelector(".windowCloseDot").onclick=()=>win.classList.add("hidden");
+ win.querySelector(".windowCloseButton").onclick=()=>win.classList.add("hidden");
+}
+function ensureOlderMissionLocations(){
+ const a=activeMission();
+ if(a===5){
+   if(!document.querySelector("#calendarWindow"))ensureMissionFallbackLocation("missionCalendar","Calendar","📅");
+   if(!document.querySelector("#mikhailQuizWindow, #quizWindow"))ensureMissionFallbackLocation("missionQuiz","Mikhail Quiz","🧠");
+   if(!document.querySelector("#tvWindow"))ensureMissionFallbackLocation("missionTV","TV","📺");
+ }
+ if(a===2 && !document.querySelector("#mikhailQuizWindow, #quizWindow"))ensureMissionFallbackLocation("missionQuiz","Mikhail Quiz","🧠");
+}
+function ensureMissionClassifiedLocation(){
+ if(activeMission()!==7)return;
+ if(document.querySelector("#classifiedArchivePanel, #classifiedFolderWindow"))return;
+ let icon=document.getElementById("missionClassifiedIcon");
+ let win=document.getElementById("missionClassifiedWindow");
+ const desktop=document.querySelector(".desktopIcons");
+ if(!icon && desktop){
+   icon=document.createElement("div");
+   icon.id="missionClassifiedIcon";icon.className="desktopIcon missionOnlyClassified";
+   icon.innerHTML='<div class="desktopEmoji">🗃️</div><span>CLASSIFIED</span>';
+   desktop.appendChild(icon);
+ }
+ if(!win){
+   win=document.createElement("div");
+   win.id="missionClassifiedWindow";win.className="desktopWindow hidden";
+   win.innerHTML='<div class="windowTop"><div class="windowDots"><span class="windowCloseDot" id="missionClassifiedClose"></span><span class="windowMinDot"></span><span class="windowMaxDot"></span></div><h2>🗃️ CLASSIFIED</h2></div><div class="windowScroll"><p class="memoryMessage">Temporary mission clearance granted. Recover the security fragment.</p><div id="missionClassifiedEvidenceHost"></div></div><button id="missionClassifiedCloseBtn" class="windowCloseButton">Close</button>';
+   document.body.appendChild(win);
+ }
+ const open=()=>{win.classList.remove("hidden");setTimeout(injectScavenger,20)};
+ icon?.addEventListener("click",open);
+ document.getElementById("missionClassifiedClose")?.addEventListener("click",()=>win.classList.add("hidden"));
+ document.getElementById("missionClassifiedCloseBtn")?.addEventListener("click",()=>win.classList.add("hidden"));
+}
+function removeMissionOnlyLocations(){
+ ["missionClassified","missionCalendar","missionQuiz","missionTV"].forEach(id=>{
+   document.getElementById(id+"Icon")?.remove();
+   document.getElementById(id+"Window")?.remove();
+ });
+}
 function injectScavenger(){
  document.querySelectorAll(".missionInjectedClue").forEach(x=>x.remove());
+ ensureMissionClassifiedLocation();
+ ensureOlderMissionLocations();
  const id=activeMission(),defs=scavengerDefs[id]||[],f=found();
  defs.forEach(d=>{
    if(f[d.id])return;
@@ -2408,8 +2471,15 @@ function injectScavenger(){
 function menu(){
  $("crackMenu").classList.remove("hidden");$("crackPlay").classList.add("hidden");$("crackComplete").classList.add("hidden");
 }
+function resetMissionEvidence(id){
+ const defs=scavengerDefs[Number(id)]||[],f=found();
+ defs.forEach(d=>delete f[d.id]);
+ write(FOUND,f);
+}
 function start(id){
- mid=Number(id);stage=0;attempts=0;crackLog=[];setActive(mid);
+ mid=Number(id);stage=0;attempts=0;crackLog=[];
+ resetMissionEvidence(mid);
+ setActive(mid);
  $("crackMenu").classList.add("hidden");$("crackComplete").classList.add("hidden");$("crackPlay").classList.remove("hidden");render();
 }
 function render(){
