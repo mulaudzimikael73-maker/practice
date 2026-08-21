@@ -3766,7 +3766,7 @@ function startChallenge(){
 }
 function open(){$("mikaelDatabaseWindow")?.classList.remove("hidden");render()}
 function close(){$("mikaelDatabaseWindow")?.classList.add("hidden")}
-$("mikaelDatabaseIcon")?.addEventListener("click",open);$("mikaelDatabaseClose")?.addEventListener("click",close);$("mikaelDatabaseCloseBtn")?.addEventListener("click",close);
+$("mikaelDatabaseIcon")?.addEventListener("click",open);$("openMikaelDatabase")?.addEventListener("click",open);$("mikaelDatabaseClose")?.addEventListener("click",close);$("mikaelDatabaseCloseBtn")?.addEventListener("click",close);
 document.querySelectorAll("[data-mikael-tab]").forEach(b=>b.onclick=()=>{document.querySelectorAll("[data-mikael-tab]").forEach(x=>x.classList.remove("active"));b.classList.add("active");tab=b.dataset.mikaelTab;render()});
 window.MikaelDatabaseV2={open,render};
 })();

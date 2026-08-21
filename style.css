@@ -3615,3 +3615,26 @@ body.mikaelProfileActive #livingDesktopIcon:after{content:"MIKAEL";position:abso
 .mikaelChallengeTop{display:flex;justify-content:space-between;align-items:center}.mikaelQuestion,.mikaelChallengeResult{margin-top:14px;padding:18px;border-radius:16px;background:rgba(255,255,255,.07);text-align:center}.mikaelQuestion>div{display:grid;grid-template-columns:1fr 1fr;gap:8px}.mikaelQuestion button{margin:0}.mikaelChallengeResult>span{font-size:45px}.mikaelChallengeResult h3{font-size:30px;margin:5px}
 .mikaelFiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.mikaelFiles article.restricted{filter:saturate(.35);border-style:dashed}
 @media(max-width:650px){.mikaelProfileGrid,.mikaelQuoteGrid,.mikaelFiles{grid-template-columns:1fr}.mikaelHero{grid-template-columns:auto 1fr}.mikaelOnline{grid-column:1/-1}.mikaelDatabaseWindow{width:94vw!important;height:82vh!important}}
+
+/* DESKTOP CLEANUP V2.1 */
+.desktopIcons,.desktop-icons,#desktopIcons{
+ max-width:1040px!important;
+ padding:24px 28px 82px!important;
+ grid-template-columns:repeat(6,minmax(92px,1fr))!important;
+ gap:22px 14px!important;
+}
+.desktopIcons>.desktopIcon,.desktop-icons>.desktopIcon,#desktopIcons>.desktopIcon{
+ width:112px!important;min-height:102px!important;gap:5px!important;margin:0!important;
+}
+.desktopIcons>.desktopIcon .desktopEmoji,.desktop-icons>.desktopIcon .desktopEmoji,#desktopIcons>.desktopIcon .desktopEmoji{
+ width:72px!important;min-height:70px!important;font-size:58px!important;
+}
+.desktopIcons>.desktopIcon>span,.desktop-icons>.desktopIcon>span,#desktopIcons>.desktopIcon>span{
+ margin-top:4px!important;font-size:11px!important;line-height:1.2!important;
+}
+#rareMikael.rareCatchable{position:fixed!important;right:auto!important;bottom:auto!important;transform:none!important;animation:none!important;z-index:250000!important;pointer-events:auto!important;cursor:pointer!important;touch-action:manipulation!important;user-select:none!important}
+#rareMikael.rareCatchable *{pointer-events:none!important}
+#rareMikael.rareCaught{animation:mikaelCaughtPop .4s ease-out!important;pointer-events:none!important}
+@keyframes mikaelCaughtPop{50%{transform:scale(1.28) rotate(5deg)}100%{transform:scale(.8);opacity:0}}
+@media(max-width:900px){.desktopIcons,.desktop-icons,#desktopIcons{grid-template-columns:repeat(5,minmax(86px,1fr))!important}}
+@media(max-width:650px){.desktopIcons,.desktop-icons,#desktopIcons{grid-template-columns:repeat(4,minmax(70px,1fr))!important;padding:20px 12px 78px!important;gap:18px 8px!important}.desktopIcons>.desktopIcon,.desktop-icons>.desktopIcon,#desktopIcons>.desktopIcon{width:82px!important;min-height:90px!important}.desktopIcons>.desktopIcon .desktopEmoji,.desktop-icons>.desktopIcon .desktopEmoji,#desktopIcons>.desktopIcon .desktopEmoji{width:60px!important;min-height:60px!important;font-size:50px!important}}

@@ -72,8 +72,11 @@ bind("toggleMikaelProfile","click",()=>{localStorage.setItem(MP,localStorage.get
 
 // RARE MIKAEL
 const msgs=["Caught me. Your prize is me saying you're stunning. 😌","Justice for Lizzy! Don't get used to it.","Rare Mikael sighting confirmed. 📸","Little Miss Attitude has excellent reflexes.","I was never here. — Mr Perfect","Fine. You win this one. Screenshot it."];
-let timer;function schedule(){clearTimeout(timer);timer=setTimeout(()=>Math.random()<.35?spawn():schedule(),(4+Math.random()*6)*60000)}function spawn(){const e=$("rareMikael");if(!e)return;e.classList.remove("hidden");e.style.top=(90+Math.random()*Math.max(120,innerHeight-260))+"px";e.classList.remove("rareRun");void e.offsetWidth;e.classList.add("rareRun");setTimeout(()=>{e.classList.add("hidden");schedule()},10500)}
-bind("rareMikael","click",()=>{const e=$("rareMikael");e.classList.add("hidden");toast("🕴🏾 "+msgs[Math.floor(Math.random()*msgs.length)]);schedule()});schedule();
+let timer,hideTimer,rareVisible=false;
+function schedule(){clearTimeout(timer);timer=setTimeout(()=>Math.random()<.35?spawn():schedule(),(4+Math.random()*6)*60000)}
+function spawn(){const e=$("rareMikael");if(!e)return;clearTimeout(hideTimer);rareVisible=true;e.classList.remove("hidden","rareRun");e.classList.add("rareCatchable");e.style.top=(90+Math.random()*Math.max(120,innerHeight-260))+"px";e.style.left=(18+Math.random()*Math.max(80,innerWidth-170))+"px";hideTimer=setTimeout(()=>{if(!rareVisible)return;rareVisible=false;e.classList.add("hidden");e.classList.remove("rareCatchable");schedule()},10500)}
+function catchRare(ev){if(ev){ev.preventDefault();ev.stopPropagation()}const e=$("rareMikael");if(!e||!rareVisible)return;rareVisible=false;clearTimeout(hideTimer);e.classList.add("rareCaught");toast("🕴🏾 "+msgs[Math.floor(Math.random()*msgs.length)]);setTimeout(()=>{e.classList.add("hidden");e.classList.remove("rareCaught","rareCatchable");schedule()},420)}
+bind("rareMikael","click",catchRare);bind("rareMikael","pointerdown",catchRare);schedule();
 
 console.log("LizzyOS Living Desktop: ONLINE");
 })();
