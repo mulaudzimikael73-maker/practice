@@ -1954,67 +1954,8 @@ document.addEventListener("keydown", (event) => {
 
 // =========================================================
 // OPEN WHEN — LETTER OPEN NOTIFICATIONS
-// Each letter has its own dedicated Formspree endpoint.
+// Telegram notification handling is now in letter-notifications.js.
 // =========================================================
-(() => {
-    const letterNotificationEndpoints = {
-        miss: "https://formspree.io/f/maewjoqo",
-        amazing: "https://formspree.io/f/xqpzbqeb",
-        laugh: "https://formspree.io/f/xwlebovg",
-        hug: "https://formspree.io/f/xyegjwkd"
-    };
-
-    const letterNames = {
-        miss: "❤️ Open When You Miss Me",
-        amazing: "🌸 Open When You Need Reminding How Amazing You Are",
-        laugh: "😂 Open When You Need to Laugh",
-        hug: "🫂 Open When You Need a Hug"
-    };
-
-    function currentLizzyPersona() {
-        // Use the site's current persona if it is exposed in one of the common locations.
-        const personaEl =
-            document.querySelector("[data-current-persona]") ||
-            document.getElementById("currentPersona") ||
-            document.getElementById("personaStatus");
-        return personaEl?.dataset?.currentPersona ||
-               personaEl?.textContent?.trim() ||
-               localStorage.getItem("lizzyPersona") ||
-               localStorage.getItem("selectedPersona") ||
-               "Lizzy";
-    }
-
-    function notifyLetterOpened(key) {
-        const endpoint = letterNotificationEndpoints[key];
-        if (!endpoint) return;
-
-        const openedAt = new Date();
-        fetch(endpoint, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            },
-            body: JSON.stringify({
-                _subject: `💌 LizzyOS Letter Opened — ${letterNames[key]}`,
-                event: "Open When letter opened",
-                letter: letterNames[key],
-                letter_key: key,
-                persona: currentLizzyPersona(),
-                opened_at: openedAt.toLocaleString(),
-                opened_at_iso: openedAt.toISOString()
-            })
-        }).catch(err => console.warn("Letter-open notification could not be sent:", err));
-    }
-
-    // The existing site already handles opening the letters.
-    // This listener only sends the notification and does not alter that behavior.
-    document.querySelectorAll("#letterList [data-letter]").forEach(button => {
-        button.addEventListener("click", () => {
-            notifyLetterOpened(button.dataset.letter);
-        });
-    });
-})();
 
 // WOULD MIKAEL RATHER 40Q
 (()=>{const bank=[{"a": "🏀 Basketball", "b": "⚽ Soccer", "correct": "A", "n": 1}, {"a": "❄️ Winter", "b": "☀️ Summer", "correct": "A", "n": 2}, {"a": "🍕 Pizza", "b": "🍔 Burgers", "correct": "B", "n": 3}, {"a": "📺 The Office", "b": "🚔 Brooklyn Nine-Nine", "correct": "A", "n": 4}, {"a": "🦇 Batman", "b": "🕷️ Spider-Man", "correct": "A", "n": 5}, {"a": "🎤 Dave", "b": "🎤 J. Cole", "correct": "B", "n": 6}, {"a": "🎵 Kwesta", "b": "🎵 Sjava", "correct": "A", "n": 7}, {"a": "⚽ Liverpool", "b": "☠️ Orlando Pirates", "correct": "A", "n": 8}, {"a": "🏠 Movies at home", "b": "🌃 Night out", "correct": "A", "n": 9}, {"a": "✈️ 6 months in Dagestan", "b": "🌍 5 different countries", "correct": "A", "n": 10}, {"a": "💰 R1 million now", "b": "💼 Dream job for life", "correct": "B", "n": 11}, {"a": "🏀 Meet Michael Jordan", "b": "🔥 1v1 Steph Curry", "correct": "B", "n": 12}, {"a": "🍽️ Fancy restaurant", "b": "🎳 Fun activity date", "correct": "B", "n": 13}, {"a": "📞 Call all night", "b": "💬 Text all day", "correct": "A", "n": 14}, {"a": "🎁 Thoughtful gift", "b": "❤️ Thoughtful message", "correct": "A", "n": 15}, {"a": "🎳 Lose to Lizzy at bowling", "b": "😩 Admit Lizzy was right", "correct": "A", "n": 16}, {"a": "😂 Lizzy roasts you all day", "b": "👔 Lizzy chooses your outfits for a week", "correct": "A", "n": 17}, {"a": "👓 Never say Four Eyes", "b": "😏 Never say Little Miss Attitude", "correct": "A", "n": 18}, {"a": "🔎 Lizzy reads your search history", "b": "📸 Lizzy reads your camera roll", "correct": "B", "n": 19}, {"a": "💕 One huge romantic surprise", "b": "🌸 Lots of little surprises", "correct": "B", "n": 20}, {"a": "🌅 Wake up really early", "b": "🌙 Stay up ridiculously late", "correct": "B", "n": 21}, {"a": "🏀 Courtside NBA Finals tickets", "b": "⚽ Champions League Final tickets", "correct": "B", "n": 22}, {"a": "🎤 J. Cole concert", "b": "🎤 Dave concert", "correct": "BOTH", "n": 23}, {"a": "🦇 Live in Gotham for a month", "b": "🏀 Train with Michael Jordan for a week", "correct": "B", "n": 24}, {"a": "🎮 Gaming night", "b": "🎬 Movie marathon", "correct": "B", "n": 25}, {"a": "🍳 Breakfast date", "b": "🍽️ Dinner date", "correct": "A", "n": 26}, {"a": "🏖️ Beach holiday", "b": "🏔️ Mountain holiday", "correct": "B", "n": 27}, {"a": "💵 Extremely rich but unknown", "b": "🌟 Famous but comfortably wealthy", "correct": "A", "n": 28}, {"a": "🏆 Liverpool win Champions League", "b": "🏆 Orlando Pirates win CAF Champions League", "correct": "B", "n": 29}, {"a": "🏀 Michael Jordan in his prime", "b": "🏀 Steph Curry in his prime", "correct": "A", "n": 30}, {"a": "😂 Make Lizzy laugh", "b": "😳 Make Lizzy blush", "correct": "B", "n": 31}, {"a": "💌 Long paragraph from Lizzy", "b": "🎁 Surprise from Lizzy", "correct": "BOTH", "n": 32}, {"a": "🫂 30-minute cuddle", "b": "📞 3-hour late-night call", "correct": "BOTH", "n": 33}, {"a": "🎳 Beat Lizzy badly at bowling", "b": "😏 Let her win and never tell her", "correct": "B", "n": 34}, {"a": "🪪 Full government name for a week", "b": "👑 Only Mr Perfect for a week", "correct": "B", "n": 35}, {"a": "👀 Lizzy knows everything you've said about her", "b": "📱 Lizzy gets your unlocked phone for 30 minutes", "correct": "B", "n": 36}, {"a": "💕 Plan the entire date yourself", "b": "👸 Let Lizzy plan everything", "correct": "B", "n": 37}, {"a": "💋 One perfect kiss", "b": "🫂 Unlimited hugs for a week", "correct": "BOTH", "n": 38}, {"a": "😤 Win every argument against Lizzy", "b": "🥺 Never have Lizzy annoyed with you again", "correct": "A", "n": 39}, {"a": "❤️ Hear Lizzy say “I miss you”", "b": "👀 Hear Lizzy admit “You were right”", "correct": "A", "n": 40}],$=x=>document.getElementById(x);let round=[],i=0,score=0,answerLog=[];
