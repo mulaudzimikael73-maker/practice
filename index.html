@@ -8,7 +8,7 @@
 
     <title>Lizzy ❤️</title>
 
-    <link rel="stylesheet" href="style.css?v=20260821-telegram-unified">
+    <link rel="stylesheet" href="style.css?v=20260821-visible-internet-fix">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
 
@@ -565,9 +565,10 @@
 
             <div class="desktopIcon" id="wouldMikaelRatherIcon"><div class="desktopEmoji">🤔</div><span>Would Mikael Rather?</span></div>
             <div class="desktopIcon" id="ticTacToeIcon"><div class="desktopEmoji">❌⭕</div><span>Tic-Tac-Toe</span></div>
-            <div class="desktopIcon" id="crackCodeIcon"><div class="desktopEmoji">🔐</div><div class="desktopIcon" id="internetIcon"><div class="desktopEmoji">🌐</div><span>Internet</span></div><span>Crack the Code</span></div>
+            <div class="desktopIcon" id="crackCodeIcon"><div class="desktopEmoji">🔐</div><span>Crack the Code</span></div>
             <div class="desktopIcon livingDesktopIcon" id="classifiedFolderIcon"><div class="desktopEmoji">🗃️</div><span>CLASSIFIED</span></div>
             <div class="desktopIcon livingDesktopIcon" id="livingDesktopIcon"><div class="desktopEmoji">🖥️</div><span>Living Desktop</span></div>
+            <div class="desktopIcon livingDesktopIcon" id="internetIcon"><div class="desktopEmoji">🌐</div><span>Internet</span></div>
 
             <div class="desktopIcon" id="lizzyGardenIcon">
                 <div class="desktopEmoji">🌷</div>
@@ -962,6 +963,15 @@
  <button class="windowCloseButton" id="classifiedFolderCloseBtn">Close</button>
 </div>
 
+<div id="internetWindow" class="desktopWindow hidden">
+ <div class="windowTop"><div class="windowDots"><span class="windowCloseDot" id="internetClose"></span><span class="windowMinDot"></span><span class="windowMaxDot"></span></div><h2>🌐 Internet</h2></div>
+ <div class="browserChrome">
+  <div class="browserNav"><button id="browserBack">←</button><button id="browserHome">⌂</button><div id="browserAddress">lizzy://home</div></div>
+  <div id="browserPage" class="browserPage"></div>
+ </div>
+ <button class="windowCloseButton" id="internetCloseBtn">Close</button>
+</div>
+
 <div id="livingDesktopWindow" class="desktopWindow hidden">
  <div class="windowTop"><div class="windowDots"><span class="windowCloseDot" id="livingDesktopClose"></span><span class="windowMinDot"></span><span class="windowMaxDot"></span></div><h2>🖥️ Living Desktop</h2></div>
  <div class="windowScroll">
@@ -978,23 +988,6 @@
 
 <div id="livingStickyNote" class="livingStickyNote hidden"><div class="stickyHandle"><span>📝 NOTE FROM MIKAEL</span><button id="stickyHide">×</button></div><div id="stickyMessage"></div></div>
 <div id="rareMikael" class="rareMikael hidden"><span>🕴🏾</span><small>MIKAEL</small></div>
-
-
-<div id="internetWindow" class="desktopWindow hidden">
- <div class="windowTop">
-  <div class="windowDots"><span class="windowCloseDot" id="internetClose"></span><span class="windowMinDot"></span><span class="windowMaxDot"></span></div>
-  <h2>🌐 Internet</h2>
- </div>
- <div class="browserChrome">
-   <div class="browserNav">
-    <button id="browserBack">←</button>
-    <button id="browserHome">⌂</button>
-    <div id="browserAddress">lizzy://home</div>
-   </div>
-   <div id="browserPage" class="browserPage"></div>
- </div>
- <button class="windowCloseButton" id="internetCloseBtn">Close</button>
-</div>
 
 <div id="crackCodeWindow" class="desktopWindow hidden">
 <div class="windowTop"><div class="windowDots"><span class="windowCloseDot" id="crackCodeClose"></span><span class="windowMinDot"></span><span class="windowMaxDot"></span></div><h2>🔐 Crack the Code</h2></div>
@@ -1447,7 +1440,8 @@ if (window.netlifyIdentity) {
 </div>
 
 <script src="script.js?v=20260821-living-p1-fixed"></script>
-<script src="living-desktop.js?v=20260821-telegram-unified"></script>
+<script src="living-desktop.js?v=20260821-visible-internet-fix"></script>
+<script src="internet.js?v=20260821-visible-internet-fix"></script>
 
 
         <div id="seedStoreWindow" data-build="20260818-locked-final" class="desktopWindow hidden seedStoreWindow">
