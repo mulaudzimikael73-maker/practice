@@ -8,7 +8,7 @@
 
     <title>Lizzy ❤️</title>
 
-    <link rel="stylesheet" href="style.css?v=20260821-classified-fragment-fix">
+    <link rel="stylesheet" href="style.css?v=20260821-living-p1">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
 
@@ -566,6 +566,8 @@
             <div class="desktopIcon" id="wouldMikaelRatherIcon"><div class="desktopEmoji">🤔</div><span>Would Mikael Rather?</span></div>
             <div class="desktopIcon" id="ticTacToeIcon"><div class="desktopEmoji">❌⭕</div><span>Tic-Tac-Toe</span></div>
             <div class="desktopIcon" id="crackCodeIcon"><div class="desktopEmoji">🔐</div><span>Crack the Code</span></div>
+            <div class="desktopIcon livingDesktopIcon" id="classifiedFolderIcon"><div class="desktopEmoji">🗃️</div><span>CLASSIFIED</span></div>
+            <div class="desktopIcon livingDesktopIcon" id="mikaelProfileIcon"><div class="desktopEmoji">🕴🏾</div><span>Mikael Profile</span></div>
 
             <div class="desktopIcon" id="lizzyGardenIcon">
                 <div class="desktopEmoji">🌷</div>
@@ -952,6 +954,27 @@
 
             <button id="closeTicTacToe" class="windowCloseButton">Close</button>
         </div>
+
+<!-- LIVING DESKTOP PHASE 1 -->
+<div id="classifiedFolderWindow" class="desktopWindow hidden">
+ <div class="windowTop"><div class="windowDots"><span class="windowCloseDot" id="classifiedFolderClose"></span><span class="windowMinDot"></span><span class="windowMaxDot"></span></div><h2>🗃️ CLASSIFIED</h2></div>
+ <div class="windowScroll"><p class="memoryMessage">🔒 Purchased dossiers and classified files are stored here.</p><div id="classifiedArchivePanel"></div></div>
+ <button class="windowCloseButton" id="classifiedFolderCloseBtn">Close</button>
+</div>
+<div id="mikaelProfileWindow" class="desktopWindow hidden">
+ <div class="windowTop"><div class="windowDots"><span class="windowCloseDot" id="mikaelProfileClose"></span><span class="windowMinDot"></span><span class="windowMaxDot"></span></div><h2>🕴🏾 Mikael Profile</h2></div>
+ <div class="windowScroll"><div class="mikaelProfileCard"><div class="mikaelProfileAvatar">😌</div><h3>MIKAEL.OS</h3><p>Sweet when appropriate. Menacing when necessary. Completely unbiased about Mr Perfect.</p><div id="mikaelProfileStatus"></div><button class="quizPrimary" id="toggleMikaelProfile">Activate Mikael Profile</button></div></div>
+ <button class="windowCloseButton" id="mikaelProfileCloseBtn">Close</button>
+</div>
+<div id="livingStickyNote" class="livingStickyNote"><div class="stickyHandle">📝 NOTE FROM MIKAEL <button id="stickyNext">↻</button></div><div id="stickyMessage"></div></div>
+<div id="livingWidgets">
+ <div class="livingWidget"><b>🌤️ Mood</b><span id="moodDisplay">Not selected</span><button id="moodOpen">Choose</button></div>
+ <div class="livingWidget"><b>⏳ Countdown</b><span id="countdownDisplay">No countdown yet</span><button id="countdownOpen">Set</button></div>
+</div>
+<div class="livingModal hidden" id="moodModal"><div class="livingModalCard"><h3>🌤️ Mood of the Day</h3><p>Choose once and LizzyOS remembers today's mood.</p><div class="moodChoices" id="moodChoices"></div><button id="moodClose">Close</button></div></div>
+<div class="livingModal hidden" id="countdownModal"><div class="livingModalCard"><h3>⏳ Special Countdown</h3><input id="countdownName" placeholder="What are we counting down to?"><input id="countdownDate" type="datetime-local"><button id="countdownSave">Save</button><button id="countdownClear">Clear</button><button id="countdownClose">Close</button></div></div>
+<div id="rareMikael" class="rareMikael hidden"><span>🕴🏾</span><small>MIKAEL</small></div>
+
 <div id="crackCodeWindow" class="desktopWindow hidden">
 <div class="windowTop"><div class="windowDots"><span class="windowCloseDot" id="crackCodeClose"></span><span class="windowMinDot"></span><span class="windowMaxDot"></span></div><h2>🔐 Crack the Code</h2></div>
 <div class="windowScroll crackApp">
@@ -1402,7 +1425,7 @@ if (window.netlifyIdentity) {
   <button id="closeUnreleasedLetter" class="windowCloseButton">Close Classified File</button>
 </div>
 
-<script src="script.js?v=20260821-classified-fragment-fix"></script>
+<script src="script.js?v=20260821-living-p1"></script>
 
 
         <div id="seedStoreWindow" data-build="20260818-locked-final" class="desktopWindow hidden seedStoreWindow">
