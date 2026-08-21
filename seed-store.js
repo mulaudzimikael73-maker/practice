@@ -602,3 +602,163 @@ for(let i=0;i<localStorage.length;i++){
 localStorage.setItem(SNAP,JSON.stringify(snapshot));
 })();
 
+
+
+/* =========================================================
+   MIKAEL REVERSE TOKENS — DAILY REWARD INTEGRATION
+   Progress-safe: uses existing lizzyMikaelTokensV1 and never
+   alters Lizzy's tokens, balances, Garden, streak or claims.
+   ========================================================= */
+(()=>{
+"use strict";
+const $=id=>document.getElementById(id);
+const KEY="lizzyMikaelTokensV1";
+const WORKER=window.LIZZY_TELEGRAM_WORKER_URL||"https://lizzyos-notifications.mulaudzimikael73.workers.dev/";
+const read=(k,f)=>{try{const v=localStorage.getItem(k);return v===null?f:JSON.parse(v)}catch{return f}};
+const write=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
+const DEFS={
+ "Reverse Token — Lizzy Owes Mikael a Monster":{emoji:"🥤",desc:"Mikael may redeem this for one Monster from Lizzy."},
+ "Reverse Token — Mikael Gets a Hug":{emoji:"🫂",desc:"Mikael may redeem this for one proper hug from Lizzy."},
+ "Reverse Token — Mikael Gets Dessert":{emoji:"🍦",desc:"Mikael may redeem this for one dessert or ice-cream treat from Lizzy."},
+ "Reverse Token — Mikael Wins the Argument":{emoji:"👑",desc:"Mikael wins one harmless argument."},
+ "Reverse Token — Mikael Controls the Aux":{emoji:"🎵",desc:"Mikael chooses the music for one reasonable trip or session."},
+ "Reverse Token — Mikael Picks the Movie":{emoji:"🎬",desc:"Mikael chooses the movie for one movie night."},
+ "UNO Reverse":{emoji:"🔄",desc:"Mikael has the power: one playful, reasonable request for Lizzy."}
+};
+function state(){const t=read(KEY,{inventory:{},history:[]});t.inventory=t.inventory||{};t.history=Array.isArray(t.history)?t.history:[];return t}
+function save(t){write(KEY,t)}
+function award(name,source="Daily Reward"){
+ if(!DEFS[name])return;
+ const t=state();t.inventory[name]=Number(t.inventory[name]||0)+1;
+ t.history.push({type:"earned",token:name,source,at:new Date().toISOString()});save(t);render();
+}
+async function notifyRedeem(name,d){
+ try{await fetch(WORKER,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
+  type:"🔄 MIKAEL REVERSE TOKEN REDEEMED",
+  title:`${d.emoji} ${name}`,
+  details:`Mikael redeemed a Reverse Token.\\nToken: ${name}\\nWhat Lizzy owes: ${d.desc}\\nRedeemed: ${new Date().toLocaleString()}`,
+  meta:{event:"mikael_reverse_token_redeemed",token:name},source:"LizzyOS"
+ })})}catch(e){}
+}
+function redeem(name){
+ const d=DEFS[name],t=state();if(!d||Number(t.inventory[name]||0)<1)return;
+ if(!confirm(`Redeem ${name}?\\n\\n${d.desc}`))return;
+ t.inventory[name]--;t.history.push({type:"redeemed",token:name,at:new Date().toISOString()});save(t);
+ localStorage.setItem("lizzyMikaelPendingRedemptionV1",JSON.stringify({name,emoji:d.emoji,desc:d.desc,at:new Date().toISOString()}));
+ notifyRedeem(name,d);render();
+ alert(`🔄 REVERSE TOKEN REDEEMED\\n\\n${d.emoji} ${name}\\n\\nLizzyOS will show Lizzy this redemption notice.`);
+}
+function render(){
+ const win=$("tokenJarWindow");if(!win)return;
+ const host=win.querySelector(".windowScroll")||win;
+ let box=$("mikaelTokensBox");
+ if(!box){box=document.createElement("section");box.id="mikaelTokensBox";host.appendChild(box)}
+ const t=state(),rows=Object.entries(t.inventory).filter(([n,c])=>Number(c)>0&&DEFS[n]);
+ box.innerHTML=`<h3>🕴️ Mikael's Tokens</h3><p class="mikaelTokenIntro">Reverse Tokens belong to Mikael. Lizzy can see what he owns, but only Mikael can redeem them from his private panel.</p>${rows.length?rows.map(([n,c])=>{const d=DEFS[n];return `<div class="tokenCard mikaelReverseCard"><div class="tokenCardEmoji">${d.emoji}</div><div><strong>${n}</strong><p>${d.desc}</p></div><div class="tokenCount">×${c}</div></div>`}).join(""):`<div class="memoryMessage">Mikael has no Reverse Tokens yet. Daily Rewards may unfortunately change that. 😭</div>`}`;
+}
+window.addEventListener("lizzyDailyRewardClaimed",e=>{
+ const r=e.detail?.reward;if(r?.[0]==="REVERSE TOKEN")award(r[2],"Daily Reward");
+});
+function showPending(){
+ const raw=localStorage.getItem("lizzyMikaelPendingRedemptionV1");if(!raw)return;
+ try{
+  const p=JSON.parse(raw);
+  setTimeout(()=>alert(`🚨 MIKAEL HAS REDEEMED A REVERSE TOKEN\\n\\n${p.emoji} ${p.name}\\n\\n${p.desc}\\n\\nUnfortunately, this is legally binding according to absolutely nobody.`),500);
+  localStorage.removeItem("lizzyMikaelPendingRedemptionV1");
+ }catch(e){}
+}
+$("tokenJarIcon")?.addEventListener("click",()=>setTimeout(render,100));
+setTimeout(showPending,800);
+setTimeout(render,900);
+window.LizzyMikaelTokens={render,award};
+})();
+
+
+
+/* ===== PRIVATE MIKAEL REVERSE TOKEN CONTROL ===== */
+(()=>{
+"use strict";
+const $=id=>document.getElementById(id);
+const SESSION="lizzyMikaelRedeemSessionV1";
+const ACCESS="MRPERFECT";
+const KEY="lizzyMikaelTokensV1";
+const WORKER=window.LIZZY_TELEGRAM_WORKER_URL||"https://lizzyos-notifications.mulaudzimikael73.workers.dev/";
+const DEFS={
+ "Reverse Token — Lizzy Owes Mikael a Monster":{emoji:"🥤",desc:"Lizzy owes Mikael one Monster."},
+ "Reverse Token — Mikael Gets a Hug":{emoji:"🫂",desc:"Lizzy owes Mikael one proper hug."},
+ "Reverse Token — Mikael Gets Dessert":{emoji:"🍦",desc:"Lizzy owes Mikael one dessert or ice-cream treat."},
+ "Reverse Token — Mikael Wins the Argument":{emoji:"👑",desc:"Mikael wins one harmless argument."},
+ "Reverse Token — Mikael Controls the Aux":{emoji:"🎵",desc:"Mikael controls the music for one reasonable trip or session."},
+ "Reverse Token — Mikael Picks the Movie":{emoji:"🎬",desc:"Mikael chooses the movie for one movie night."},
+ "UNO Reverse":{emoji:"🔄",desc:"Mikael gets one playful, reasonable request."}
+};
+const read=(k,f)=>{try{const v=localStorage.getItem(k);return v===null?f:JSON.parse(v)}catch{return f}};
+const write=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
+function state(){const t=read(KEY,{inventory:{},history:[]});t.inventory=t.inventory||{};t.history=Array.isArray(t.history)?t.history:[];return t}
+function save(t){write(KEY,t)}
+function open(){
+ $("mikaelRedeemWindow")?.classList.remove("hidden");
+ if(sessionStorage.getItem(SESSION)==="yes") dashboard(); else loginView();
+}
+function close(){$("mikaelRedeemWindow")?.classList.add("hidden")}
+function loginView(){
+ $("mikaelRedeemLogin")?.classList.remove("hidden");$("mikaelRedeemDashboard")?.classList.add("hidden");
+ if($("mikaelRedeemPassword"))$("mikaelRedeemPassword").value="";
+ if($("mikaelRedeemLoginStatus"))$("mikaelRedeemLoginStatus").textContent="";
+ setTimeout(()=>$("mikaelRedeemPassword")?.focus(),80);
+}
+function login(){
+ const attempt=($("mikaelRedeemPassword")?.value||"").trim().toUpperCase().replace(/\s+/g,"");
+ if(attempt===ACCESS){sessionStorage.setItem(SESSION,"yes");dashboard()}
+ else{$("mikaelRedeemLoginStatus").textContent="❌ Access denied.";$("mikaelRedeemPassword").value="";$("mikaelRedeemPassword").focus()}
+}
+function dashboard(){
+ $("mikaelRedeemLogin")?.classList.add("hidden");$("mikaelRedeemDashboard")?.classList.remove("hidden");render();
+}
+function render(){
+ const host=$("mikaelPrivateTokenList");if(!host)return;
+ const t=state(),rows=Object.entries(t.inventory).filter(([n,c])=>Number(c)>0&&DEFS[n]);
+ host.innerHTML=rows.length?rows.map(([n,c])=>{const d=DEFS[n];return `<div class="mikaelPrivateToken"><div class="mikaelPrivateEmoji">${d.emoji}</div><div><strong>${n}</strong><p>${d.desc}</p><small>Available: ×${c}</small></div><button type="button" data-private-redeem="${encodeURIComponent(n)}">Redeem 🔄</button></div>`}).join(""):`<div class="memoryMessage">No Mikael Reverse Tokens available yet.</div>`;
+ host.querySelectorAll("[data-private-redeem]").forEach(b=>b.onclick=()=>redeem(decodeURIComponent(b.dataset.privateRedeem)));
+}
+async function telegram(name,d,remaining){
+ try{await fetch(WORKER,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
+  type:"🔄 MIKAEL REVERSE TOKEN REDEEMED",title:`${d.emoji} ${name}`,
+  details:`Mikael redeemed a Reverse Token.\\nToken: ${name}\\nLizzy owes: ${d.desc}\\nRemaining: ${remaining}\\nRedeemed: ${new Date().toLocaleString()}`,
+  meta:{event:"mikael_reverse_token_redeemed",token:name,remaining},source:"Mikael Token Control"
+ })})}catch(e){}
+}
+function redeem(name){
+ const d=DEFS[name],t=state(),count=Number(t.inventory[name]||0);if(!d||count<1)return;
+ if(!confirm(`MIKAEL REVERSE TOKEN\\n\\nRedeem: ${name}?\\n\\n${d.desc}`))return;
+ t.inventory[name]=count-1;
+ t.history.push({type:"redeemed",token:name,at:new Date().toISOString(),via:"Mikael Private Control"});
+ save(t);
+ const pending=read("lizzyMikaelPendingRedemptionsV2",[]);
+ pending.push({name,emoji:d.emoji,desc:d.desc,remaining:t.inventory[name],at:new Date().toISOString()});
+ write("lizzyMikaelPendingRedemptionsV2",pending.slice(-20));
+ telegram(name,d,t.inventory[name]);
+ window.LizzyMikaelTokens?.render?.();
+ render();
+ alert(`✅ REDEEMED\\n\\n${d.emoji} ${name}\\n\\nRemaining: ×${t.inventory[name]}\\n\\nLizzyOS notification queued.`);
+}
+function showPendingToLizzy(){
+ const pending=read("lizzyMikaelPendingRedemptionsV2",[]);
+ if(!pending.length)return;
+ const p=pending[0];
+ setTimeout(()=>alert(`🚨 MIKAEL HAS REDEEMED A REVERSE TOKEN\\n\\n${p.emoji} ${p.name}\\n\\n${p.desc}\\n\\nRemaining in Mikael's Jar: ×${p.remaining}\\n\\nUnfortunately, this is legally binding according to absolutely nobody.`),700);
+ write("lizzyMikaelPendingRedemptionsV2",pending.slice(1));
+}
+// Hidden access: Ctrl + Alt + M. No visible Mikael admin icon on Lizzy's desktop.
+document.addEventListener("keydown",e=>{
+ if(e.ctrlKey&&e.altKey&&e.key.toLowerCase()==="m"){e.preventDefault();open()}
+});
+$("mikaelRedeemLoginBtn")?.addEventListener("click",login);
+$("mikaelRedeemPassword")?.addEventListener("keydown",e=>{if(e.key==="Enter")login()});
+$("mikaelRedeemClose")?.addEventListener("click",close);
+$("mikaelRedeemCloseBtn")?.addEventListener("click",close);
+$("mikaelRedeemLogout")?.addEventListener("click",()=>{sessionStorage.removeItem(SESSION);loginView()});
+setTimeout(showPendingToLizzy,1000);
+window.MikaelTokenControl={open,render};
+})();
+
