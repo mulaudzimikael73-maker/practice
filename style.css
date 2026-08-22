@@ -4070,3 +4070,11 @@ body.mikaelMicroGlitch #desktopArea{animation:mikaelMicroGlitch .26s steps(2)}
 .takeoverRareEvent.hidden{display:none!important}.takeoverRareEvent>div{width:min(520px,86vw);padding:34px;text-align:center;border-radius:24px;background:rgba(49,21,66,.95);color:white;border:1px solid rgba(255,255,255,.2);box-shadow:0 30px 90px rgba(0,0,0,.42);animation:rareTakeoverIn .35s ease}.takeoverRareEvent small{font-size:9px;font-weight:1000;letter-spacing:2px;opacity:.6}.takeoverRareEvent h2{font-size:30px;margin:10px 0}.takeoverRareEvent p{font-size:13px;line-height:1.5}.takeoverRareEvent button{margin-top:12px!important}
 @keyframes rareTakeoverIn{from{opacity:0;transform:scale(.88) translateY(15px)}}
 body:not(.mikaelTakeoverActive) #takeoverSecretFile,body:not(.mikaelTakeoverActive) #takeoverBatSignal{display:none!important}
+
+/* LIVING DESKTOP PHASE 2 */
+.livingAmbientStrip{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:7000;display:flex;gap:8px;align-items:center;max-width:calc(100vw - 40px);padding:7px 13px;border-radius:999px;background:rgba(36,20,50,.66);color:#fff;border:1px solid rgba(255,255,255,.16);backdrop-filter:blur(12px);font-size:9px;white-space:nowrap}.livingAmbientStrip i{opacity:.35}
+#livingSystemActivity{font-weight:750;min-height:32px}#livingSystemActivityTime{opacity:.55}
+body[data-living-time="morning"]:not(.mikaelTakeoverActive) #desktopArea{filter:brightness(1.04) saturate(1.02)}
+body[data-living-time="evening"]:not(.mikaelTakeoverActive) #desktopArea{filter:brightness(.97) saturate(1.05)}
+body[data-living-time="late"]:not(.mikaelTakeoverActive) #desktopArea{filter:brightness(.91) saturate(.94)}
+@media(max-width:700px){.livingAmbientStrip{bottom:8px;font-size:8px}#ambientCountdown{display:none}}

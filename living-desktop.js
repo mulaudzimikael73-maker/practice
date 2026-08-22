@@ -65,6 +65,52 @@ bind("countdownSave","click",()=>{const name=$("countdownName")?.value.trim(),wh
 bind("countdownClear","click",()=>{localStorage.removeItem(CD);if($("countdownName"))$("countdownName").value="";if($("countdownDate"))$("countdownDate").value="";renderCountdown()});
 const savedCD=read(CD,null);if(savedCD){if($("countdownName"))$("countdownName").value=savedCD.name||"";if($("countdownDate"))$("countdownDate").value=savedCD.when||""}renderCountdown();setInterval(renderCountdown,30000);
 
+
+// LIVING DESKTOP PHASE 2 — DYNAMIC TIME / ACTIVITY / SMARTER EXISTING FEATURES
+const dynamicNotes={
+ morning:["Good morning Mabebeza ☀️ Go be amazing or at least convincingly awake.","Morning mission: drink some water. No, tequila doesn't count. 😭","Rise and shine, Four Eyes. LizzyOS noticed you're awake."],
+ afternoon:["Afternoon check-in: have you eaten or are we surviving on vibes?","Mabebeza, hope your day is treating you nicely. If not, fight it.","Drink some water. This message will continue until morale improves."],
+ evening:["Evening report: you survived another day. Impressive.","Tomorrow's problems are legally tomorrow's responsibility.","Mabebeza, I hope something made you smile today."],
+ late:["Why are you still awake? 😭","Late-night Lizzy detected. Please report directly to bed.","The classified files will still be here tomorrow. Go sleep."]
+};
+const systemActivityPool=[
+ "Lizzy Mail checking for today's nonsense…","Bank of Micky auditing suspicious Micky Bucs…","Cody's lawyer reviewing pending cases…",
+ "Mikael.exe recalculating Mr Perfect's humility rating…","Lizzy Garden checking whether anything needs watering…",
+ "Classified Files pretending not to contain secrets…","Daily Rewards shuffling tomorrow's rewards…","MickyNet searching for information nobody requested…",
+ "Recycle Bin reviewing evidence…","Games checking whether Lizzy is avoiding responsibilities…","Token Jar counting Reverse Tokens…",
+ "Batman surveillance checking rooftops…","Life Lessons with Micky generating questionable advice…","LizzyOS checking whether JavaScript is cooperating…"
+];
+function dynamicPart(){const h=new Date().getHours();return h>=5&&h<12?"morning":h>=12&&h<17?"afternoon":h>=17&&h<23?"evening":"late"}
+function renderDynamicTime(){
+ const p=dynamicPart(), map={morning:"☀️ Morning Mode — LizzyOS is reluctantly awake.",afternoon:"🌤️ Afternoon Mode — surviving the day successfully.",evening:"🌙 Evening Mode — responsibilities are nearly over.",late:"🌌 Late-Night Mode — Lizzy, why are we still awake?"};
+ document.body.dataset.livingTime=p;
+ if($("livingTimeStatus"))$("livingTimeStatus").textContent=map[p];
+ if($("ambientTimeGreeting"))$("ambientTimeGreeting").textContent=map[p].split(" — ")[0];
+}
+function dynamicActivity(){
+ const msg=systemActivityPool[Math.floor(Math.random()*systemActivityPool.length)];
+ if($("livingSystemActivity"))$("livingSystemActivity").textContent=msg;
+ if($("livingSystemActivityTime"))$("livingSystemActivityTime").textContent="Updated "+new Date().toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"});
+}
+function updateAmbient(){
+ const mood=currentMood?.();
+ if($("ambientMood"))$("ambientMood").textContent="Mood: "+(mood?.label||"Not selected");
+ const cd=read(CD,null);
+ if($("ambientCountdown")){
+   if(!cd?.when)$("ambientCountdown").textContent="No countdown";
+   else {const ms=new Date(cd.when).getTime()-Date.now();if(ms<=0)$("ambientCountdown").textContent="🎉 "+(cd.name||"It's time!");else{const d=Math.floor(ms/86400000),h=Math.floor(ms%86400000/3600000),m=Math.floor(ms%3600000/60000);$("ambientCountdown").textContent=`⏳ ${cd.name}: ${d}d ${h}h ${m}m`}}
+ }
+}
+function dynamicSticky(){
+ if(document.body.classList.contains("mikaelTakeoverActive"))return;
+ const pool=dynamicNotes[dynamicPart()],msg=pool[Math.floor(Math.random()*pool.length)];
+ if($("stickyMessage"))$("stickyMessage").textContent=msg;
+}
+bind("stickyNext","click",()=>setTimeout(dynamicSticky,0));
+setInterval(()=>{renderDynamicTime();updateAmbient()},1000);
+setInterval(dynamicActivity,18000);
+setTimeout(()=>{renderDynamicTime();dynamicActivity();updateAmbient()},0);
+
 // MIKAEL TAKEOVER V1
 const MP="lizzyLivingMikaelProfileV1";
 const takeoverMessages=[
