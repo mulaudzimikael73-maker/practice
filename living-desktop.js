@@ -65,15 +65,202 @@ bind("countdownSave","click",()=>{const name=$("countdownName")?.value.trim(),wh
 bind("countdownClear","click",()=>{localStorage.removeItem(CD);if($("countdownName"))$("countdownName").value="";if($("countdownDate"))$("countdownDate").value="";renderCountdown()});
 const savedCD=read(CD,null);if(savedCD){if($("countdownName"))$("countdownName").value=savedCD.name||"";if($("countdownDate"))$("countdownDate").value=savedCD.when||""}renderCountdown();setInterval(renderCountdown,30000);
 
-// MIKAEL PROFILE
+// MIKAEL TAKEOVER V1
 const MP="lizzyLivingMikaelProfileV1";
-function renderProfile(){const on=localStorage.getItem(MP)==="on";document.body.classList.toggle("mikaelProfileActive",on);if($("mikaelProfileStatus"))$("mikaelProfileStatus").innerHTML=on?"<b>ACTIVE 😈</b> — Mr Perfect has editorial control.":"OFFLINE — LizzyOS is behaving itself.";if($("toggleMikaelProfile"))$("toggleMikaelProfile").textContent=on?"Return to Lizzy Profile":"Activate Mikael Profile"}
-bind("toggleMikaelProfile","click",()=>{localStorage.setItem(MP,localStorage.getItem(MP)==="on"?"off":"on");renderProfile();toast(localStorage.getItem(MP)==="on"?"😈 Mikael Profile activated.":"💗 Lizzy Profile restored.")});renderProfile();
+const takeoverMessages=[
+ "System update: Lizzy is still stunning. No patch required.",
+ "Mr Perfect has reviewed the situation and decided he is correct.",
+ "Reminder from management: Batman can operate in broad daylight.",
+ "Drink some water. No, tequila doesn't count. 😭",
+ "Justice for Lizzy has been temporarily suspended pending further investigation.",
+ "Four Eyes detected. Threat level: suspiciously cute.",
+ "Little Miss Attitude is currently operating within acceptable limits.",
+ "Mabebeza, I hope you have a great day. This is a legally binding instruction.",
+ "Your screen has been inspected. Too much LizzyOS. Not enough appreciation for Mikael.",
+ "Mikael would like it noted that his knees are innocent.",
+ "This notification contains no useful information. You're welcome.",
+ "Mr Perfect Database reports a 100% chance Mikael adds another feature.",
+ "Cody's lawyer has advised Mikael not to comment further.",
+ "Breaking news: Mikael still thinks purple is elite.",
+ "Agent Yelizaveta, your performance review says: suspicious but impressive.",
+ "A totally unbiased audit has ranked Mikael first.",
+ "LizzyOS has detected an illegal amount of attitude.",
+ "The Office has been reclassified as educational material.",
+ "If this message seems unnecessary, Takeover Mode is working correctly.",
+ "Mikael has entered the system. Productivity immediately decreased."
+];
+const takeoverNotes=[
+ "TAKEOVER NOTE: Drink some water. No, tequila doesn't count. 😭",
+ "Mr Perfect was here. Allegedly.",
+ "You look suspiciously pretty today. Investigation pending.",
+ "Reminder: arguing with Mikael only gives him more material.",
+ "Four Eyes, please report to the Compliments Department.",
+ "Mabebeza.exe is running perfectly.",
+ "Today's objective: survive Mikael's unnecessary commentary.",
+ "If lost, blame JavaScript.",
+ "Batman works nights. Mikael apparently works whenever.",
+ "Cody has legal representation. Proceed carefully.",
+ "Little Miss Attitude remains under observation.",
+ "This sticky note achieved absolutely nothing.",
+ "The system says you're stunning. I don't make the rules. — Mikael",
+ "Important life advice: snacks first, consequences later.",
+ "Mr Perfect has approved this desktop. You're welcome.",
+ "Your daily reminder that Mikael is extremely humble.",
+ "Do not press random buttons. Unless they look interesting.",
+ "Current mission: have a good day. Failure is not accepted."
+];
+
+const takeoverLabels={
+ folderIcon:"Mikael Archives",
+ readMeIcon:"Read About Me",
+ missionIcon:"Mikael Missions",
+ openWhenIcon:"Open When Mikael Says",
+ recycleBinIcon:"Evidence Disposal",
+ gamesFolderStaticIcon:"Mikael's Arcade",
+ classifiedFolderIcon:"Definitely Not Secret",
+ livingDesktopIcon:"Mikael Control Room",
+ internetIcon:"MickyNet",
+ lizzyMailIcon:"Message Mr Perfect",
+ lizzyGardenIcon:"Mikael's Garden Now",
+ tokenJarIcon:"Mikael Tax Jar",
+ seedStoreIcon:"Definitely Legit Store",
+ calendarIcon:"Mikael's Schedule"
+};
+
+let takeoverPopupTimer=null;
+let takeoverMessageTimer=null;
+let takeoverBooting=false;
+
+function takeoverOn(){return localStorage.getItem(MP)==="on"}
+
+function desktopLabelNode(id){
+ const el=$(id); if(!el)return null;
+ return el.querySelector(":scope > span") || el.querySelector("span");
+}
+function applyTakeoverLabels(on){
+ Object.entries(takeoverLabels).forEach(([id,newText])=>{
+   const label=desktopLabelNode(id); if(!label)return;
+   if(!label.dataset.normalLabel)label.dataset.normalLabel=label.textContent.trim();
+   label.textContent=on?newText:label.dataset.normalLabel;
+ });
+}
+
+function takeoverSticky(){
+ if(!takeoverOn())return;
+ const msg=takeoverNotes[Math.floor(Math.random()*takeoverNotes.length)];
+ if($("stickyMessage"))$("stickyMessage").textContent=msg;
+ if($("stickyPreview"))$("stickyPreview").textContent=msg;
+}
+
+function showTakeoverPopup(forceText){
+ if(!takeoverOn())return;
+ const box=$("mikaelTakeoverPopup"), text=$("mikaelTakeoverPopupText");
+ if(!box||!text)return;
+ text.textContent=forceText||takeoverMessages[Math.floor(Math.random()*takeoverMessages.length)];
+ box.classList.remove("hidden");
+ clearTimeout(takeoverPopupTimer);
+ takeoverPopupTimer=setTimeout(()=>box.classList.add("hidden"),6500);
+}
+bind("mikaelTakeoverPopupClose","click",()=>$("mikaelTakeoverPopup")?.classList.add("hidden"));
+
+function scheduleTakeoverMessage(){
+ clearTimeout(takeoverMessageTimer);
+ if(!takeoverOn())return;
+ takeoverMessageTimer=setTimeout(()=>{
+   if(takeoverOn())showTakeoverPopup();
+   scheduleTakeoverMessage();
+ },(2.5+Math.random()*3.5)*60000);
+}
+
+function takeoverBoot(){
+ const boot=$("mikaelTakeoverBoot");
+ if(!boot)return;
+ takeoverBooting=true;
+ boot.classList.remove("hidden");
+ const lines=[
+   "Mr Perfect is requesting editorial control…",
+   "Disabling sensible decisions…",
+   "Loading unnecessary commentary…",
+   "Increasing Mikael sightings…",
+   "Applying Batman-level security…",
+   "Takeover complete."
+ ];
+ let i=0;
+ const line=$("takeoverBootLine");
+ const ticker=setInterval(()=>{if(line)line.textContent=lines[Math.min(++i,lines.length-1)]},430);
+ setTimeout(()=>{
+   clearInterval(ticker);
+   boot.classList.add("hidden");
+   takeoverBooting=false;
+   showTakeoverPopup("Editorial control granted. LizzyOS is now under extremely questionable management.");
+ },2800);
+}
+
+function renderProfile(){
+ const on=takeoverOn();
+ document.body.classList.toggle("mikaelProfileActive",on);
+ document.body.classList.toggle("mikaelTakeoverActive",on);
+ if($("mikaelProfileStatus"))$("mikaelProfileStatus").innerHTML=on
+   ?"<b>ACTIVE 😈</b> — Mr Perfect has editorial control."
+   :"OFFLINE — LizzyOS is behaving itself.";
+ if($("toggleMikaelProfile"))$("toggleMikaelProfile").textContent=on
+   ?"End Mikael Takeover"
+   :"Activate Mikael Takeover";
+ $("mikaelTakeoverBanner")?.classList.toggle("hidden",!on);
+ applyTakeoverLabels(on);
+ if(on){
+   takeoverSticky();
+   scheduleTakeoverMessage();
+ }else{
+   clearTimeout(takeoverMessageTimer);
+   clearTimeout(takeoverPopupTimer);
+   $("mikaelTakeoverPopup")?.classList.add("hidden");
+   renderNote();
+ }
+}
+
+function toggleProfileMode(){
+ const next=takeoverOn()?"off":"on";
+ localStorage.setItem(MP,next);
+ if(next==="on"){
+   renderProfile();
+   takeoverBoot();
+ }else{
+   renderProfile();
+   toast("💗 LizzyOS restored. Mikael has reluctantly returned control.");
+ }
+}
+window.toggleMikaelProfileFallback=toggleProfileMode;
+
+document.addEventListener("click",e=>{
+ const b=e.target.closest("#toggleMikaelProfile");
+ if(!b)return;
+ e.preventDefault();
+ toggleProfileMode();
+});
+
+// Takeover-only Easter eggs: click the takeover banner and the MIKAEL badge.
+bind("mikaelTakeoverBanner","click",()=>showTakeoverPopup());
+document.addEventListener("dblclick",e=>{
+ if(!takeoverOn())return;
+ if(e.target.closest("#livingDesktopIcon")){
+   showTakeoverPopup("SECRET OVERRIDE: You found the control-room Easter egg. Mr Perfect approves. 🕴🏾");
+ }
+});
+
+// Random tiny desktop glitches while takeover is active.
+setInterval(()=>{
+ if(!takeoverOn()||takeoverBooting||Math.random()>.28)return;
+ document.body.classList.add("mikaelMicroGlitch");
+ setTimeout(()=>document.body.classList.remove("mikaelMicroGlitch"),260);
+},45000);
+
+renderProfile();
 
 // RARE MIKAEL
 const msgs=["Caught me. Your prize is me saying you're stunning. 😌","Justice for Lizzy! Don't get used to it.","Rare Mikael sighting confirmed. 📸","Little Miss Attitude has excellent reflexes.","I was never here. — Mr Perfect","Fine. You win this one. Screenshot it."];
 let timer,hideTimer,rareVisible=false;
-function schedule(){clearTimeout(timer);timer=setTimeout(()=>Math.random()<.35?spawn():schedule(),(4+Math.random()*6)*60000)}
+function schedule(){clearTimeout(timer);const takeover=document.body.classList.contains("mikaelTakeoverActive");const chance=takeover?.78:.35;const delay=takeover?(1.2+Math.random()*2.3)*60000:(4+Math.random()*6)*60000;timer=setTimeout(()=>Math.random()<chance?spawn():schedule(),delay)}
 function spawn(){const e=$("rareMikael");if(!e)return;clearTimeout(hideTimer);rareVisible=true;e.classList.remove("hidden","rareRun");e.classList.add("rareCatchable");e.style.top=(90+Math.random()*Math.max(120,innerHeight-260))+"px";e.style.left=(18+Math.random()*Math.max(80,innerWidth-170))+"px";hideTimer=setTimeout(()=>{if(!rareVisible)return;rareVisible=false;e.classList.add("hidden");e.classList.remove("rareCatchable");schedule()},10500)}
 function catchRare(ev){if(ev){ev.preventDefault();ev.stopPropagation()}const e=$("rareMikael");if(!e||!rareVisible)return;rareVisible=false;clearTimeout(hideTimer);e.classList.add("rareCaught");toast("🕴🏾 "+msgs[Math.floor(Math.random()*msgs.length)]);setTimeout(()=>{e.classList.add("hidden");e.classList.remove("rareCaught","rareCatchable");schedule()},420)}
 bind("rareMikael","click",catchRare);bind("rareMikael","pointerdown",catchRare);schedule();

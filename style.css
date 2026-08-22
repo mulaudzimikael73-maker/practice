@@ -3981,3 +3981,77 @@ body.mikaelProfileActive #mikaelProfileStatus{font-weight:800!important;text-sha
     grid-template-columns:1fr!important;
   }
 }
+
+/* =========================================================
+   MIKAEL TAKEOVER V1
+   ========================================================= */
+.mikaelTakeoverBoot{
+ position:fixed;inset:0;z-index:90000;
+ display:grid;place-items:center;
+ background:rgba(21,7,34,.86);
+ backdrop-filter:blur(12px);
+ color:white;text-align:center;
+}
+.mikaelTakeoverBoot.hidden{display:none!important}
+.takeoverNoise{position:absolute;inset:0;pointer-events:none;opacity:.13;
+ background:repeating-linear-gradient(0deg,transparent 0 3px,rgba(255,255,255,.25) 4px);
+ animation:takeoverNoise .16s steps(2) infinite}
+.takeoverBootInner{position:relative;width:min(650px,86vw);padding:42px 28px;border:1px solid rgba(255,255,255,.2);border-radius:24px;background:rgba(255,110,180,.12);box-shadow:0 30px 100px rgba(0,0,0,.45)}
+.takeoverBootIcon{font-size:64px;animation:takeoverIcon .5s steps(2) infinite}
+.takeoverBootInner small{font-weight:900;letter-spacing:3px;opacity:.72}
+.takeoverBootInner h1{font-size:clamp(28px,5vw,56px);line-height:1;margin:14px 0}
+.takeoverBootInner p{font-size:15px;opacity:.82}
+.takeoverBootBar{height:8px;margin:26px auto 0;max-width:440px;background:rgba(255,255,255,.13);border-radius:99px;overflow:hidden}
+.takeoverBootBar i{display:block;height:100%;width:0;background:#ff6fb5;animation:takeoverLoad 2.65s ease forwards}
+@keyframes takeoverLoad{to{width:100%}}
+@keyframes takeoverNoise{50%{transform:translateY(2px)}}
+@keyframes takeoverIcon{50%{transform:translateX(4px)}}
+
+.mikaelTakeoverBanner{
+ position:fixed;top:14px;left:50%;transform:translateX(-50%);
+ z-index:15000;padding:8px 18px;border-radius:999px;
+ background:rgba(42,16,58,.82);border:1px solid rgba(255,255,255,.22);
+ color:white;box-shadow:0 8px 28px rgba(0,0,0,.22);
+ display:flex;align-items:center;gap:10px;cursor:pointer;
+ backdrop-filter:blur(12px);font-size:10px;
+}
+.mikaelTakeoverBanner.hidden{display:none!important}
+.mikaelTakeoverBanner span{font-weight:1000;letter-spacing:.6px}
+.mikaelTakeoverBanner small{opacity:.72}
+
+.mikaelTakeoverPopup{
+ position:fixed;right:22px;bottom:24px;z-index:16000;
+ width:min(330px,calc(100vw - 44px));padding:17px 42px 17px 17px;
+ border-radius:18px;background:rgba(47,21,65,.9);color:white;
+ border:1px solid rgba(255,255,255,.2);box-shadow:0 18px 55px rgba(0,0,0,.3);
+ backdrop-filter:blur(16px);animation:takeoverPopupIn .28s ease;
+}
+.mikaelTakeoverPopup.hidden{display:none!important}
+.mikaelTakeoverPopup button{position:absolute;right:10px;top:8px;width:26px!important;height:26px!important;padding:0!important;min-width:0!important;border-radius:50%!important}
+.mikaelTakeoverPopup small{font-size:8px;font-weight:1000;letter-spacing:1.4px;opacity:.6}
+.mikaelTakeoverPopup p{margin:6px 0 0;font-size:12px;line-height:1.45}
+@keyframes takeoverPopupIn{from{opacity:0;transform:translateY(12px) scale(.96)}}
+
+body.mikaelTakeoverActive #desktopArea{filter:saturate(1.12) contrast(1.03)}
+body.mikaelTakeoverActive #desktopArea:before{
+ content:"MR PERFECT // EDITORIAL CONTROL";
+ position:absolute;right:24px;bottom:20px;
+ font-size:9px;font-weight:1000;letter-spacing:2px;
+ color:rgba(255,255,255,.5);pointer-events:none
+}
+body.mikaelTakeoverActive #livingDesktopIcon:after{
+ content:"TAKEOVER"!important;background:#3d2455!important;color:#fff!important;
+ animation:takeoverBadge 1.4s ease-in-out infinite
+}
+body.mikaelTakeoverActive .desktopIcon:hover{transform:scale(1.1) rotate(-1deg)}
+body.mikaelTakeoverActive #livingStickyNote{background:#f4d9ff;color:#3d2455;box-shadow:0 10px 32px rgba(48,15,72,.3)}
+body.mikaelTakeoverActive #livingStickyNote .stickyHandle button{color:#3d2455!important}
+body.mikaelMicroGlitch #desktopArea{animation:mikaelMicroGlitch .26s steps(2)}
+@keyframes mikaelMicroGlitch{25%{transform:translateX(2px);filter:hue-rotate(8deg)}50%{transform:translateX(-3px)}75%{transform:translateX(1px);filter:hue-rotate(-8deg)}}
+@keyframes takeoverBadge{50%{transform:scale(1.08);box-shadow:0 0 12px rgba(255,255,255,.5)}}
+
+@media(max-width:700px){
+ .mikaelTakeoverBanner small{display:none}
+ .mikaelTakeoverBanner{top:8px}
+ .mikaelTakeoverPopup{right:10px;bottom:12px;width:calc(100vw - 20px);box-sizing:border-box}
+}
