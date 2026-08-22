@@ -232,8 +232,8 @@ renderExtras();renderBank();renderAchievements();
 
 
 /* =========================================================
-   SECRET SHELF — REAL WEBSITE FINAL
-   Does NOT modify tasks.
+   SECRET SHELF / VAULT V3
+   Persistent counter offers + new rotating vault stock.
    ========================================================= */
 (()=>{
 "use strict";
@@ -246,74 +246,165 @@ const LETTERS="lizzyPurchasedLettersV1";
 const MTOKENS="lizzyMikaelTokensV1";
 const WORKER=window.LIZZY_TELEGRAM_WORKER_URL||"https://lizzyos-notifications.mulaudzimikael73.workers.dev/";
 
-const LETTER001=`Lizzy,
+const LETTER002=`Lizzy,
 
-There are quite a few things I notice about you that I probably don't actually say enough — partly because I know you'll find some way to argue with me about them, and partly because sometimes it's easier to just notice these things quietly.
+Apparently one unreleased letter was not enough.
 
-I notice how easy it is to talk to you.
+I was trying to work out what to write in this one without just repeating all the things I've already said about you, which is slightly difficult because you have somehow become involved in an unreasonable amount of my thoughts, jokes and website ideas.
 
-Somehow a normal conversation can turn into us debating something completely ridiculous, making fun of each other, talking about something serious, and then immediately going back to nonsense like nothing happened. 😂
+So instead, this one is about something a little different.
 
-And I really like that.
+I like us.
 
-I notice your intelligence too. Not just in the obvious ways, but in how you think about things and how you have your own opinions. Even though this unfortunately means you sometimes believe you're right when you're very clearly arguing with Mr Perfect. 😌
+I like how unserious we can be. I like that a completely normal conversation can somehow become an argument about something ridiculous, a court case involving Cody, a Batman incident, or another reason for you to accuse me of being dramatic.
 
-I notice the little reactions you have when something makes you laugh. The attitude when I've said something cheeky. The moments where you're trying very hard not to give me the satisfaction of knowing I've made you smile.
+I like that we have our own language now — the nicknames, the jokes, Mr Perfect, Little Miss Attitude, Mabebeza, Agent Yelizaveta and all the random things that probably make absolutely no sense to anyone else.
 
-I notice how beautiful you are — and yes, before you start arguing with the letter, you cannot argue with a document you've already paid Micky Bucs for. No refunds.
+I like that I can tease you and, even when you pretend to be annoyed, I can usually tell when you're trying not to laugh.
 
-But more than that, I notice how much I've enjoyed actually getting to know you.
+And I like the quieter parts too.
 
-Not Agent Yelizaveta. Not Little Miss Attitude. Not The Hater™. Just Lizzy.
+The checking in. The normal conversations. Learning the little things about you. Remembering things you've said. Finding out what makes you happy, what annoys you, what makes you laugh and what earns me that look that says I should probably stop talking.
 
-The person behind all the jokes, arguments, ridiculous nicknames and bullying allegations.
+I don't know exactly what all of this is supposed to look like from the outside.
 
-And somewhere along the way, without really trying to, you've become someone whose messages I look forward to, someone I genuinely enjoy spending time with, and someone whose little things I've apparently started noticing enough to write an entire classified letter about them.
+But from where I'm standing, I know I've really enjoyed whatever we've been building.
 
-There are probably plenty more things I notice that aren't written here. Some of them I'll tell you eventually. Some you'll probably figure out yourself. And some might have to remain classified for now. 🤫
+Even if a concerning percentage of it now exists inside a fake operating system.
 
-But I suppose the main thing I don't always say is actually pretty simple:
+So yes, Lizzy, this is another classified document confirming that I like having you around.
 
-I'm really glad I got to know you, Lizzy. ❤️
+Please don't let this information increase your ego too much.
 
-And I'm looking forward to noticing a lot more.
+There is only room for one person with an unreasonable ego in LizzyOS and I already claimed the position.
 
 — Mikael
 a.k.a. Mr Perfect 😌
 
-P.S. Before you say anything — you willingly spent Micky Bucs to read this. So technically, you paid to hear me be nice to you.
+P.S. You bought another unreleased letter. At this point you're basically funding the Mr Perfect publishing division. 😂`;
 
-That's embarrassing for you, really. 😂`;
+const CODY_LEGAL_DOCS=`LIZZYOS LEGAL DEPARTMENT
+CONFIDENTIAL CASE FILE
+
+CASE: CODY ALADEEN v. MIKAEL MULAUDZI
+CLIENT: Cody Aladeen
+LEGAL COUNSEL: Lizzy
+STATUS: Counsel has been retained.
+
+NOTICE TO MIKAEL:
+
+This document serves as formal notice that Cody Aladeen is now represented by Lizzy in all present and future disputes involving alleged bullying, suspicious grappling, unnecessary wrestling attempts, intimidation, treat-related disagreements, or comments regarding Cody's grappling ability.
+
+The client would like the record to show that his grappling skills have been assessed as DECENT.
+
+Mikael may disagree with this assessment.
+
+Mikael is strongly advised to keep those disagreements to himself.
+
+SPECIAL PROVISIONS:
+
+1. Mikael may not test new grappling techniques on Cody without prior approval from legal counsel.
+
+2. Cody retains the right to defend himself using paws, speed, strategic retreat, dramatic staring, or immediate contact with his lawyer.
+
+3. Any attempt by Mikael to claim that he could “probably take Cody” may be used against him in the Court of LizzyOS.
+
+4. Cody is entitled to reasonable access to treats, naps, windows and legal representation.
+
+5. Lizzy reserves the right to introduce additional charges whenever Mikael is being suspicious.
+
+LEGAL RISK ASSESSMENT:
+Cody's grappling: Decent.
+Cody's legal team: Extremely dangerous.
+Mikael's confidence before legal representation: High.
+Mikael's confidence after discovering Lizzy is the lawyer: Significantly reduced.
+
+FINAL NOTICE:
+
+Mikael is reminded that fighting someone who can grapple you is one problem.
+
+Fighting someone who can grapple you AND sue you is a completely different administrative situation.
+
+Signed,
+Lizzy
+Legal Counsel for Cody Aladeen
+
+Filed by: LizzyOS Legal Department
+Mikael's objection: DENIED.`;
 
 const ITEMS=[
- {id:"letter_001",icon:"💌",publicName:"Unreleased Letter #001",kind:"letter",content:LETTER001},
- {id:"mystery_reward",icon:"🎁",publicName:"Mystery Reward",kind:"mikael_token"}
+ {id:"letter_002",icon:"💌",publicName:"Unreleased Letter #002",kind:"letter",content:LETTER002,teaser:"A second unreleased document from the Mr Perfect archives."},
+ {id:"mystery_reward",icon:"🎁",publicName:"Mystery Reward",kind:"mikael_token",teaser:"Contents remain classified until the deal is complete."},
+ {id:"archive_x17",icon:"🗃️",publicName:"Sealed Archive X-17",kind:"document",content:CODY_LEGAL_DOCS,teaser:"Origin: REDACTED • Contents: SEALED • Clearance: UNKNOWN"}
 ];
 
 const wallet=()=>Number(localStorage.getItem(WALLET)||0);
 const setWallet=n=>localStorage.setItem(WALLET,String(Math.max(0,Math.floor(Number(n)||0))));
-const shelf=()=>read(SHELF,{owned:{},bids:{}});
+const shelf=()=>{
+ const s=read(SHELF,{owned:{},bids:{}});
+ s.owned=s.owned||{};s.bids=s.bids||{};
+ return s;
+};
 const saveShelf=s=>write(SHELF,s);
+
+function bidStatus(item,bid,owned){
+ if(owned)return "OWNED 🔓";
+ if(bid?.status==="pending")return `YOUR OFFER: ${bid.amount} MB • WAITING FOR MIKAEL`;
+ if(bid?.status==="countered")return `MIKAEL'S COUNTER: ${bid.counterOffer} MB`;
+ if(bid?.status==="rejected")return "OFFER REJECTED — NEGOTIATION REOPENED";
+ return "NEGOTIATION OPEN";
+}
 
 function renderShelf(){
  const host=$("secretShelfPanel");if(!host)return;
  const s=shelf();
- host.innerHTML=`<h3>🔒 Mikael's Secret Shelf</h3>
- <p class="seedStoreIntro">Two classified items. No fixed prices — make Mikael an offer.</p>
+ host.innerHTML=`<div class="secretVaultHeader">
+   <div><small>SECRET SHELF // RESTRICTED MARKET</small><h3>🔐 The Vault</h3></div>
+   <div class="vaultWallet">AVAILABLE: <b>${wallet()} MB</b></div>
+ </div>
+ <p class="seedStoreIntro">No fixed prices. Make Mikael an offer. If Mikael counters, his counter stays here until you submit another bid.</p>
  <div class="secretShelfGrid">${ITEMS.map(item=>{
-   const owned=!!s.owned?.[item.id],bid=s.bids?.[item.id];
-   let status=owned?"OWNED 🔓":"NEGOTIATION OPEN";
-   if(!owned&&bid?.status==="pending")status="OFFER PENDING ⏳";
-   if(!owned&&bid?.status==="countered")status=`MIKAEL COUNTERED: ${bid.counterOffer} MB`;
-   if(!owned&&bid?.status==="rejected")status="OFFER REJECTED — TRY AGAIN";
+   const owned=!!s.owned[item.id],bid=s.bids[item.id];
+   const countered=!owned&&bid?.status==="countered"&&Number(bid.counterOffer)>0;
+   const status=bidStatus(item,bid,owned);
    const controls=owned?"":`
-    <input type="number" min="1" data-bid-input="${item.id}" placeholder="${bid?.counterOffer?`Counter ${bid.counterOffer} MB`:"Your offer in MB"}">
-    <button data-bid="${item.id}">${bid?.status==="countered"?"Send Counter Offer":"Submit Offer"}</button>`;
-   const dest=owned&&item.kind==="letter"?`<small class="ownedDestination">💌 Saved to Open When → Purchased Letters</small>`:
-              owned&&item.kind==="mikael_token"?`<small class="ownedDestination">🔄 Revealed as UNO Reverse → Token Jar</small>`:"";
-   return `<div class="secretItem"><div style="font-size:32px">${item.icon}</div><strong>${item.publicName}</strong><small>${status}</small>${controls}${dest}</div>`;
- }).join("")}</div>`;
+    ${countered?`<div class="persistentCounter"><small>COUNTER OFFER FROM MIKAEL</small><strong>${bid.counterOffer} MB</strong><span>Your last bid: ${bid.amount||"—"} MB</span></div>`:""}
+    <div class="vaultBidControls">
+      <input type="number" min="1" data-bid-input="${item.id}" placeholder="${countered?`Make a new bid against ${bid.counterOffer} MB`:"Your offer in MB"}">
+      <button data-bid="${item.id}">${countered?"Make Another Bid":"Submit Offer"}</button>
+    </div>`;
+   let ownedAction="";
+   if(owned&&item.kind==="letter")ownedAction=`<small class="ownedDestination">💌 Saved to Open When → Purchased Letters</small>`;
+   if(owned&&item.kind==="mikael_token")ownedAction=`<small class="ownedDestination">🔄 Revealed as UNO Reverse → Token Jar</small>`;
+   if(owned&&item.kind==="document")ownedAction=`<button class="openOwnedVaultFile" data-open-vault-file="${item.id}">OPEN ACQUIRED FILE</button>`;
+   const displayName=owned&&item.id==="archive_x17"?"Cody Legal Documents":item.publicName;
+   const displayTeaser=owned&&item.id==="archive_x17"?"⚖️ Confidential legal documents recovered from the sealed archive.":item.teaser;
+   return `<article class="secretItem vaultItem ${countered?"hasCounter":""} ${owned?"ownedVaultItem":""}">
+      <div class="vaultItemIcon">${item.icon}</div>
+      <strong>${displayName}</strong>
+      <p>${displayTeaser}</p>
+      <small class="vaultStatus">${status}</small>
+      ${controls}${ownedAction}
+   </article>`;
+ }).join("")}</div>
+ <div id="vaultOwnedFileReader"></div>`;
  host.querySelectorAll("[data-bid]").forEach(btn=>btn.onclick=()=>submitBid(btn.dataset.bid));
+ host.querySelectorAll("[data-open-vault-file]").forEach(btn=>btn.onclick=()=>openOwnedFile(btn.dataset.openVaultFile));
+}
+
+function openOwnedFile(id){
+ const item=ITEMS.find(x=>x.id===id);
+ const s=shelf();
+ if(!item||!s.owned[item.id]||item.kind!=="document")return;
+ const box=$("vaultOwnedFileReader");if(!box)return;
+ box.innerHTML=`<section class="vaultDocumentReader">
+   <button type="button" id="closeVaultDocument">×</button>
+   <small>ACQUIRED VAULT DOCUMENT // CONFIDENTIAL</small>
+   <h3>⚖️ Cody Legal Documents</h3>
+   <pre>${item.content.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]))}</pre>
+ </section>`;
+ $("closeVaultDocument")?.addEventListener("click",()=>box.innerHTML="");
+ box.scrollIntoView({behavior:"smooth",block:"nearest"});
 }
 
 async function submitBid(id){
@@ -329,8 +420,8 @@ async function submitBid(id){
    const data=await res.json();
    if(!res.ok||!data.success||!data.claimId)throw new Error(data.error||"Offer failed");
    const s=shelf();
-   s.bids=s.bids||{};
-   s.bids[id]={claimId:data.claimId,amount,status:"pending",createdAt:new Date().toISOString()};
+   // A new bid intentionally replaces the previous counter for this item.
+   s.bids[id]={claimId:data.claimId,amount,status:"pending",counterOffer:null,createdAt:new Date().toISOString()};
    saveShelf(s);renderShelf();
  }catch(e){
    console.error(e);
@@ -340,11 +431,10 @@ async function submitBid(id){
 
 function grant(item,price){
  const s=shelf();
- if(s.owned?.[item.id])return true;
+ if(s.owned[item.id])return true;
  price=Math.floor(Number(price)||0);
  if(price<1||wallet()<price)return false;
  setWallet(wallet()-price);
- s.owned=s.owned||{};
  s.owned[item.id]={at:new Date().toISOString(),price};
  saveShelf(s);
 
@@ -366,22 +456,54 @@ function grant(item,price){
  return true;
 }
 
-async function pollShelf(){
+async function syncShelfState(){
  const s=shelf();let dirty=false;
  for(const item of ITEMS){
-   const bid=s.bids?.[item.id];
-   if(!bid?.claimId||s.owned?.[item.id]||!["pending","countered"].includes(bid.status))continue;
+   if(s.owned[item.id])continue;
+   try{
+     const r=await fetch(`${WORKER}?shelfItem=${encodeURIComponent(item.id)}`,{cache:"no-store"});
+     if(!r.ok)continue;
+     const data=await r.json(),remote=data.state;
+     if(!remote?.claimId)continue;
+     const local=s.bids[item.id];
+     // Server wins only when it represents the same/newer negotiation.
+     const remoteTime=Date.parse(remote.updatedAt||remote.createdAt||0)||0;
+     const localTime=Date.parse(local?.updatedAt||local?.createdAt||0)||0;
+     if(!local||remote.claimId===local.claimId||remoteTime>=localTime){
+       s.bids[item.id]={
+         claimId:remote.claimId,
+         amount:Number(remote.offer||local?.amount||0),
+         status:remote.status||"pending",
+         counterOffer:remote.counterOffer==null?null:Number(remote.counterOffer),
+         createdAt:remote.createdAt||local?.createdAt||new Date().toISOString(),
+         updatedAt:remote.updatedAt||remote.decidedAt||new Date().toISOString()
+       };
+       dirty=true;
+     }
+   }catch(e){}
+ }
+ if(dirty)saveShelf(s);
+}
+
+async function pollShelf(){
+ await syncShelfState();
+ const s=shelf();let dirty=false;
+ for(const item of ITEMS){
+   const bid=s.bids[item.id];
+   if(!bid?.claimId||s.owned[item.id]||!["pending","countered"].includes(bid.status))continue;
    try{
      const r=await fetch(`${WORKER}?claimId=${encodeURIComponent(bid.claimId)}`,{cache:"no-store"});
      if(!r.ok)continue;
      const data=await r.json(),c=data.claim||data;
      if(c.status==="accepted"){
        const price=Number(c.offer??bid.amount);
-       if(grant(item,price)){bid.status="accepted";dirty=true;}
-     }else if(c.status==="rejected"){bid.status="rejected";dirty=true;}
-     else if(c.status==="countered"){
+       if(grant(item,price)){bid.status="accepted";bid.updatedAt=new Date().toISOString();dirty=true;}
+     }else if(c.status==="rejected"){
+       bid.status="rejected";bid.updatedAt=c.decidedAt||new Date().toISOString();dirty=true;
+     }else if(c.status==="countered"){
        bid.status="countered";
        bid.counterOffer=Number(c.counterOffer);
+       bid.updatedAt=c.decidedAt||new Date().toISOString();
        dirty=true;
      }
    }catch(e){}
@@ -408,13 +530,15 @@ function renderMikaelTokens(){
  box.innerHTML=n?`<h3>🕴️ Mikael's Tokens</h3><div class="tokenCard"><div class="tokenCardEmoji">🔄</div><div><strong>UNO Reverse</strong><p>Mikael has the power: one playful, reasonable request for Lizzy.</p></div><div class="tokenCount">×${n}</div></div>`:"";
 }
 
-$("seedStoreIcon")?.addEventListener("click",()=>setTimeout(renderShelf,60));
+$("seedStoreIcon")?.addEventListener("click",()=>setTimeout(()=>{renderShelf();pollShelf()},60));
+document.querySelector('[data-store-tab="secret"]')?.addEventListener("click",()=>setTimeout(pollShelf,30));
 $("openWhenIcon")?.addEventListener("click",()=>setTimeout(renderLetters,60));
 $("tokenJarIcon")?.addEventListener("click",()=>setTimeout(renderMikaelTokens,60));
+window.addEventListener("focus",()=>{if(!$("secretShelfPanel")?.classList.contains("hidden"))pollShelf()});
 setInterval(pollShelf,15000);
 renderShelf();renderLetters();renderMikaelTokens();
+setTimeout(pollShelf,500);
 })();
-
 
 
 /* =========================================================
@@ -632,15 +756,7 @@ const MIG="lizzyMikaelTokensCloudMigratedV2";
 const ADMIN_DEVICE="lizzyMikaelAdminDeviceV1";
 const SESSION="lizzyMikaelRedeemSessionV2";
 const ACCESS="MRPERFECT";
-const DEFS={
- "Reverse Token — Lizzy Owes Mikael a Monster":{emoji:"🥤",desc:"Lizzy owes Mikael one Monster."},
- "Reverse Token — Mikael Gets a Hug":{emoji:"🫂",desc:"Lizzy owes Mikael one proper hug."},
- "Reverse Token — Mikael Gets Dessert":{emoji:"🍦",desc:"Lizzy owes Mikael one dessert or ice-cream treat."},
- "Reverse Token — Mikael Wins the Argument":{emoji:"👑",desc:"Mikael wins one harmless argument."},
- "Reverse Token — Mikael Controls the Aux":{emoji:"🎵",desc:"Mikael controls the music for one reasonable trip or session."},
- "Reverse Token — Mikael Picks the Movie":{emoji:"🎬",desc:"Mikael chooses the movie for one movie night."},
- "UNO Reverse":{emoji:"🔄",desc:"Mikael gets one playful, reasonable request."}
-};
+const DEFS={"Reverse Token — Lizzy Owes Mikael a Monster":{"emoji":"🥤","desc":"Lizzy owes Mikael one Monster."},"Reverse Token — Mikael Gets a Hug":{"emoji":"🫂","desc":"Lizzy owes Mikael one proper hug."},"Reverse Token — Mikael Gets Ice Cream":{"emoji":"🍦","desc":"Lizzy owes Mikael one ice cream."},"Reverse Token — Mikael Gets Dessert":{"emoji":"🍰","desc":"Lizzy owes Mikael one dessert."},"Reverse Token — Mikael Gets a Chocolate":{"emoji":"🍫","desc":"Lizzy owes Mikael one chocolate."},"Reverse Token — Mikael Gets Sweets":{"emoji":"🍬","desc":"Lizzy owes Mikael some sweets."},"Reverse Token — Mikael Gets a Coke":{"emoji":"🥤","desc":"Lizzy owes Mikael one Coke."},"Reverse Token — Mikael Gets a Drink":{"emoji":"☕","desc":"Lizzy owes Mikael one reasonable drink."},"Reverse Token — Mikael Gets a Snack":{"emoji":"🍔","desc":"Lizzy owes Mikael one snack."},"Reverse Token — Mikael Gets Fries":{"emoji":"🍟","desc":"Lizzy owes Mikael some fries."},"Reverse Token — Mikael Picks the Movie":{"emoji":"🎬","desc":"Mikael chooses the movie for one movie night."},"Reverse Token — Mikael Picks What We Watch":{"emoji":"📺","desc":"Mikael chooses what you watch once."},"Reverse Token — Mikael Controls the Aux":{"emoji":"🎵","desc":"Mikael controls the music for one reasonable trip or session."},"Reverse Token — Mikael Picks One Song":{"emoji":"🎶","desc":"Mikael chooses one song, no skipping."},"Reverse Token — Mikael Picks Where We Eat":{"emoji":"🍽️","desc":"Mikael chooses where to eat once."},"Reverse Token — Mikael Picks the Activity":{"emoji":"🎯","desc":"Mikael chooses one reasonable activity."},"Reverse Token — Mikael Picks the Next Date Activity":{"emoji":"🎳","desc":"Mikael chooses the next activity date."},"Reverse Token — Mikael Gets One Nice Photo":{"emoji":"📸","desc":"Lizzy owes Mikael one nice photo."},"Reverse Token — Mikael Gets One Selfie Together":{"emoji":"🤳","desc":"One selfie together, Mikael's choice of moment."},"Reverse Token — Mikael Gets a Nice Message":{"emoji":"💌","desc":"Lizzy owes Mikael one genuinely nice message."},"Reverse Token — Mikael Gets a Little Letter":{"emoji":"📝","desc":"Lizzy owes Mikael one little letter."},"Reverse Token — Lizzy Answers One Random Question":{"emoji":"💬","desc":"Lizzy answers one harmless random question properly."},"Reverse Token — Mikael Gets One Honest Answer":{"emoji":"🤔","desc":"Mikael gets one honest answer to a reasonable question."},"Reverse Token — Mikael Gets a Call":{"emoji":"📞","desc":"Mikael gets one reasonable call."},"Reverse Token — Mikael Gets a Voice Note":{"emoji":"🎙️","desc":"Lizzy owes Mikael one voice note."},"Reverse Token — Mikael Gets One Joke":{"emoji":"😂","desc":"Lizzy owes Mikael one joke."},"Reverse Token — Lizzy Says Something Nice About Mikael":{"emoji":"😌","desc":"Lizzy must say one genuinely nice thing about Mikael."},"Reverse Token — Mikael Wins One Harmless Argument":{"emoji":"👑","desc":"Mikael automatically wins one harmless argument."},"Reverse Token — No Bullying Mikael for One Hour":{"emoji":"🧑‍⚖️","desc":"Mikael gets one full hour of protection from bullying."},"Reverse Token — Mikael's Knees Are Protected for One Day":{"emoji":"🦵","desc":"No knee slander for one full day."},"Reverse Token — No You're So Annoying for One Hour":{"emoji":"😭","desc":"Lizzy cannot say 'You're so annoying' to Mikael for one hour."},"Reverse Token — Lizzy Admits Mikael Was Right":{"emoji":"🏆","desc":"Lizzy must admit Mikael was right once."},"Reverse Token — Be Nice to Mikael for 30 Minutes":{"emoji":"😇","desc":"Thirty uninterrupted minutes of kindness to Mikael."},"Reverse Token — Four Eyes Compliments Mr Perfect":{"emoji":"👓","desc":"Four Eyes owes Mr Perfect one compliment."},"Reverse Token — Mikael Gets One Free Roast":{"emoji":"😭","desc":"Mikael gets one consequence-free playful roast."},"Reverse Token — Mikael Gets One UNO Reverse":{"emoji":"🃏","desc":"Mikael can reverse one playful situation."},"Reverse Token — Mikael Chooses":{"emoji":"🎲","desc":"Mikael chooses between two reasonable options."},"Reverse Token — One Small Favour":{"emoji":"🤝","desc":"Lizzy owes Mikael one small reasonable favour."},"Reverse Token — Mikael Gets the Comfortable Seat":{"emoji":"🛋️","desc":"Mikael gets first choice of the comfortable seat once."},"Reverse Token — Mikael Picks the Game":{"emoji":"🎮","desc":"Mikael chooses the game once."},"Reverse Token — Watch Football With Mikael":{"emoji":"⚽","desc":"One football watch session with Mikael."},"Reverse Token — Mikael Gets a Peace & Quiet Pass":{"emoji":"💤","desc":"One reasonable period of uninterrupted peace and quiet."},"Reverse Token — Mikael Gets One Please":{"emoji":"🥺","desc":"Lizzy has to ask nicely once. Very serious legislation."},"Reverse Token — Mr Perfect Privilege":{"emoji":"👑","desc":"One small reasonable Mr Perfect privilege."},"UNO Reverse":{"emoji":"🔄","desc":"Mikael gets one playful, reasonable request."}};
 const read=(k,f)=>{try{const v=localStorage.getItem(k);return v===null?f:JSON.parse(v)}catch{return f}};
 async function getJSON(url){
  const r=await fetch(url,{cache:"no-store"});
