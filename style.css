@@ -3754,3 +3754,39 @@ body.mikaelProfileActive #livingDesktopIcon:after{content:"MIKAEL";position:abso
 #desktopArea > #gamesFolderStaticIcon{display:flex!important}
 @media(max-width:900px){#desktopArea{grid-template-columns:repeat(4,minmax(120px,1fr))!important}}
 @media(max-width:650px){#desktopArea{grid-template-columns:repeat(3,minmax(92px,1fr))!important}}
+
+/* MIKAEL PROFILE BUTTON/WINDOW FIX V2.5 */
+#openMikaelDatabase,#toggleMikaelProfile{position:relative!important;z-index:10!important;pointer-events:auto!important;cursor:pointer!important}
+#mikaelDatabaseWindow{position:fixed!important;top:50%!important;left:50%!important;transform:translate(-50%,-50%)!important;z-index:12000!important;pointer-events:auto!important}
+#mikaelDatabaseWindow.hidden{display:none!important}
+body.mikaelProfileActive #mikaelProfileStatus{font-weight:800!important;text-shadow:0 0 12px rgba(255,255,255,.35)}
+
+/* MIKAEL.EXE V2.7 — CLEAN REDO */
+#mikaelDatabaseWindow{
+  position:fixed!important;
+  top:50%!important;
+  left:50%!important;
+  transform:translate(-50%,-50%)!important;
+  z-index:50000!important;
+  pointer-events:auto!important;
+}
+#mikaelDatabaseWindow.hidden{display:none!important}
+#mikaelDatabaseWindow .windowScroll{
+  overflow:auto!important;
+  max-height:calc(82vh - 110px)!important;
+}
+#mikaelDatabaseWindow button,
+#mikaelDatabaseWindow [data-mikael-tab]{
+  pointer-events:auto!important;
+  cursor:pointer!important;
+  touch-action:manipulation!important;
+}
+#mikaelDatabaseWindow .mikaelTabs{
+  position:relative!important;
+  z-index:5!important;
+}
+#mikaelTabContent{
+  position:relative!important;
+  z-index:4!important;
+  min-height:240px!important;
+}

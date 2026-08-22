@@ -8,7 +8,7 @@
 
     <title>Lizzy ❤️</title>
 
-    <link rel="stylesheet" href="style.css?v=20260822-desktop-v24-final">
+    <link rel="stylesheet" href="style.css?v=20260822-v27-redo">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
 
@@ -1033,7 +1033,7 @@
     <section class="livingControlCard"><h3>📝 Sticky Note</h3><p id="stickyPreview">A note from Mikael.</p><div class="livingActions"><button id="stickyToggle">Show Note</button><button id="stickyNext">New Note</button></div></section>
     <section class="livingControlCard"><h3>🌤️ Mood of the Day</h3><p id="moodDisplay">Not selected</p><div id="moodChoices" class="moodChoices"></div></section>
     <section class="livingControlCard"><h3>⏳ Countdown</h3><p id="countdownDisplay">No countdown yet</p><input id="countdownName" placeholder="Event name"><input id="countdownDate" type="datetime-local"><div class="livingActions"><button id="countdownSave">Save</button><button id="countdownClear">Clear</button></div></section>
-    <section class="livingControlCard"><h3>🕴🏾 Mikael Profile</h3><p id="mikaelProfileStatus">Loading…</p><div class="livingActions"><button id="openMikaelDatabase">Open Mikael.exe</button><button id="toggleMikaelProfile">Activate Profile Mode</button></div></section>
+    <section class="livingControlCard"><h3>🕴🏾 Mikael Profile</h3><p id="mikaelProfileStatus">Loading…</p><div class="livingActions"><button id="openMikaelDatabase" type="button">Open Mikael.exe</button><button id="toggleMikaelProfile" type="button" onclick="if(!this.dataset.handledNow&&window.toggleMikaelProfileFallback)window.toggleMikaelProfileFallback()">Activate Mikael Profile</button></div></section>
    </div>
    <p class="livingRareHint">🕵🏾 Rare Mikael sightings happen on their own. Catch him before he disappears.</p>
  </div>
@@ -1513,8 +1513,8 @@ if (window.netlifyIdentity) {
   <button id="closeUnreleasedLetter" class="windowCloseButton">Close Classified File</button>
 </div>
 
-<script src="script.js?v=20260821-profile-v21"></script>
-<script src="living-desktop.js?v=20260821-profile-v21"></script>
+<script src="script.js?v=20260822-v27-redo"></script>
+<script src="living-desktop.js?v=20260822-mikael-buttons-v25"></script>
 <script src="internet.js?v=20260821-bank-selfcontained-final"></script>
 
 
@@ -1584,5 +1584,6 @@ if (window.netlifyIdentity) {
 
 <script src="seed-store.js?v=20260821-massive-rewards-v4"></script>
 <script src="letter-notifications.js?v=20260821-open-when-telegram-fixed"></script>
+<script src="mikael-exe.js?v=20260822-v27-redo"></script>
 </body>
 </html>
