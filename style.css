@@ -4143,3 +4143,18 @@ body[data-living-time="late"]:not(.mikaelTakeoverActive) #desktopArea{filter:bri
 
 /* SECRET SHELF V4 — CLASSIFIED PURCHASE VIEW */
 .classifiedPurchasedGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px;margin-top:14px}.classifiedPurchasedCard{min-height:175px;padding:17px;border-radius:16px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px}.classifiedPurchasedCard>div{font-size:38px}.classifiedPurchasedCard small{font-size:8px;letter-spacing:1.2px;opacity:.58;font-weight:900}.classifiedPurchasedCard b{font-size:13px;line-height:1.35}.classifiedPurchasedCard button{margin-top:auto!important;width:100%;padding:9px!important;border-radius:10px!important}.classifiedPurchasedCard span{margin-top:auto;font-size:9px;opacity:.55}.classifiedReader{position:relative;margin-top:18px;padding:23px;border-radius:18px;background:rgba(0,0,0,.18);border:1px solid rgba(255,255,255,.18)}.classifiedReader>button{position:absolute;right:12px;top:10px;width:32px!important;height:32px!important;padding:0!important;border-radius:50%!important}.classifiedReader>small{font-size:8px;font-weight:900;letter-spacing:1.5px;opacity:.58}.classifiedReader h3{font-size:21px!important;margin:7px 38px 13px 0!important}.classifiedReader pre{white-space:pre-wrap;font-family:inherit;font-size:11px;line-height:1.65;max-height:390px;overflow:auto;padding:15px;border-radius:12px;background:rgba(255,255,255,.06)}@media(max-width:800px){.classifiedPurchasedGrid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:520px){.classifiedPurchasedGrid{grid-template-columns:1fr}}
+
+/* V4.3 larger Secret Shelf and CLASSIFIED */
+#seedStoreWindow{width:min(1080px,95vw)!important;max-width:1080px!important}
+#secretShelfPanel{min-height:540px!important;padding:28px!important}
+#secretShelfPanel .secretShelfGrid{grid-template-columns:repeat(3,minmax(260px,1fr))!important;gap:20px!important}
+#secretShelfPanel .vaultItem{min-height:350px!important;padding:24px!important}
+#secretShelfPanel .vaultItemIcon{font-size:56px!important}
+#secretShelfPanel .vaultItem>strong{font-size:20px!important}
+#classifiedWindow{width:min(1020px,95vw)!important;max-width:1020px!important}
+.classifiedPurchasedGrid{grid-template-columns:repeat(2,minmax(310px,1fr))!important;gap:20px!important}
+.classifiedPurchasedCard{min-height:240px!important;padding:26px!important;border-radius:20px!important}
+.classifiedPurchasedCard>div{font-size:56px!important}.classifiedPurchasedCard b{font-size:17px!important}
+.classifiedReader{padding:30px!important}.classifiedReader h3{font-size:25px!important}.classifiedReader pre{font-size:12px!important;line-height:1.72!important;max-height:480px!important}
+@media(max-width:880px){#secretShelfPanel .secretShelfGrid{grid-template-columns:repeat(2,minmax(230px,1fr))!important}.classifiedPurchasedGrid{grid-template-columns:1fr!important}}
+@media(max-width:580px){#secretShelfPanel .secretShelfGrid{grid-template-columns:1fr!important}#seedStoreWindow,#classifiedWindow{width:96vw!important}}
