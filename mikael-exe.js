@@ -305,7 +305,7 @@ function showDecrypt() {
       <p>Enter the decryption phrase to continue.</p>
       <input id="mikaelDecryptCode" autocomplete="off" placeholder="ENTER DECRYPTION CODE">
       <button type="button" id="decryptMrPerfect">DECRYPT FILE</button>
-      <p class="decryptHint"><b>HINT:</b> Mikael definitely created this password himself.</p>
+      <p class="decryptHint"><b>HINT:</b> Remember your birthday gift… one of the cards may have been signed with the answer. 👀</p>
       <div id="decryptFeedback"></div>
     </div>`;
 }

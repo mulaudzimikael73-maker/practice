@@ -3800,3 +3800,184 @@ body.mikaelProfileActive #mikaelProfileStatus{font-weight:800!important;text-sha
 .dossierBody{margin-top:15px}.dossierBody p{font-size:12px;line-height:1.65;margin:0 0 13px}
 .mikaelDecrypt{text-align:center;max-width:560px;margin:0 auto}.decryptIcon{font-size:54px;margin:8px}.mikaelDecrypt input{display:block;width:min(420px,90%);margin:18px auto 8px;padding:12px 14px;border-radius:10px;border:1px solid rgba(255,255,255,.2);background:rgba(0,0,0,.25);color:inherit;text-align:center}
 .mikaelDecrypt #decryptMrPerfect{margin:4px auto!important}.decryptHint{font-size:10px;opacity:.65}.mikaelDecrypt #decryptFeedback{min-height:30px;margin-top:14px;font-size:12px;font-weight:800}
+
+/* =========================================================
+   MIKAEL.EXE V2.9 — APPROVED WINDOW / CLASSIFIED LAYOUT
+   ========================================================= */
+#mikaelDatabaseWindow{
+  width:min(1180px,92vw)!important;
+  height:min(760px,88vh)!important;
+  max-width:none!important;
+  max-height:none!important;
+  top:50%!important;
+  left:50%!important;
+  transform:translate(-50%,-50%)!important;
+  border-radius:24px!important;
+  overflow:hidden!important;
+}
+
+#mikaelDatabaseWindow .windowBar{
+  height:68px!important;
+  min-height:68px!important;
+  padding:0 24px!important;
+  box-sizing:border-box!important;
+}
+
+#mikaelDatabaseWindow .windowScroll{
+  height:calc(100% - 68px)!important;
+  max-height:none!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  padding:18px 22px 26px!important;
+  box-sizing:border-box!important;
+}
+
+#mikaelDatabaseWindow .mikaelHero{
+  min-height:130px!important;
+  padding:22px 30px!important;
+  margin-bottom:16px!important;
+  border-radius:20px!important;
+  box-sizing:border-box!important;
+}
+
+#mikaelDatabaseWindow .mikaelHero h2{
+  font-size:34px!important;
+  line-height:1.05!important;
+  margin:4px 0 8px!important;
+}
+
+#mikaelDatabaseWindow .mikaelHero p{
+  font-size:17px!important;
+  margin:0!important;
+}
+
+#mikaelDatabaseWindow .mikaelTabs{
+  display:grid!important;
+  grid-template-columns:repeat(7,minmax(0,1fr))!important;
+  gap:8px!important;
+  width:100%!important;
+  overflow:visible!important;
+  margin:0 0 14px!important;
+}
+
+#mikaelDatabaseWindow .mikaelTabs button{
+  min-width:0!important;
+  width:100%!important;
+  padding:12px 8px!important;
+  font-size:14px!important;
+  white-space:nowrap!important;
+  border-radius:12px!important;
+}
+
+#mikaelTabContent{
+  min-height:330px!important;
+  overflow:visible!important;
+}
+
+#mikaelDatabaseWindow .mikaelFiles{
+  display:grid!important;
+  grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  gap:12px!important;
+  align-items:stretch!important;
+}
+
+#mikaelDatabaseWindow .mikaelFiles article{
+  min-width:0!important;
+  min-height:225px!important;
+  padding:18px 14px!important;
+  border-radius:16px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  text-align:center!important;
+  box-sizing:border-box!important;
+}
+
+#mikaelDatabaseWindow .mikaelFiles article small{
+  font-size:10px!important;
+  letter-spacing:.7px!important;
+}
+
+#mikaelDatabaseWindow .mikaelFiles article h3{
+  font-size:18px!important;
+  line-height:1.15!important;
+  margin:14px 0 8px!important;
+  min-height:42px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+}
+
+#mikaelDatabaseWindow .mikaelFiles article p{
+  font-size:11px!important;
+  line-height:1.35!important;
+  min-height:32px!important;
+  margin:0 0 12px!important;
+}
+
+#mikaelDatabaseWindow .mikaelOpenFile{
+  margin-top:auto!important;
+  min-height:42px!important;
+  font-size:12px!important;
+  padding:9px 8px!important;
+  border-radius:12px!important;
+}
+
+#mikaelDatabaseWindow .mikaelDossier,
+#mikaelDatabaseWindow .mikaelDecrypt{
+  max-width:900px!important;
+  margin:0 auto!important;
+}
+
+#mikaelDatabaseWindow .dossierBody{
+  max-height:360px!important;
+  overflow-y:auto!important;
+  padding-right:8px!important;
+}
+
+#mikaelDatabaseWindow .decryptHint{
+  margin:14px auto 4px!important;
+  max-width:440px!important;
+  font-size:11px!important;
+  line-height:1.45!important;
+  opacity:.82!important;
+}
+
+@media(max-width:1050px){
+  #mikaelDatabaseWindow{
+    width:94vw!important;
+    height:86vh!important;
+  }
+  #mikaelDatabaseWindow .mikaelTabs{
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  }
+  #mikaelDatabaseWindow .mikaelFiles{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  }
+}
+
+@media(max-width:720px){
+  #mikaelDatabaseWindow{
+    width:96vw!important;
+    height:88vh!important;
+    border-radius:18px!important;
+  }
+  #mikaelDatabaseWindow .windowScroll{
+    padding:14px!important;
+  }
+  #mikaelDatabaseWindow .mikaelHero h2{
+    font-size:27px!important;
+  }
+  #mikaelDatabaseWindow .mikaelTabs{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+  #mikaelDatabaseWindow .mikaelFiles{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+}
+
+@media(max-width:470px){
+  #mikaelDatabaseWindow .mikaelFiles{
+    grid-template-columns:1fr!important;
+  }
+}
