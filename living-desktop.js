@@ -663,3 +663,171 @@ console.log("Lizzy Mail Daily Messages: ONLINE", MESSAGES.length, "messages");
  window.addEventListener("load",()=>setTimeout(render,350));
  LizzyPerf.add("stickyDayCheck",60000,refreshForNewDay);
 })();
+
+
+/* =========================================================
+   LIZZYOS V4.5 — LIVING DESKTOP PHASE 3
+   Time/Mood + Rare Mikael + System Activity
+   ========================================================= */
+(()=>{
+"use strict";
+const $=id=>document.getElementById(id);
+const read=(k,f)=>{try{const v=localStorage.getItem(k);return v===null?f:JSON.parse(v)}catch{return f}};
+const write=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const today=()=>new Date().toISOString().slice(0,10);
+const h=()=>new Date().getHours();
+
+function phase(){
+ const x=h();
+ if(x<5)return {id:"late",label:"Late Night",icon:"🌙",greet:"You're still awake?",mood:"Quiet Mode"};
+ if(x<12)return {id:"morning",label:"Morning",icon:"☀️",greet:"Good morning, Mabebeza",mood:"Fresh Start"};
+ if(x<17)return {id:"afternoon",label:"Afternoon",icon:"🌤️",greet:"Good afternoon, Agent Yelizaveta",mood:"Operational"};
+ if(x<21)return {id:"evening",label:"Evening",icon:"🌆",greet:"Good evening, Lizzy",mood:"Wind Down"};
+ return {id:"night",label:"Night",icon:"🌙",greet:"Night mode territory",mood:"After Hours"};
+}
+function applyPhase(){
+ const p=phase();
+ document.documentElement.dataset.lizzyTime=p.id;
+ let badge=$("lizzyTimeMoodBadge");
+ if(!badge){
+   badge=document.createElement("div");badge.id="lizzyTimeMoodBadge";
+   const desktop=document.querySelector(".desktop")||document.body;
+   desktop.appendChild(badge);
+ }
+ badge.innerHTML=`<span>${p.icon}</span><div><b>${esc(p.label)}</b><small>${esc(p.mood)}</small></div>`;
+ badge.title=p.greet;
+}
+applyPhase();
+LizzyPerf.add("timeMoodRefresh",60000,applyPhase);
+
+/* ---------- SYSTEM ACTIVITY ---------- */
+const normalActivity=[
+ "Desktop sync complete.",
+ "Checking local files… all good.",
+ "Background services stable.",
+ "Sticky Note service standing by.",
+ "Calendar service checked.",
+ "Lizzy Mail inbox synced.",
+ "Micky Bucs ledger balanced.",
+ "Daily Reward engine idle.",
+ "Token Jar inventory checked.",
+ "CLASSIFIED permissions verified.",
+ "Secret Shelf connection standing by.",
+ "Desktop mood engine recalibrated.",
+ "Checking for unread notifications…",
+ "System clock synchronized.",
+ "Personality module responding normally.",
+ "Agent session active.",
+ "Cleaning temporary desktop nonsense…",
+ "Memory cache optimized.",
+ "Window manager stable.",
+ "No critical errors detected."
+];
+const funActivity=[
+ "Scanning for attitude… elevated levels detected.",
+ "Agent Yelizaveta activity detected.",
+ "Four Eyes authentication successful.",
+ "Little Miss Attitude protocol armed.",
+ "Checking whether Mikael is right… result classified.",
+ "Searching for unnecessary arguments… 3 found.",
+ "Pink preference database verified.",
+ "Pasta priority remains unusually high.",
+ "MrPerfect.exe running in background.",
+ "Mabebeza status: online 💗",
+ "Checking Mikael confidence levels… still excessive.",
+ "Batman activity detected during daylight hours.",
+ "Cody Legal Team connection established.",
+ "Cody grappling assessment: decent.",
+ "Monitoring for anti-Mikael propaganda.",
+ "Hater Investigation remains open.",
+ "Bank of Micky audit mysteriously passed.",
+ "Reverse Token probability recalculated.",
+ "Checking if Lizzy is crying for 'detox' purposes… inconclusive.",
+ "Emotional cleansing propaganda database updated.",
+ "Mikael dance rating remains under dispute.",
+ "Bowling threat assessment: HIGH.",
+ "Operating system survived another Lizzy session."
+];
+const rareActivity=[
+ "⚠ RARE EVENT: Mikael.exe briefly achieved administrator privileges.",
+ "🦇 Gotham uplink detected. Batman insists daylight is acceptable.",
+ "⚖ Cody's lawyer has entered the server.",
+ "🔴 CLASSIFIED: Agent Mikhail Petrov accessed subject records.",
+ "👀 Mikael was detected behind a desktop folder. He has escaped.",
+ "💗 SYSTEM ANOMALY: Lizzy presence improved performance by 97%.",
+ "🚨 Mr Perfect self-rating detected: 10/10. Verification refused.",
+ "🕵️ Agent Yelizaveta surveillance counter-surveillance detected."
+];
+let activityHistory=[];
+function activityLine(){
+ const roll=Math.random();
+ const pool=roll<0.03?rareActivity:roll<0.34?funActivity:normalActivity;
+ const options=pool.filter(x=>!activityHistory.includes(x));
+ const list=options.length?options:pool;
+ const text=list[Math.floor(Math.random()*list.length)];
+ activityHistory.push(text);activityHistory=activityHistory.slice(-8);
+ return {text,rare:pool===rareActivity,at:new Date()};
+}
+function ensureActivity(){
+ let panel=$("lizzySystemActivity");
+ if(panel)return panel;
+ panel=document.createElement("section");panel.id="lizzySystemActivity";panel.className="lizzySystemActivity";
+ panel.innerHTML=`<div class="activityHead"><span>●</span><b>SYSTEM ACTIVITY</b><button type="button" id="activityCollapse">−</button></div><div id="lizzyActivityLines"></div>`;
+ (document.querySelector(".desktop")||document.body).appendChild(panel);
+ $("activityCollapse")?.addEventListener("click",()=>{
+   panel.classList.toggle("activityCollapsed");
+   $("activityCollapse").textContent=panel.classList.contains("activityCollapsed")?"+":"−";
+ });
+ return panel;
+}
+function pushActivity(){
+ const panel=ensureActivity(),box=$("lizzyActivityLines");if(!box)return;
+ const a=activityLine(),row=document.createElement("div");
+ row.className="activityRow"+(a.rare?" rareActivity":"");
+ row.innerHTML=`<small>${a.at.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}</small><span>${esc(a.text)}</span>`;
+ box.prepend(row);
+ while(box.children.length>5)box.lastElementChild.remove();
+}
+ensureActivity();
+pushActivity();
+LizzyPerf.add("systemActivityFeed",18000,pushActivity);
+
+/* ---------- RARE MIKAEL APPEARANCES ---------- */
+const APPEAR_KEY="lizzyRareMikaelV45";
+const appearances=[
+ {type:"peek",emoji:"👀",title:"MIKAEL DETECTED",text:"He was hiding behind a folder. Apparently this counts as work."},
+ {type:"batman",emoji:"🦇",title:"DAYLIGHT BATMAN",text:"Mikael has ignored Gotham's operating hours again."},
+ {type:"exe",emoji:"🕴️",title:"MIKAEL.EXE",text:"A wild Mikael.exe appeared, checked the system, and refused to elaborate."},
+ {type:"perfect",emoji:"😌",title:"MR PERFECT",text:"Rare system message: Mikael would like it recorded that he remains Mr Perfect."},
+ {type:"wave",emoji:"👋🏾",title:"RARE MIKAEL APPEARANCE",text:"Just checking that you're having a good day, Mabebeza."}
+];
+function canAppear(){
+ const s=read(APPEAR_KEY,{day:"",count:0,last:0});
+ if(s.day!==today())return true;
+ return s.count<2 && Date.now()-Number(s.last||0)>1000*60*90;
+}
+function maybeMikael(){
+ if(!canAppear()||Math.random()>0.10)return; // checked infrequently; appearance remains rare
+ const state=read(APPEAR_KEY,{day:today(),count:0,last:0});
+ const current=state.day===today()?state:{day:today(),count:0,last:0};
+ const a=appearances[Math.floor(Math.random()*appearances.length)];
+ current.count++;current.last=Date.now();write(APPEAR_KEY,current);
+ showMikael(a);
+}
+function showMikael(a){
+ if($("rareMikaelAppearance"))return;
+ const el=document.createElement("div");el.id="rareMikaelAppearance";el.className=`rareMikaelAppearance ${a.type}`;
+ el.innerHTML=`<div class="rareMikaelEmoji">${a.emoji}</div><div><small>${esc(a.title)}</small><p>${esc(a.text)}</p></div><button type="button" aria-label="close">×</button>`;
+ (document.querySelector(".desktop")||document.body).appendChild(el);
+ requestAnimationFrame(()=>el.classList.add("show"));
+ el.querySelector("button").onclick=()=>dismissMikael(el);
+ setTimeout(()=>dismissMikael(el),11000);
+}
+function dismissMikael(el){
+ if(!el||!el.isConnected)return;
+ el.classList.remove("show");setTimeout(()=>el.remove(),450);
+}
+// One check every ~12 minutes; 10% roll + max 2/day + 90m cooldown.
+LizzyPerf.add("rareMikaelCheck",720000,maybeMikael);
+})();
