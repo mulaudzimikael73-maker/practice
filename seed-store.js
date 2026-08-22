@@ -232,57 +232,230 @@ renderExtras();renderBank();renderAchievements();
 
 
 /* =========================================================
-   SECRET SHELF / VAULT V3
-   Persistent counter offers + new rotating vault stock.
+   SECRET SHELF V4 — persistent negotiation + classified routing
    ========================================================= */
 (()=>{
 "use strict";
 const $=id=>document.getElementById(id);
-const read=(k,f)=>{try{const v=localStorage.getItem(k);return v===null?f:JSON.parse(v)}catch(e){return f}};
+const read=(k,f)=>{try{const v=localStorage.getItem(k);return v===null?f:JSON.parse(v)}catch{return f}};
 const write=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
-const WALLET="lizzyMickyBucsV1";
-const SHELF="lizzySecretShelfV1";
-const LETTERS="lizzyPurchasedLettersV1";
-const MTOKENS="lizzyMikaelTokensV1";
+const WALLET="lizzyMickyBucsV1",SHELF="lizzySecretShelfV1",LETTERS="lizzyPurchasedLettersV1",DOSSIERS="lizzyPurchasedDossiers",MTOKENS="lizzyMikaelTokensV1";
 const WORKER=window.LIZZY_TELEGRAM_WORKER_URL||"https://lizzyos-notifications.mulaudzimikael73.workers.dev/";
-
 const LETTER002=`Lizzy,
 
-Apparently one unreleased letter was not enough.
+I think one of the funniest things about getting to know someone is that eventually you start remembering things you never actually tried to remember.
 
-I was trying to work out what to write in this one without just repeating all the things I've already said about you, which is slightly difficult because you have somehow become involved in an unreasonable amount of my thoughts, jokes and website ideas.
+Just little things.
 
-So instead, this one is about something a little different.
+The things you like. The things that annoy you. The way you react to certain jokes. The things I know are going to earn me a look before I've even finished saying them.
 
-I like us.
+Somehow I've collected a ridiculous amount of Lizzy information.
 
-I like how unserious we can be. I like that a completely normal conversation can somehow become an argument about something ridiculous, a court case involving Cody, a Batman incident, or another reason for you to accuse me of being dramatic.
+I know you love pink — apparently every possible shade of it.
 
-I like that we have our own language now — the nicknames, the jokes, Mr Perfect, Little Miss Attitude, Mabebeza, Agent Yelizaveta and all the random things that probably make absolutely no sense to anyone else.
+I know pasta has a suspiciously strong position in your life.
 
-I like that I can tease you and, even when you pretend to be annoyed, I can usually tell when you're trying not to laugh.
+I know there are approximately seventeen different versions of you depending on the situation.
 
-And I like the quieter parts too.
+There's Lizzy.
+There's Mabebeza.
+There's Agent Yelizaveta.
+There's Little Miss Attitude — who, for legal reasons, I will not comment on further.
 
-The checking in. The normal conversations. Learning the little things about you. Remembering things you've said. Finding out what makes you happy, what annoys you, what makes you laugh and what earns me that look that says I should probably stop talking.
+And then there's the version of you that laughs when you're trying very hard not to give me the satisfaction of knowing I made you laugh.
 
-I don't know exactly what all of this is supposed to look like from the outside.
+That's probably one of my favourites.
 
-But from where I'm standing, I know I've really enjoyed whatever we've been building.
+I also notice how much you enjoy crying.
 
-Even if a concerning percentage of it now exists inside a fake operating system.
+At this point, I refuse to believe it is accidental. It appears to be one of your hobbies. 😂
 
-So yes, Lizzy, this is another classified document confirming that I like having you around.
+I know you will try to tell me it's “cleansing,” a “detox,” an “emotional release,” or whatever propaganda you decide to give me that day.
 
-Please don't let this information increase your ego too much.
+LizzyOS Intelligence remains unconvinced.
 
-There is only room for one person with an unreasonable ego in LizzyOS and I already claimed the position.
+As far as this investigation is concerned, you simply enjoy a good cry and have developed excellent PR around it.
+
+But it's not really the big things I've enjoyed learning.
+
+It's the random little details.
+
+The things you mention once that somehow stay in my head.
+
+The conversations that weren't supposed to be important but become things I remember anyway.
+
+The jokes that go on for far longer than they should.
+
+Even the arguments where I'm obviously right and you require a little extra time to realise it.
+
+(Please don't close the letter.)
+
+And somewhere along the way, all those little things started becoming part of this ridiculous world we've created.
+
+That's probably what LizzyOS really is when you remove all the missions, Micky Bucs, classified documents, Reverse Tokens, Batman sightings and highly questionable financial institutions.
+
+It's just a collection of little things I've remembered about you.
+
+And apparently I cared enough about those little things to turn them into an entire operating system.
+
+Which, now that I've written it down, sounds slightly insane.
+
+Anyway.
+
+There isn't some massive secret hidden at the end of this letter.
+
+I just wanted you to know that I notice you.
+
+Probably more than you realise.
+
+And I really like the person I've been getting to know.
+
+Even Little Miss Attitude.
+
+Occasionally.
 
 — Mikael
 a.k.a. Mr Perfect 😌
 
-P.S. You bought another unreleased letter. At this point you're basically funding the Mr Perfect publishing division. 😂`;
+P.S. If you paid an unreasonable amount of Micky Bucs for this letter, please direct all refund requests to the Bank of Micky.
 
+They will be ignored.`;
+const DOSSIER001=`LIZZYOS INTELLIGENCE DIVISION
+CASE: #001-YEL — INITIAL SUBJECT ASSESSMENT
+CLASSIFICATION: CONFIDENTIAL 🔴
+
+SUBJECT: Lebone Elizabeth Kganyago
+CODENAME: Agent Yelizaveta
+KNOWN ALIASES: Lizzy, Little Miss Attitude, Mabebeza, Four Eyes
+INVESTIGATING OFFICER: Agent Mikhail Petrov
+
+PURPOSE OF FILE:
+Establish an initial intelligence profile for the individual who somehow became important enough to require an entire operating system.
+
+PRELIMINARY FINDINGS
+
+01 — INTELLIGENCE
+Subject is smart, opinionated and very capable of forming her own conclusions.
+Operational downside: she frequently uses these abilities to disagree with Mikael.
+
+02 — ATTITUDE
+Levels fluctuate between reasonable and Little Miss Attitude.
+Estimated attitude capacity: Extremely high.
+Likelihood of admitting this assessment is accurate: Low.
+
+03 — COMPETITIVE BEHAVIOUR
+Subject has demonstrated suspicious confidence during competitive activities.
+Bowling threat level: HIGH.
+Mikael survival probability: Under review.
+
+04 — PERSONAL INTERESTS
+Pink appears to have achieved near-total control of the subject's colour preferences.
+Pasta remains a strategically important food group.
+
+05 — MIKAEL TOLERANCE
+Despite repeated exposure to Mikael's jokes, unnecessary confidence, Batman behaviour and Mr Perfect propaganda, the subject continues to communicate with him.
+Investigators consider this statistically unusual.
+
+BEHAVIOURAL SUMMARY
+Kindness: High
+Intelligence: High
+Attitude: Also high
+Competitive instinct: Dangerous
+Ability to make Mikael laugh: Confirmed
+Ability to argue: Elite
+Tolerance for nonsense: Higher than expected
+Likelihood of becoming the subject of additional classified files: 100%
+
+FINAL ASSESSMENT:
+Agent Yelizaveta is officially classified as:
+HIGH VALUE • HIGH ATTITUDE • REQUIRES CONTINUED OBSERVATION
+
+CASE STATUS: OPEN 🔐
+
+NOTE FROM INVESTIGATING OFFICER:
+This was supposed to be one file.
+That plan has already failed.`;
+const DOSSIER002=`LIZZYOS INTELLIGENCE DIVISION
+CASE: #002-H8R — THE HATER INVESTIGATION
+CLASSIFICATION: TOP SECRET 🔴
+SUBJECT: Agent Yelizaveta
+ALIAS: Little Miss Attitude
+INVESTIGATING OFFICER: Agent Mikhail Petrov
+
+LizzyOS has detected an unusually high level of hater activity originating from Agent Yelizaveta. Following numerous suspicious comments, questionable opinions and completely unnecessary attacks on Mikael, a formal investigation was launched.
+
+Subject has also openly expressed a general dislike of men. This raises an important question: How did Mikael somehow survive the selection process?
+
+OFFICIAL CHARGES
+01 — Unprovoked Mikael Slander. GUILTY.
+02 — Excessive Attitude. VERY GUILTY.
+03 — Being a Professional Hater. GUILTY WITH DISTINCTION. 🏆
+04 — Refusing to Admit When Mikael Is Right. GUILTY.
+05 — The Mr Perfect Incident. Evidence confirms that “Mr Perfect” originated from the subject herself. EXTREMELY GUILTY. 😌
+
+BEHAVIOURAL ASSESSMENT
+Hater Level: 98%
+Attitude: 97%
+Stubbornness: [SYSTEM OVERLOAD]
+Ability to argue: Elite
+Likelihood of admitting Mikael is right: 2%
+Likelihood of arguing with this report: 100%
+
+FINAL VERDICT: GUILTY ON ALL COUNTS.
+SENTENCE: Continued association with Mikael. No possibility of parole. 😂
+
+CASE STATUS: CLOSED*
+*Subject will almost certainly provide enough evidence to reopen this investigation.*`;
+const DOSSIER003=`LIZZYOS SPECIAL INVESTIGATIONS UNIT
+CASE: #003-MP — OPERATION: MR PERFECT
+CLASSIFICATION: ULTRA SECRET 🔴
+
+Agent Yelizaveta referred to Mikhail as “MR PERFECT.” This was not a nickname created by Mikael. It came directly from Lizzy herself.
+
+CENTRAL QUESTION:
+Why would a woman with such a well-documented history of hating men willingly give one of them the title Mr Perfect?
+
+THEORY #001 — Temporary Loss of Judgement
+Probability: 8%.
+
+THEORY #002 — Sarcasm
+LizzyOS ruling: BORING. NEXT THEORY.
+
+THEORY #003 — THE DANCE INCIDENT 🕺🏾
+Intelligence reports indicate that Agent Mikhail possesses exceptional dancing abilities.
+Technique: Incredible
+Rhythm: Unmatched
+Footwork: World class
+Confidence: Possibly excessive
+Effect on Agent Yelizaveta: Significant
+
+Investigators believe there is a strong possibility that Mikael's amazing dance skills won her heart. Agent Yelizaveta's objection has already been rejected. 😂
+
+THEORY #004 — She Secretly Thinks Mikael Is Amazing
+Exhibit A: She called him Mr Perfect.
+Exhibit B: She continues talking to him despite allegedly being a professional hater.
+Exhibit C: The aforementioned dancing.
+Exhibit D: [REDACTED]
+Exhibit E: [REDACTED]
+Exhibit F: Why are you still reading this file, Lizzy? 👀
+
+MIKHAIL PETROV ASSESSMENT
+Cheekiness: 96%
+Confidence: 99%
+Dancing: 100% 🕺🏾
+Ability to annoy Lizzy: Elite
+Actually Perfect: Under investigation
+Believes he's perfect: Unfortunately, yes.
+
+CRITICAL CONTRADICTION
+FACT ONE: Lizzy hates men.
+FACT TWO: Mikael is a man.
+FACT THREE: Lizzy called Mikael Mr Perfect.
+
+Leading theory: D — ALL OF THE ABOVE.
+
+CASE STATUS: UNSOLVED 🔐
+Denial will be recorded as additional evidence.`;
 const CODY_LEGAL_DOCS=`LIZZYOS LEGAL DEPARTMENT
 CONFIDENTIAL CASE FILE
 
@@ -298,19 +471,13 @@ This document serves as formal notice that Cody Aladeen is now represented by Li
 The client would like the record to show that his grappling skills have been assessed as DECENT.
 
 Mikael may disagree with this assessment.
-
 Mikael is strongly advised to keep those disagreements to himself.
 
 SPECIAL PROVISIONS:
-
 1. Mikael may not test new grappling techniques on Cody without prior approval from legal counsel.
-
 2. Cody retains the right to defend himself using paws, speed, strategic retreat, dramatic staring, or immediate contact with his lawyer.
-
 3. Any attempt by Mikael to claim that he could “probably take Cody” may be used against him in the Court of LizzyOS.
-
 4. Cody is entitled to reasonable access to treats, naps, windows and legal representation.
-
 5. Lizzy reserves the right to introduce additional charges whenever Mikael is being suspicious.
 
 LEGAL RISK ASSESSMENT:
@@ -320,7 +487,6 @@ Mikael's confidence before legal representation: High.
 Mikael's confidence after discovering Lizzy is the lawyer: Significantly reduced.
 
 FINAL NOTICE:
-
 Mikael is reminded that fighting someone who can grapple you is one problem.
 
 Fighting someone who can grapple you AND sue you is a completely different administrative situation.
@@ -331,213 +497,28 @@ Legal Counsel for Cody Aladeen
 
 Filed by: LizzyOS Legal Department
 Mikael's objection: DENIED.`;
-
 const ITEMS=[
- {id:"letter_002",icon:"💌",publicName:"Unreleased Letter #002",kind:"letter",content:LETTER002,teaser:"A second unreleased document from the Mr Perfect archives."},
- {id:"mystery_reward",icon:"🎁",publicName:"Mystery Reward",kind:"mikael_token",teaser:"Contents remain classified until the deal is complete."},
- {id:"archive_x17",icon:"🗃️",publicName:"Sealed Archive X-17",kind:"document",content:CODY_LEGAL_DOCS,teaser:"Origin: REDACTED • Contents: SEALED • Clearance: UNKNOWN"}
+{id:"letter_002",icon:"💌",publicName:"Unreleased Letter #002",kind:"letter",content:LETTER002,teaser:"An unreleased letter. Contents unavailable before purchase."},
+{id:"mystery_reward",icon:"🎁",publicName:"Mystery Reward",kind:"mikael_token",teaser:"Contents remain classified until the deal is complete."},
+{id:"archive_x17",icon:"🗃️",publicName:"Sealed Archive X-17",kind:"document",content:CODY_LEGAL_DOCS,teaser:"Origin: REDACTED • Contents: SEALED • Clearance: UNKNOWN"},
+{id:"dossier_001",icon:"📁",publicName:"Classified File #001",kind:"dossier",title:"Classified File #001 — Initial Subject Assessment",content:DOSSIER001,teaser:"SUBJECT DATA: REDACTED • CASE: #001"},
+{id:"hater_file",icon:"📁",publicName:"Classified File #002",kind:"dossier",title:"Classified File #002 — The Hater Investigation",content:DOSSIER002,teaser:"CASE: #002-H8R • CONTENTS: CLASSIFIED"},
+{id:"mrperfect_file",icon:"📁",publicName:"Classified File #003",kind:"dossier",title:"Classified File #003 — Operation: Mr Perfect",content:DOSSIER003,teaser:"CASE: #003-MP • ULTRA SECRET"}
 ];
-
-const wallet=()=>Number(localStorage.getItem(WALLET)||0);
-const setWallet=n=>localStorage.setItem(WALLET,String(Math.max(0,Math.floor(Number(n)||0))));
-const shelf=()=>{
- const s=read(SHELF,{owned:{},bids:{}});
- s.owned=s.owned||{};s.bids=s.bids||{};
- return s;
-};
-const saveShelf=s=>write(SHELF,s);
-
-function bidStatus(item,bid,owned){
- if(owned)return "OWNED 🔓";
- if(bid?.status==="pending")return `YOUR OFFER: ${bid.amount} MB • WAITING FOR MIKAEL`;
- if(bid?.status==="countered")return `MIKAEL'S COUNTER: ${bid.counterOffer} MB`;
- if(bid?.status==="rejected")return "OFFER REJECTED — NEGOTIATION REOPENED";
- return "NEGOTIATION OPEN";
-}
-
-function renderShelf(){
- const host=$("secretShelfPanel");if(!host)return;
- const s=shelf();
- host.innerHTML=`<div class="secretVaultHeader">
-   <div><small>SECRET SHELF // RESTRICTED MARKET</small><h3>🔐 The Vault</h3></div>
-   <div class="vaultWallet">AVAILABLE: <b>${wallet()} MB</b></div>
- </div>
- <p class="seedStoreIntro">No fixed prices. Make Mikael an offer. If Mikael counters, his counter stays here until you submit another bid.</p>
- <div class="secretShelfGrid">${ITEMS.map(item=>{
-   const owned=!!s.owned[item.id],bid=s.bids[item.id];
-   const countered=!owned&&bid?.status==="countered"&&Number(bid.counterOffer)>0;
-   const status=bidStatus(item,bid,owned);
-   const controls=owned?"":`
-    ${countered?`<div class="persistentCounter"><small>COUNTER OFFER FROM MIKAEL</small><strong>${bid.counterOffer} MB</strong><span>Your last bid: ${bid.amount||"—"} MB</span></div>`:""}
-    <div class="vaultBidControls">
-      <input type="number" min="1" data-bid-input="${item.id}" placeholder="${countered?`Make a new bid against ${bid.counterOffer} MB`:"Your offer in MB"}">
-      <button data-bid="${item.id}">${countered?"Make Another Bid":"Submit Offer"}</button>
-    </div>`;
-   let ownedAction="";
-   if(owned&&item.kind==="letter")ownedAction=`<small class="ownedDestination">💌 Saved to Open When → Purchased Letters</small>`;
-   if(owned&&item.kind==="mikael_token")ownedAction=`<small class="ownedDestination">🔄 Revealed as UNO Reverse → Token Jar</small>`;
-   if(owned&&item.kind==="document")ownedAction=`<button class="openOwnedVaultFile" data-open-vault-file="${item.id}">OPEN ACQUIRED FILE</button>`;
-   const displayName=owned&&item.id==="archive_x17"?"Cody Legal Documents":item.publicName;
-   const displayTeaser=owned&&item.id==="archive_x17"?"⚖️ Confidential legal documents recovered from the sealed archive.":item.teaser;
-   return `<article class="secretItem vaultItem ${countered?"hasCounter":""} ${owned?"ownedVaultItem":""}">
-      <div class="vaultItemIcon">${item.icon}</div>
-      <strong>${displayName}</strong>
-      <p>${displayTeaser}</p>
-      <small class="vaultStatus">${status}</small>
-      ${controls}${ownedAction}
-   </article>`;
- }).join("")}</div>
- <div id="vaultOwnedFileReader"></div>`;
- host.querySelectorAll("[data-bid]").forEach(btn=>btn.onclick=()=>submitBid(btn.dataset.bid));
- host.querySelectorAll("[data-open-vault-file]").forEach(btn=>btn.onclick=()=>openOwnedFile(btn.dataset.openVaultFile));
-}
-
-function openOwnedFile(id){
- const item=ITEMS.find(x=>x.id===id);
- const s=shelf();
- if(!item||!s.owned[item.id]||item.kind!=="document")return;
- const box=$("vaultOwnedFileReader");if(!box)return;
- box.innerHTML=`<section class="vaultDocumentReader">
-   <button type="button" id="closeVaultDocument">×</button>
-   <small>ACQUIRED VAULT DOCUMENT // CONFIDENTIAL</small>
-   <h3>⚖️ Cody Legal Documents</h3>
-   <pre>${item.content.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]))}</pre>
- </section>`;
- $("closeVaultDocument")?.addEventListener("click",()=>box.innerHTML="");
- box.scrollIntoView({behavior:"smooth",block:"nearest"});
-}
-
-async function submitBid(id){
- const item=ITEMS.find(x=>x.id===id);if(!item)return;
- const input=document.querySelector(`[data-bid-input="${CSS.escape(id)}"]`);
- const amount=Math.floor(Number(input?.value));
- if(!amount||amount<1)return alert("Enter an offer first.");
- if(amount>wallet())return alert("You cannot offer more Micky Bucs than you currently have.");
- try{
-   const res=await fetch(WORKER,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
-     type:"secret_shelf_bid",item:item.id,offer:amount
-   })});
-   const data=await res.json();
-   if(!res.ok||!data.success||!data.claimId)throw new Error(data.error||"Offer failed");
-   const s=shelf();
-   // A new bid intentionally replaces the previous counter for this item.
-   s.bids[id]={claimId:data.claimId,amount,status:"pending",counterOffer:null,createdAt:new Date().toISOString()};
-   saveShelf(s);renderShelf();
- }catch(e){
-   console.error(e);
-   alert("The offer could not be sent. Please try again.");
- }
-}
-
-function grant(item,price){
- const s=shelf();
- if(s.owned[item.id])return true;
- price=Math.floor(Number(price)||0);
- if(price<1||wallet()<price)return false;
- setWallet(wallet()-price);
- s.owned[item.id]={at:new Date().toISOString(),price};
- saveShelf(s);
-
- if(item.kind==="letter"){
-   const list=read(LETTERS,[]);
-   if(!list.some(x=>x.id===item.id))list.push({id:item.id,title:item.publicName,content:item.content});
-   write(LETTERS,list);
-   renderLetters();
- }
- if(item.kind==="mikael_token"){
-   const t=read(MTOKENS,{inventory:{},history:[]});
-   t.inventory=t.inventory||{};t.history=t.history||[];
-   t.inventory["UNO Reverse"]=Number(t.inventory["UNO Reverse"]||0)+1;
-   t.history.push({type:"earned",token:"UNO Reverse",source:"Mystery Reward",at:new Date().toISOString()});
-   write(MTOKENS,t);
-   renderMikaelTokens();
- }
- window.dispatchEvent(new Event("lizzyStoreRefresh"));
- return true;
-}
-
-async function syncShelfState(){
- const s=shelf();let dirty=false;
- for(const item of ITEMS){
-   if(s.owned[item.id])continue;
-   try{
-     const r=await fetch(`${WORKER}?shelfItem=${encodeURIComponent(item.id)}`,{cache:"no-store"});
-     if(!r.ok)continue;
-     const data=await r.json(),remote=data.state;
-     if(!remote?.claimId)continue;
-     const local=s.bids[item.id];
-     // Server wins only when it represents the same/newer negotiation.
-     const remoteTime=Date.parse(remote.updatedAt||remote.createdAt||0)||0;
-     const localTime=Date.parse(local?.updatedAt||local?.createdAt||0)||0;
-     if(!local||remote.claimId===local.claimId||remoteTime>=localTime){
-       s.bids[item.id]={
-         claimId:remote.claimId,
-         amount:Number(remote.offer||local?.amount||0),
-         status:remote.status||"pending",
-         counterOffer:remote.counterOffer==null?null:Number(remote.counterOffer),
-         createdAt:remote.createdAt||local?.createdAt||new Date().toISOString(),
-         updatedAt:remote.updatedAt||remote.decidedAt||new Date().toISOString()
-       };
-       dirty=true;
-     }
-   }catch(e){}
- }
- if(dirty)saveShelf(s);
-}
-
-async function pollShelf(){
- await syncShelfState();
- const s=shelf();let dirty=false;
- for(const item of ITEMS){
-   const bid=s.bids[item.id];
-   if(!bid?.claimId||s.owned[item.id]||!["pending","countered"].includes(bid.status))continue;
-   try{
-     const r=await fetch(`${WORKER}?claimId=${encodeURIComponent(bid.claimId)}`,{cache:"no-store"});
-     if(!r.ok)continue;
-     const data=await r.json(),c=data.claim||data;
-     if(c.status==="accepted"){
-       const price=Number(c.offer??bid.amount);
-       if(grant(item,price)){bid.status="accepted";bid.updatedAt=new Date().toISOString();dirty=true;}
-     }else if(c.status==="rejected"){
-       bid.status="rejected";bid.updatedAt=c.decidedAt||new Date().toISOString();dirty=true;
-     }else if(c.status==="countered"){
-       bid.status="countered";
-       bid.counterOffer=Number(c.counterOffer);
-       bid.updatedAt=c.decidedAt||new Date().toISOString();
-       dirty=true;
-     }
-   }catch(e){}
- }
- if(dirty)saveShelf(s);
- renderShelf();
-}
-
-function renderLetters(){
- const win=$("openWhenWindow")||$("openWhenFolderWindow");if(!win)return;
- const host=win.querySelector(".windowScroll")||win;
- let box=$("purchasedLettersBox");
- if(!box){box=document.createElement("section");box.id="purchasedLettersBox";host.appendChild(box);}
- const list=read(LETTERS,[]);
- box.innerHTML=list.length?`<h3>🛍️ Purchased Letters</h3>${list.map(x=>`<details class="purchasedLetter"><summary>💌 ${x.title}</summary><pre>${x.content}</pre></details>`).join("")}`:"";
-}
-
-function renderMikaelTokens(){
- const win=$("tokenJarWindow");if(!win)return;
- const host=win.querySelector(".windowScroll")||win;
- let box=$("mikaelTokensBox");
- if(!box){box=document.createElement("section");box.id="mikaelTokensBox";host.appendChild(box);}
- const t=read(MTOKENS,{inventory:{}}),n=Number(t.inventory?.["UNO Reverse"]||0);
- box.innerHTML=n?`<h3>🕴️ Mikael's Tokens</h3><div class="tokenCard"><div class="tokenCardEmoji">🔄</div><div><strong>UNO Reverse</strong><p>Mikael has the power: one playful, reasonable request for Lizzy.</p></div><div class="tokenCount">×${n}</div></div>`:"";
-}
-
-$("seedStoreIcon")?.addEventListener("click",()=>setTimeout(()=>{renderShelf();pollShelf()},60));
-document.querySelector('[data-store-tab="secret"]')?.addEventListener("click",()=>setTimeout(pollShelf,30));
-$("openWhenIcon")?.addEventListener("click",()=>setTimeout(renderLetters,60));
-$("tokenJarIcon")?.addEventListener("click",()=>setTimeout(renderMikaelTokens,60));
-window.addEventListener("focus",()=>{if(!$("secretShelfPanel")?.classList.contains("hidden"))pollShelf()});
-setInterval(pollShelf,15000);
-renderShelf();renderLetters();renderMikaelTokens();
-setTimeout(pollShelf,500);
+const wallet=()=>Number(localStorage.getItem(WALLET)||0),setWallet=n=>localStorage.setItem(WALLET,String(Math.max(0,Math.floor(Number(n)||0))));
+const shelf=()=>{const s=read(SHELF,{owned:{},bids:{}});s.owned=s.owned||{};s.bids=s.bids||{};return s},saveShelf=s=>write(SHELF,s);
+function addDossier(i,price=0){let l=read(DOSSIERS,[]);if(!Array.isArray(l))l=[];if(!l.some(x=>x.id===i.id)){l.push({id:i.id,title:i.title,content:i.content,price,acquiredAt:new Date().toISOString()});write(DOSSIERS,l)}window.dispatchEvent(new Event("lizzyClassifiedUpdated"))}
+function migrate(){const s=shelf();if(s.owned.hater_file)addDossier(ITEMS.find(x=>x.id==="hater_file"),s.owned.hater_file.price||0);if(s.owned.vault||s.owned.mrperfect_file)addDossier(ITEMS.find(x=>x.id==="mrperfect_file"),s.owned.vault?.price||s.owned.mrperfect_file?.price||0);const old=read("lizzyVaultRewardsV1",[]);if(Array.isArray(old)&&old.some(x=>x.id==="mrperfect_file"||String(x.title||"").includes("#003")))addDossier(ITEMS.find(x=>x.id==="mrperfect_file"),0);let l=read(LETTERS,[]);if(Array.isArray(l)){const f=l.filter(x=>!(x.id==="letter_002"&&String(x.content||"").includes("I like us.")));if(f.length!==l.length)write(LETTERS,f)}}
+function st(b,o){if(o)return"OWNED 🔓";if(b?.status==="pending")return`YOUR OFFER: ${b.amount} MB • WAITING FOR MIKAEL`;if(b?.status==="countered")return`MIKAEL'S COUNTER: ${b.counterOffer} MB`;if(b?.status==="rejected")return"OFFER REJECTED — NEGOTIATION REOPENED";return"NEGOTIATION OPEN"}
+function renderShelf(){const h=$("secretShelfPanel");if(!h)return;const s=shelf();h.innerHTML=`<div class="secretVaultHeader"><div><small>SECRET SHELF // RESTRICTED MARKET</small><h3>🔒 Mikael's Secret Shelf</h3></div><div class="vaultWallet">AVAILABLE: <b>${wallet()} MB</b></div></div><p class="seedStoreIntro">No fixed prices. Make Mikael an offer. His counter stays visible until you make another bid.</p><div class="secretShelfGrid">${ITEMS.map(i=>{const o=!!s.owned[i.id],b=s.bids[i.id],c=!o&&b?.status==="countered"&&Number(b.counterOffer)>0;let ac="";if(o&&i.kind==="letter")ac='<small class="ownedDestination">💌 Saved to Open When → Purchased Letters</small>';if(o&&i.kind==="mikael_token")ac='<small class="ownedDestination">🔄 Revealed as UNO Reverse → Token Jar</small>';if(o&&i.kind==="dossier")ac='<small class="ownedDestination">🗃️ Saved to the CLASSIFIED desktop folder.</small>';if(o&&i.kind==="document")ac=`<small class="ownedDestination">⚖️ Identity revealed after purchase.</small><button class="openOwnedVaultFile" data-open-shelf-file="${i.id}">OPEN ACQUIRED FILE</button>`;const nm=o&&i.id==="archive_x17"?"Cody Legal Documents":i.publicName,te=o&&i.id==="archive_x17"?"⚖️ Confidential legal documents recovered from the sealed archive.":i.teaser;return `<article class="secretItem vaultItem ${c?"hasCounter":""} ${o?"ownedVaultItem":""}"><div class="vaultItemIcon">${i.icon}</div><strong>${nm}</strong><p>${te}</p><small class="vaultStatus">${st(b,o)}</small>${o?"":`${c?`<div class="persistentCounter"><small>COUNTER OFFER FROM MIKAEL</small><strong>${b.counterOffer} MB</strong><span>Your last bid: ${b.amount||"—"} MB</span></div>`:""}<div class="vaultBidControls"><input type="number" min="1" data-bid-input="${i.id}" placeholder="${c?`Make a new bid against ${b.counterOffer} MB`:"Your offer in MB"}"><button data-bid="${i.id}">${c?"Make Another Bid":"Submit Offer"}</button></div>`}${ac}</article>`}).join("")}</div><div id="vaultOwnedFileReader"></div>`;h.querySelectorAll("[data-bid]").forEach(x=>x.onclick=()=>submitBid(x.dataset.bid));h.querySelectorAll("[data-open-shelf-file]").forEach(x=>x.onclick=()=>openDoc(x.dataset.openShelfFile))}
+function openDoc(id){const i=ITEMS.find(x=>x.id===id),s=shelf(),h=$("vaultOwnedFileReader");if(!i||!s.owned[id]||!h)return;const safe=i.content.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));h.innerHTML=`<section class="vaultDocumentReader"><button id="closeVaultDocument">×</button><small>ACQUIRED SECRET SHELF DOCUMENT // CONFIDENTIAL</small><h3>⚖️ Cody Legal Documents</h3><pre>${safe}</pre></section>`;$("closeVaultDocument")?.addEventListener("click",()=>h.innerHTML="");h.scrollIntoView({behavior:"smooth",block:"nearest"})}
+async function submitBid(id){const i=ITEMS.find(x=>x.id===id),inp=[...document.querySelectorAll("[data-bid-input]")].find(x=>x.dataset.bidInput===id),amount=Math.floor(Number(inp?.value));if(!i)return;if(!amount||amount<1)return alert("Enter an offer first.");if(amount>wallet())return alert("You cannot offer more Micky Bucs than you currently have.");try{const r=await fetch(WORKER,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({type:"secret_shelf_bid",item:id,offer:amount})}),d=await r.json();if(!r.ok||!d.success||!d.claimId)throw new Error(d.error||"Offer failed");const s=shelf();s.bids[id]={claimId:d.claimId,amount,status:"pending",counterOffer:null,createdAt:new Date().toISOString()};saveShelf(s);renderShelf()}catch(e){console.error(e);alert(String(e?.message||"").includes("Unknown Secret Shelf item")?"Deploy the included cloudflare-worker.js first, then try this new Secret Shelf item again.":"The offer could not be sent. Please try again.")}}
+function grant(i,price){const s=shelf();if(s.owned[i.id])return true;price=Math.floor(Number(price)||0);if(price<1||wallet()<price)return false;setWallet(wallet()-price);s.owned[i.id]={at:new Date().toISOString(),price};saveShelf(s);if(i.kind==="letter"){let l=read(LETTERS,[]);if(!Array.isArray(l))l=[];if(!l.some(x=>x.id===i.id))l.push({id:i.id,title:i.publicName,content:i.content});write(LETTERS,l);renderLetters()}if(i.kind==="dossier")addDossier(i,price);if(i.kind==="mikael_token"){const t=read(MTOKENS,{inventory:{},history:[]});t.inventory=t.inventory||{};t.history=t.history||[];t.inventory["UNO Reverse"]=Number(t.inventory["UNO Reverse"]||0)+1;t.history.push({type:"earned",token:"UNO Reverse",source:"Mystery Reward",at:new Date().toISOString()});write(MTOKENS,t);renderMikaelTokens()}window.dispatchEvent(new Event("lizzyStoreRefresh"));return true}
+async function sync(){const s=shelf();let dirty=false;for(const i of ITEMS){if(s.owned[i.id])continue;try{const r=await fetch(`${WORKER}?shelfItem=${encodeURIComponent(i.id)}`,{cache:"no-store"});if(!r.ok)continue;const d=await r.json(),x=d.state;if(!x?.claimId)continue;const l=s.bids[i.id],rt=Date.parse(x.updatedAt||x.createdAt||0)||0,lt=Date.parse(l?.updatedAt||l?.createdAt||0)||0;if(!l||x.claimId===l.claimId||rt>=lt){s.bids[i.id]={claimId:x.claimId,amount:Number(x.offer||l?.amount||0),status:x.status||"pending",counterOffer:x.counterOffer==null?null:Number(x.counterOffer),createdAt:x.createdAt||l?.createdAt||new Date().toISOString(),updatedAt:x.updatedAt||x.decidedAt||new Date().toISOString()};dirty=true}}catch{}}if(dirty)saveShelf(s)}
+async function poll(){await sync();const s=shelf();let dirty=false;for(const i of ITEMS){const b=s.bids[i.id];if(!b?.claimId||s.owned[i.id]||!["pending","countered"].includes(b.status))continue;try{const r=await fetch(`${WORKER}?claimId=${encodeURIComponent(b.claimId)}`,{cache:"no-store"});if(!r.ok)continue;const d=await r.json(),c=d.claim||d;if(c.status==="accepted"){if(grant(i,Number(c.offer??b.amount))){b.status="accepted";dirty=true}}else if(c.status==="rejected"){b.status="rejected";b.updatedAt=c.decidedAt||new Date().toISOString();dirty=true}else if(c.status==="countered"){b.status="countered";b.counterOffer=Number(c.counterOffer);b.updatedAt=c.decidedAt||new Date().toISOString();dirty=true}}catch{}}if(dirty)saveShelf(s);renderShelf()}
+function renderLetters(){const w=$("openWhenWindow")||$("openWhenFolderWindow");if(!w)return;const host=w.querySelector(".windowScroll")||w;let b=$("purchasedLettersBox");if(!b){b=document.createElement("section");b.id="purchasedLettersBox";host.appendChild(b)}const l=read(LETTERS,[]);b.innerHTML=Array.isArray(l)&&l.length?`<h3>🛍️ Purchased Letters</h3>${l.map(x=>`<details class="purchasedLetter"><summary>💌 ${x.title}</summary><pre>${x.content}</pre></details>`).join("")}`:""}
+function renderMikaelTokens(){const w=$("tokenJarWindow");if(!w)return;const host=w.querySelector(".windowScroll")||w;let b=$("mikaelTokensBox");if(!b){b=document.createElement("section");b.id="mikaelTokensBox";host.appendChild(b)}const t=read(MTOKENS,{inventory:{}}),n=Number(t.inventory?.["UNO Reverse"]||0);b.innerHTML=n?`<h3>🕴️ Mikael's Tokens</h3><div class="tokenCard"><div class="tokenCardEmoji">🔄</div><div><strong>UNO Reverse</strong><p>Mikael has the power: one playful, reasonable request for Lizzy.</p></div><div class="tokenCount">×${n}</div></div>`:""}
+migrate();$("seedStoreIcon")?.addEventListener("click",()=>setTimeout(()=>{renderShelf();poll()},60));document.querySelector('[data-store-tab="secret"]')?.addEventListener("click",()=>setTimeout(poll,30));$("openWhenIcon")?.addEventListener("click",()=>setTimeout(renderLetters,60));$("tokenJarIcon")?.addEventListener("click",()=>setTimeout(renderMikaelTokens,60));window.addEventListener("focus",()=>{if(!$("secretShelfPanel")?.classList.contains("hidden"))poll()});setInterval(poll,15000);renderShelf();renderLetters();renderMikaelTokens();setTimeout(poll,500);
 })();
 
 

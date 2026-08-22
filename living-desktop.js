@@ -21,16 +21,15 @@ bind("classifiedFolderCloseBtn","click",()=>close("classifiedFolderWindow"));
 
 // CLASSIFIED — preserve existing purchases and allow Mission 7 injector to coexist.
 function renderClassified(){
- const p=$("classifiedArchivePanel"); if(!p)return;
- const files=[], seen=new Set();
- ["lizzyClassifiedFiles","lizzyPurchasedDossiers","lizzyOwnedClassified","lizzySecretShelfOwned"].forEach(k=>{
-   const v=read(k,null);
-   if(Array.isArray(v))v.forEach(x=>files.push(typeof x==="string"?{title:x}:x));
-   else if(v&&typeof v==="object")Object.entries(v).forEach(([key,val])=>{if(val)files.push(typeof val==="object"?{title:val.title||val.name||key,...val}:{title:key})});
- });
+ const p=$("classifiedArchivePanel");if(!p)return;const files=[],seen=new Set();
+ ["lizzyClassifiedFiles","lizzyPurchasedDossiers","lizzyOwnedClassified","lizzySecretShelfOwned"].forEach(k=>{const v=read(k,null);if(Array.isArray(v))v.forEach(x=>files.push(typeof x==="string"?{title:x}:x));else if(v&&typeof v==="object")Object.entries(v).forEach(([key,val])=>{if(val)files.push(typeof val==="object"?{title:val.title||val.name||key,...val}:{title:key})})});
  const unique=files.filter(f=>{const t=String(f.title||f.name||"Classified File");if(seen.has(t))return false;seen.add(t);return true});
- p.innerHTML=unique.length?unique.map(f=>`<div class="classifiedFileCard">📁 <b>${esc(f.title||f.name||"Classified File")}</b></div>`).join(""):`<div class="classifiedEmpty">🔒<br><b>No purchased dossiers yet.</b><p>Purchased classified files will appear here.</p></div>`;
+ if(!unique.length){p.innerHTML=`<div class="classifiedEmpty">🔒<br><b>No purchased dossiers yet.</b><p>Buy classified files from Mikael's Secret Shelf and they will appear here.</p></div>`;return}
+ p.innerHTML=`<div class="classifiedPurchasedGrid">${unique.map((f,i)=>`<article class="classifiedPurchasedCard"><div>📁</div><small>PURCHASED DOSSIER</small><b>${esc(f.title||f.name||"Classified File")}</b>${f.content?`<button type="button" data-classified-open="${i}">OPEN FILE</button>`:`<span>ARCHIVED</span>`}</article>`).join("")}</div><div id="classifiedPurchasedReader"></div>`;
+ p.querySelectorAll("[data-classified-open]").forEach(btn=>btn.addEventListener("click",()=>{const f=unique[Number(btn.dataset.classifiedOpen)],r=$("classifiedPurchasedReader");if(!r||!f?.content)return;r.innerHTML=`<section class="classifiedReader"><button type="button" id="classifiedReaderClose">×</button><small>CLASSIFIED // PURCHASED FILE</small><h3>📁 ${esc(f.title||f.name||"Classified File")}</h3><pre>${esc(f.content)}</pre></section>`;$("classifiedReaderClose")?.addEventListener("click",()=>r.innerHTML="");r.scrollIntoView({behavior:"smooth",block:"nearest"})}));
 }
+window.addEventListener("lizzyClassifiedUpdated",renderClassified);
+
 function injectMission7(){
  // Call the existing mission engine if it is available.
  try{ if(typeof window.injectScavenger==="function")window.injectScavenger(); }catch{}
