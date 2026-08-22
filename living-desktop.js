@@ -211,11 +211,13 @@ function renderProfile(){
  if(on){
    takeoverSticky();
    scheduleTakeoverMessage();
+   setTimeout(()=>window.renderTakeoverExclusives?.(),0);
  }else{
    clearTimeout(takeoverMessageTimer);
    clearTimeout(takeoverPopupTimer);
    $("mikaelTakeoverPopup")?.classList.add("hidden");
    renderNote();
+   setTimeout(()=>window.renderTakeoverExclusives?.(),0);
  }
 }
 
@@ -256,6 +258,80 @@ setInterval(()=>{
 },45000);
 
 renderProfile();
+
+
+// TAKEOVER-EXCLUSIVE INTERACTIONS V2
+const takeoverSecretMessages=[
+ "CLASSIFIED NOTE 01: Lizzy remains the only person with sufficient clearance to argue with Mr Perfect.",
+ "CLASSIFIED NOTE 02: Mikael's confidence levels have exceeded safe operating limits.",
+ "CLASSIFIED NOTE 03: Cody's legal team has requested that all future grappling disputes go through Lizzy.",
+ "CLASSIFIED NOTE 04: If you're reading this, Takeover Mode has officially become too elaborate.",
+ "CLASSIFIED NOTE 05: Batman activity has been reported during daylight hours. Primary suspect: Mikael.",
+ "CLASSIFIED NOTE 06: Micky Bucs remain backed by absolutely nothing except confidence.",
+ "CLASSIFIED NOTE 07: Agent Yelizaveta has been flagged for excessive cuteness. Investigation ongoing.",
+ "CLASSIFIED NOTE 08: Mr Perfect denies changing your desktop. The evidence is literally your desktop.",
+ "CLASSIFIED NOTE 09: The number four has appeared again. Nobody is surprised.",
+ "CLASSIFIED NOTE 10: Mikael.exe insists this message is important. It is not."
+];
+const takeoverRareLines=[
+ "You caught Mr Perfect editing LizzyOS in real time.",
+ "A secret Mikael process was detected hiding behind your desktop.",
+ "Batman has been spotted. Unfortunately it appears to be Mikael again.",
+ "Mr Perfect left a classified message and forgot to delete the evidence.",
+ "Agent Yelizaveta has discovered an unauthorized Mikael process."
+];
+let takeoverRareTimer=null;
+
+function renderTakeoverSecret(){
+ const host=$("takeoverSecretContent"); if(!host)return;
+ host.innerHTML=`<div class="takeoverSecretMessage">${takeoverSecretMessages[Math.floor(Math.random()*takeoverSecretMessages.length)]}</div>
+ <p class="takeoverSecretFinePrint">This information will self-destruct when Takeover Mode ends. Not really. That sounded cooler.</p>`;
+}
+function openTakeoverSecret(){
+ if(!takeoverOn())return;
+ renderTakeoverSecret();
+ $("takeoverSecretWindow")?.classList.remove("hidden");
+}
+bind("takeoverSecretFile","click",openTakeoverSecret);
+bind("takeoverSecretClose","click",()=>$("takeoverSecretWindow")?.classList.add("hidden"));
+bind("takeoverSecretAnother","click",renderTakeoverSecret);
+
+bind("takeoverBatSignal","click",()=>{
+ if(!takeoverOn())return;
+ showTakeoverPopup("🦇 GOTHAM EASTER EGG: Batman has been detected in broad daylight. Mikael is the primary suspect.");
+ $("takeoverBatSignal")?.classList.add("batCaught");
+ setTimeout(()=>$("takeoverBatSignal")?.classList.remove("batCaught"),900);
+});
+
+function scheduleTakeoverRare(){
+ clearTimeout(takeoverRareTimer);
+ if(!takeoverOn())return;
+ takeoverRareTimer=setTimeout(()=>{
+   if(takeoverOn() && Math.random()<.55){
+     const box=$("takeoverRareEvent"), text=$("takeoverRareText");
+     if(text)text.textContent=takeoverRareLines[Math.floor(Math.random()*takeoverRareLines.length)];
+     box?.classList.remove("hidden");
+     setTimeout(()=>box?.classList.add("hidden"),12000);
+   }
+   scheduleTakeoverRare();
+ },(3+Math.random()*4)*60000);
+}
+bind("takeoverRareClaim","click",()=>{
+ $("takeoverRareEvent")?.classList.add("hidden");
+ showTakeoverPopup("INVESTIGATION COMPLETE: You found a Takeover-only Easter egg. Mr Perfect has been informed and is pretending not to care.");
+ localStorage.setItem("mikaelTakeoverRareFoundV1","yes");
+});
+
+window.renderTakeoverExclusives=function renderTakeoverExclusives(){
+ const on=takeoverOn();
+ $("takeoverSecretFile")?.classList.toggle("hidden",!on);
+ $("takeoverBatSignal")?.classList.toggle("hidden",!on);
+ if(!on){
+   $("takeoverSecretWindow")?.classList.add("hidden");
+   $("takeoverRareEvent")?.classList.add("hidden");
+   clearTimeout(takeoverRareTimer);
+ } else scheduleTakeoverRare();
+}
 
 // RARE MIKAEL
 const msgs=["Caught me. Your prize is me saying you're stunning. 😌","Justice for Lizzy! Don't get used to it.","Rare Mikael sighting confirmed. 📸","Little Miss Attitude has excellent reflexes.","I was never here. — Mr Perfect","Fine. You win this one. Screenshot it."];

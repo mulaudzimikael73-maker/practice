@@ -4055,3 +4055,18 @@ body.mikaelMicroGlitch #desktopArea{animation:mikaelMicroGlitch .26s steps(2)}
  .mikaelTakeoverBanner{top:8px}
  .mikaelTakeoverPopup{right:10px;bottom:12px;width:calc(100vw - 20px);box-sizing:border-box}
 }
+
+/* TAKEOVER EXCLUSIVES V2 */
+#takeoverSecretFile{position:fixed!important;right:38px!important;top:120px!important;z-index:8000!important;width:115px!important;height:115px!important;display:flex!important}
+#takeoverSecretFile.hidden{display:none!important}
+#takeoverSecretFile .desktopEmoji{font-size:58px!important}
+#takeoverSecretFile span{font-size:11px!important;font-weight:900!important}
+.takeoverBatSignal{position:fixed;left:24px;top:44%;z-index:8500;font-size:34px;cursor:pointer;filter:drop-shadow(0 5px 10px rgba(0,0,0,.3));animation:batFloat 3s ease-in-out infinite}
+.takeoverBatSignal.hidden{display:none!important}.takeoverBatSignal.batCaught{animation:batCaught .8s ease!important}
+@keyframes batFloat{50%{transform:translateY(-12px) rotate(-7deg)}}@keyframes batCaught{50%{transform:scale(1.7) rotate(18deg)}}
+.takeoverSecretWindow{position:fixed!important;left:50%!important;top:50%!important;transform:translate(-50%,-50%)!important;width:min(680px,90vw)!important;height:min(520px,76vh)!important;z-index:40000!important}
+.takeoverSecretBody{padding:26px!important;text-align:left}.takeoverSecretBody h2{font-size:28px!important}.takeoverSecretMessage{margin:24px 0;padding:22px;border:1px dashed rgba(255,255,255,.28);border-radius:14px;font-size:15px;line-height:1.6;background:rgba(0,0,0,.16)}.takeoverSecretFinePrint{font-size:10px!important;opacity:.58}
+.takeoverRareEvent{position:fixed;inset:0;z-index:70000;display:grid;place-items:center;background:rgba(15,5,24,.58);backdrop-filter:blur(7px)}
+.takeoverRareEvent.hidden{display:none!important}.takeoverRareEvent>div{width:min(520px,86vw);padding:34px;text-align:center;border-radius:24px;background:rgba(49,21,66,.95);color:white;border:1px solid rgba(255,255,255,.2);box-shadow:0 30px 90px rgba(0,0,0,.42);animation:rareTakeoverIn .35s ease}.takeoverRareEvent small{font-size:9px;font-weight:1000;letter-spacing:2px;opacity:.6}.takeoverRareEvent h2{font-size:30px;margin:10px 0}.takeoverRareEvent p{font-size:13px;line-height:1.5}.takeoverRareEvent button{margin-top:12px!important}
+@keyframes rareTakeoverIn{from{opacity:0;transform:scale(.88) translateY(15px)}}
+body:not(.mikaelTakeoverActive) #takeoverSecretFile,body:not(.mikaelTakeoverActive) #takeoverBatSignal{display:none!important}
