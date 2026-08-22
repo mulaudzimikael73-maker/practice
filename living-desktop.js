@@ -1,5 +1,33 @@
 (()=>{
 "use strict";
+
+/* =========================================================
+   LIZZYOS V4.4 — SHARED PERFORMANCE SCHEDULER
+   Pauses non-critical desktop jobs while the tab is hidden.
+   ========================================================= */
+const LizzyPerf=(()=>{
+ const jobs=new Map();
+ let timer=null;
+ function tick(){
+   if(document.hidden)return;
+   const now=Date.now();
+   for(const [name,j] of jobs){
+     if(now>=j.next){
+       try{j.fn()}catch(e){console.warn("LizzyOS job failed:",name,e)}
+       j.next=now+j.every;
+     }
+   }
+ }
+ function start(){if(!timer)timer=setInterval(tick,1000)}
+ function add(name,every,fn,runNow=false){
+   if(jobs.has(name))return;
+   jobs.set(name,{every:Math.max(1000,every),fn,next:Date.now()+(runNow?0:every)});
+   start();
+ }
+ function remove(name){jobs.delete(name)}
+ document.addEventListener("visibilitychange",()=>{if(!document.hidden)tick()});
+ return {add,remove,tick};
+})();
 const $=id=>document.getElementById(id);
 const read=(k,f)=>{try{const v=localStorage.getItem(k);return v===null?f:JSON.parse(v)}catch{return f}};
 const write=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
@@ -106,7 +134,7 @@ function dynamicSticky(){
  if($("stickyMessage"))$("stickyMessage").textContent=msg;
 }
 bind("stickyNext","click",()=>setTimeout(dynamicSticky,0));
-setInterval(()=>{renderDynamicTime();updateAmbient()},1000);
+LizzyPerf.add("legacyJob1",1000,()=>{renderDynamicTime();updateAmbient()});
 setInterval(dynamicActivity,18000);
 setTimeout(()=>{renderDynamicTime();dynamicActivity();updateAmbient()},0);
 
@@ -296,11 +324,9 @@ document.addEventListener("dblclick",e=>{
 });
 
 // Random tiny desktop glitches while takeover is active.
-setInterval(()=>{
- if(!takeoverOn()||takeoverBooting||Math.random()>.28)return;
+LizzyPerf.add("legacyJob2",45000,()=>{if(!takeoverOn()||takeoverBooting||Math.random()>.28)return;
  document.body.classList.add("mikaelMicroGlitch");
- setTimeout(()=>document.body.classList.remove("mikaelMicroGlitch"),260);
-},45000);
+ setTimeout(()=>document.body.classList.remove("mikaelMicroGlitch"),260);});
 
 renderProfile();
 
@@ -529,3 +555,111 @@ $("lizzyMailIcon")?.addEventListener("click",()=>localStorage.setItem(viewedKey,
 console.log("Lizzy Mail Daily Messages: ONLINE", MESSAGES.length, "messages");
 })();
 
+
+
+/* =========================================================
+   STICKY NOTES V2 — living notes, time-aware + rare Mikael
+   ========================================================= */
+(()=>{
+ const KEY="lizzyStickyNotesV2";
+ const DAYKEY="lizzyStickyDailyV2";
+ const $=id=>document.getElementById(id);
+ const read=(k,f)=>{try{const v=localStorage.getItem(k);return v===null?f:JSON.parse(v)}catch{return f}};
+ const write=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
+ const day=()=>new Date().toISOString().slice(0,10);
+ const hour=()=>new Date().getHours();
+
+ const pools={
+   morning:[
+    "Good morning Mabebeza ☀️ Hope today is kind to you.",
+    "Morning report: LizzyOS is awake. Agent Yelizaveta… questionable.",
+    "Reminder: breakfast first, attitude second. Please follow protocol.",
+    "Today's mission: have a good morning and don't fight the operating system."
+   ],
+   afternoon:[
+    "Afternoon check-in: how's your day actually going? 🌤️",
+    "Hydration check. Yes, LizzyOS has become that annoying.",
+    "Little Miss Attitude status check: operational?",
+    "Half the day survived. Impressive work, Four Eyes."
+   ],
+   evening:[
+    "Evening reminder: you are officially allowed to relax now 🌙",
+    "How was your day, Mabebeza? The system requires a full report.",
+    "Today's nonsense is nearly complete. Proud of you.",
+    "LizzyOS evening status: softer lights, same amount of attitude."
+   ],
+   night:[
+    "You should probably be sleeping. — definitely not Mikael",
+    "Night shift activated. Batman may or may not be working.",
+    "Late-night LizzyOS reminder: tomorrow can deal with tomorrow.",
+    "Agent Yelizaveta, your screen-time investigation has begun."
+   ],
+   basic:[
+    "Hope you have a great day, Mabebeza 💗",
+    "Random check: have you smiled today?",
+    "Important question: pasta right now — yes or obviously yes?",
+    "Website inspection: what feature are you currently judging?",
+    "LizzyOS would like to know your current mood.",
+    "Quick check-in: anything you need to get off your chest?",
+    "Be nice to yourself today. This is an official system instruction.",
+    "Today's reminder: you don't have to do everything at once.",
+    "Question of the day: what made you laugh recently?",
+    "System notice: your presence has improved desktop activity by 97%."
+   ],
+   mikael:[
+    "Mikael was here. There is unfortunately no evidence.",
+    "Mr Perfect left this note and then immediately denied involvement.",
+    "Batman status: active. Broad daylight restrictions continue to be ignored.",
+    "Mikael.exe says hello. Mikael.exe also refuses further questions.",
+    "Rare Mikael transmission: I hope you're having a good day, Lizzy.",
+    "NOTICE: Mikael has rated himself 10/10 again. Investigation pending."
+   ]
+ };
+
+ function choose(arr,avoid=[]){
+   const options=arr.filter(x=>!avoid.includes(x));
+   const p=options.length?options:arr;
+   return p[Math.floor(Math.random()*p.length)];
+ }
+ function currentPool(){
+   const h=hour();
+   if(h<11)return pools.morning;
+   if(h<17)return pools.afternoon;
+   if(h<21)return pools.evening;
+   return pools.night;
+ }
+ function dailyNote(){
+   let state=read(DAYKEY,{});
+   if(state.day===day()&&state.text)return state;
+   const hist=read(KEY,{history:[]}).history||[];
+   const recent=hist.slice(-12).map(x=>x.text);
+   // 8% rare Mikael note; otherwise mostly normal/time-aware notes.
+   const rare=Math.random()<0.08;
+   const source=rare?pools.mikael:(Math.random()<0.58?pools.basic:currentPool());
+   const text=choose(source,recent);
+   state={day:day(),text,rare,createdAt:new Date().toISOString()};
+   write(DAYKEY,state);
+   const all=read(KEY,{history:[]});all.history=all.history||[];
+   all.history.push(state);all.history=all.history.slice(-40);write(KEY,all);
+   return state;
+ }
+ function render(){
+   const note=dailyNote();
+   // Reuse any existing sticky note surface instead of creating desktop clutter.
+   let host=$("livingStickyNote")||$("stickyNote")||document.querySelector(".sticky-note,.stickyNote");
+   if(!host){
+     const desktop=document.querySelector(".desktop")||document.body;
+     host=document.createElement("aside");host.id="livingStickyNote";host.className="livingStickyNote";
+     desktop.appendChild(host);
+   }
+   host.classList.toggle("rareMikaelNote",!!note.rare);
+   host.innerHTML=`<div class="stickyPin">●</div><small>${note.rare?"RARE TRANSMISSION":"TODAY'S NOTE"}</small><p>${note.text}</p><button type="button" id="dismissLivingSticky" title="Hide note">×</button>`;
+   $("dismissLivingSticky")?.addEventListener("click",()=>host.classList.add("stickyHidden"));
+ }
+ function refreshForNewDay(){
+   const s=read(DAYKEY,{});
+   if(s.day!==day()){render()}
+ }
+ window.addEventListener("load",()=>setTimeout(render,350));
+ LizzyPerf.add("stickyDayCheck",60000,refreshForNewDay);
+})();
