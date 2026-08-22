@@ -3719,3 +3719,27 @@ body.mikaelProfileActive #livingDesktopIcon:after{content:"MIKAEL";position:abso
  #desktopArea>.desktopIcon>.desktopEmoji{width:72px!important;height:72px!important;min-height:72px!important;font-size:58px!important}
  #desktopArea>.desktopIcon>span{font-size:12px!important}
 }
+
+/* DESKTOP NEATNESS V2.3 — folder contents stay inside Games */
+#desktopArea > #funQuizIcon,
+#desktopArea > #heartGameIcon,
+#desktopArea > #mikhailQuizIcon,
+#desktopArea > #mysteryBoxIcon,
+#desktopArea > #wouldMikaelRatherIcon,
+#desktopArea > #ticTacToeIcon,
+#desktopArea > #crackCodeIcon,
+#desktopArea > #gamesFolderIcon{display:none!important}
+#desktopArea > #gamesFolderStaticIcon{display:flex!important}
+
+/* clean core launcher grid */
+#desktopArea{
+ grid-template-columns:repeat(5,minmax(135px,1fr))!important;
+ grid-auto-rows:150px!important;
+ column-gap:34px!important;row-gap:24px!important
+}
+#desktopArea > .desktopIcon{width:145px!important;max-width:145px!important}
+#desktopArea > .desktopWindow,
+#desktopArea > .finderWindow,
+#desktopArea > [id$="Window"]{position:fixed!important;margin:0!important}
+@media(max-width:900px){#desktopArea{grid-template-columns:repeat(4,minmax(120px,1fr))!important;column-gap:20px!important}}
+@media(max-width:650px){#desktopArea{grid-template-columns:repeat(3,minmax(92px,1fr))!important;column-gap:8px!important;row-gap:14px!important}}
