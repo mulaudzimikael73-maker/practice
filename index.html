@@ -8,7 +8,7 @@
 
     <title>Lizzy ❤️</title>
 
-    <link rel="stylesheet" href="style.css?v=20260823-v412-scope-games-cody">
+    <link rel="stylesheet" href="style.css?v=20260823-v413-direct-launch">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
 
@@ -585,10 +585,8 @@
                 <div class="desktopEmoji">🛒</div>
                 <span>Seed Store</span>
             </div>
-<span>Cody Court</span></div>
-<span>Rock Paper Scissors</span></div>
-            <div class="desktopIcon livingDesktopIcon" id="lizzyAssistantIcon" role="button" tabindex="0"><div class="desktopEmoji">✨</div><span>Lizzy Assistant</span></div>
-            <div class="desktopIcon livingDesktopIcon" id="dayCheckIcon" role="button" tabindex="0"><div class="desktopEmoji">💗</div><span>How's Today?</span></div>
+            <div class="desktopIcon livingDesktopIcon" id="lizzyAssistantIcon" role="button" tabindex="0" onclick="window.LizzyFunApps&&window.LizzyFunApps.openAssistant()"><div class="desktopEmoji">✨</div><span>Lizzy Assistant</span></div>
+            <div class="desktopIcon livingDesktopIcon" id="dayCheckIcon" role="button" tabindex="0" onclick="window.LizzyFunApps&&window.LizzyFunApps.openDay()"><div class="desktopEmoji">💗</div><span>How's Today?</span></div>
             <div class="desktopIcon calendarFolderIcon" id="calendarIcon">
                 <div class="desktopEmoji calendarFolderEmoji"><span class="folderCalendarBadge">📅</span></div>
                 <span>Our Date</span>
@@ -616,8 +614,8 @@
                     <button class="gameFolderCard" data-open-game="heartGameIcon" onclick="document.getElementById('gamesFolderStaticWindow').classList.add('hidden');var w=document.getElementById('heartGameWindow');if(w){w.classList.remove('hidden');}else{var i=document.getElementById('heartGameIcon');if(i)i.click();}"><span>💗</span><b>Heart Catch</b><small>Catch them before they escape.</small></button>
                     <button class="gameFolderCard" data-open-game="mysteryBoxIcon" onclick="document.getElementById('gamesFolderStaticWindow').classList.add('hidden');var w=document.getElementById('mysteryBoxWindow');if(w){w.classList.remove('hidden');}else{var i=document.getElementById('mysteryBoxIcon');if(i)i.click();}"><span>🎁</span><b>Daily Mystery</b><small>Your daily classified reward.</small></button>
                     <button class="gameFolderCard" data-open-game="ticTacToeIcon" onclick="document.getElementById('gamesFolderStaticWindow').classList.add('hidden');var w=document.getElementById('ticTacToeWindow');if(w){w.classList.remove('hidden');}else{var i=document.getElementById('ticTacToeIcon');if(i)i.click();}"><span>❌⭕</span><b>Tic-Tac-Toe</b><small>Lizzy vs Mikael.</small></button>
-                                        <button class="gameFolderCard" id="codyCourtGameCard" type="button"><span>⚖️</span><b>Cody Court</b><small>Review evidence and deliver your ruling.</small></button>
-                    <button class="gameFolderCard" id="rpsGameCard" type="button"><span>✊</span><b>Rock Paper Scissors</b><small>Lizzy vs Mikael. Best record wins.</small></button>
+                                        <button class="gameFolderCard" id="codyCourtGameCard" type="button" onclick="document.getElementById('gamesFolderStaticWindow').classList.add('hidden');window.LizzyFunApps&&window.LizzyFunApps.openCourt()"><span>⚖️</span><b>Cody Court</b><small>Review evidence and deliver your ruling.</small></button>
+                    <button class="gameFolderCard" id="rpsGameCard" type="button" onclick="document.getElementById('gamesFolderStaticWindow').classList.add('hidden');window.LizzyFunApps&&window.LizzyFunApps.openRps()"><span>✊</span><b>Rock Paper Scissors</b><small>Lizzy vs Mikael. Best record wins.</small></button>
 <button class="gameFolderCard" data-open-game="crackCodeIcon" onclick="document.getElementById('gamesFolderStaticWindow').classList.add('hidden');var w=document.getElementById('crackCodeWindow');if(w){w.classList.remove('hidden');}else{var i=document.getElementById('crackCodeIcon');if(i)i.click();}"><span>🔐</span><b>Crack the Code</b><small>Agent-level puzzles.</small></button>
                 </div>
             </div>
@@ -1071,7 +1069,7 @@
     <button type="button" id="takeoverRareClaim">Investigate</button>
   </div>
 </div>
-id="rareMikael" class="rareMikael hidden"><span>🕴🏾</span><small>MIKAEL</small></div>
+<div id="rareMikael" class="rareMikael hidden"><span>🕴🏾</span><small>MIKAEL</small></div>
 
 <div id="crackCodeWindow" class="desktopWindow hidden">
 <div class="windowTop"><div class="windowDots"><span class="windowCloseDot" id="crackCodeClose"></span><span class="windowMinDot"></span><span class="windowMaxDot"></span></div><h2>🔐 Crack the Code</h2></div>
@@ -1544,7 +1542,7 @@ if (window.netlifyIdentity) {
 </div>
 
 <script src="script.js?v=20260822-v27-redo"></script>
-<script src="living-desktop.js?v=20260823-v412-scope-games-cody"></script>
+<script src="living-desktop.js?v=20260823-v413-direct-launch"></script>
 <script src="internet.js?v=20260821-bank-selfcontained-final"></script>
 
 

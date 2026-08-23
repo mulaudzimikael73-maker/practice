@@ -4263,3 +4263,18 @@ body.mikaelTakeoverActive #desktopArea:before{background:rgba(20,10,40,.12)!impo
 .classifiedReader.codyLegalPhotoActive .codyLegalWatermark{position:absolute!important;inset:0!important;z-index:0!important;pointer-events:none!important}
 .classifiedReader.codyLegalPhotoActive .codyPhotoBackground{position:absolute!important;inset:0!important;background:linear-gradient(rgba(42,20,40,.62),rgba(42,20,40,.80)),url("cody-legal-background.jpeg") center 38%/cover no-repeat!important;opacity:.82!important}
 .classifiedReader.codyLegalPhotoActive>button,.classifiedReader.codyLegalPhotoActive>small,.classifiedReader.codyLegalPhotoActive>h3,.classifiedReader.codyLegalPhotoActive>pre{position:relative!important;z-index:2!important}
+
+/* V4.13 Cody visual correction */
+.classifiedReader.codyLegalPhotoActive{
+  background:
+    linear-gradient(rgba(42,20,40,.38),rgba(42,20,40,.58)),
+    url("cody-legal-background.jpeg") center 34% / cover no-repeat!important;
+}
+.classifiedReader.codyLegalPhotoActive .codyLegalWatermark{display:none!important}
+.classifiedReader.codyLegalPhotoActive pre{
+  background:rgba(38,20,37,.58)!important;
+  backdrop-filter:blur(2px)!important;
+}
+.classifiedReader.codyLegalPhotoActive h3,
+.classifiedReader.codyLegalPhotoActive small,
+.classifiedReader.codyLegalPhotoActive pre{color:#fff!important;text-shadow:0 1px 3px rgba(0,0,0,.45)}
