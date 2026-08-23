@@ -54,7 +54,7 @@ function renderClassified(){
  const unique=files.filter(f=>{const t=String(f.title||f.name||"Classified File");if(seen.has(t))return false;seen.add(t);return true});
  if(!unique.length){p.innerHTML=`<div class="classifiedEmpty">🔒<br><b>No purchased dossiers yet.</b><p>Buy classified files from Mikael's Secret Shelf and they will appear here.</p></div>`;return}
  p.innerHTML=`<div class="classifiedPurchasedGrid">${unique.map((f,i)=>`<article class="classifiedPurchasedCard"><div>📁</div><small>PURCHASED DOSSIER</small><b>${esc(f.title||f.name||"Classified File")}</b>${f.content?`<button type="button" data-classified-open="${i}">OPEN FILE</button>`:`<span>ARCHIVED</span>`}</article>`).join("")}</div><div id="classifiedPurchasedReader"></div>`;
- p.querySelectorAll("[data-classified-open]").forEach(btn=>btn.addEventListener("click",()=>{const f=unique[Number(btn.dataset.classifiedOpen)],r=$("classifiedPurchasedReader");if(!r||!f?.content)return;r.innerHTML=`<section class="classifiedReader"><button type="button" id="classifiedReaderClose">×</button><small>CLASSIFIED // PURCHASED FILE</small><h3>📁 ${esc(f.title||f.name||"Classified File")}</h3><pre>${esc(f.content)}</pre></section>`;const reader=r.querySelector(".classifiedReader");if(reader&&/cody/i.test(String(f.title||f.name||""))){reader.dataset.codyLegal="true";reader.classList.add("codyLegalPhotoActive","codyLegalTheme");if(!reader.querySelector(".codyLegalWatermark")){const wm=document.createElement("div");wm.className="codyLegalWatermark";wm.innerHTML='<div class="codyPhotoBackground"></div><div class="codySeal">⚖</div><div class="codyStamp">SUBJECT: CODY<br><small>LEGAL REPRESENTATION ACTIVE</small></div>';reader.prepend(wm)}}$("classifiedReaderClose")?.addEventListener("click",()=>r.innerHTML="");r.scrollIntoView({behavior:"smooth",block:"nearest"})}));
+ p.querySelectorAll("[data-classified-open]").forEach(btn=>btn.addEventListener("click",()=>{const f=unique[Number(btn.dataset.classifiedOpen)],r=$("classifiedPurchasedReader");if(!r||!f?.content)return;r.innerHTML=`<section class="classifiedReader"><button type="button" id="classifiedReaderClose">×</button><small>CLASSIFIED // PURCHASED FILE</small><h3>📁 ${esc(f.title||f.name||"Classified File")}</h3><pre>${esc(f.content)}</pre></section>`;$("classifiedReaderClose")?.addEventListener("click",()=>r.innerHTML="");r.scrollIntoView({behavior:"smooth",block:"nearest"})}));
 }
 window.addEventListener("lizzyClassifiedUpdated",renderClassified);
 
@@ -840,9 +840,9 @@ const $=id=>document.getElementById(id);
 const read=(k,f)=>{try{const v=localStorage.getItem(k);return v===null?f:JSON.parse(v)}catch{return f}};
 const write=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
 const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-const desk=()=>document.querySelector("#desktopArea")||document.querySelector("#desktop")||document.body;
+const desk=()=>document.querySelector(".desktop")||document.body;
 function win(id,title,body){let w=$(id);if(!w){w=document.createElement("section");w.id=id;w.className="v46Window";desk().appendChild(w)}w.innerHTML=`<div class="v46Head"><b>${title}</b><button data-x>×</button></div><div class="v46Body">${body}</div>`;w.classList.add("open");w.querySelector("[data-x]").onclick=()=>w.classList.remove("open");return w}
-function icon(id,emoji,label,fn){let b=$(id);if(b){b.onclick=fn;b.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();fn()}};return b}const a=document.querySelector("#desktopArea")||desk();b=document.createElement("div");b.id=id;b.className="desktopIcon livingDesktopIcon";b.tabIndex=0;b.innerHTML=`<div class="desktopEmoji">${emoji}</div><span>${label}</span>`;b.onclick=fn;a.appendChild(b);return b}
+function icon(id,emoji,label,fn){if($(id))return;const a=document.querySelector(".desktop-icons,.desktopIcons,.icons")||desk(),b=document.createElement("button");b.id=id;b.className="v46DesktopIcon";b.innerHTML=`<span>${emoji}</span><small>${label}</small>`;b.onclick=fn;a.appendChild(b)}
 
 /* GOOD DAY / BAD DAY */
 const DAY="lizzyDayFeelingV46";
@@ -870,12 +870,12 @@ function openCourt(){
   notifyGameTelegram("Cody Court",isCorrect?"Correct ruling":"Overruled",`${c.charge} — Lizzy chose ${verdict.toUpperCase()} using Exhibit${selected.length>1?"s":""} ${selected.map(i=>String.fromCharCode(65+i)).join(", ")}. Court answer: ${c.correct.toUpperCase()}. Score ${st.score}-${st.wrong}.`);
  });
 }
-/* Cody Court launcher lives inside Games folder */
+icon("codyCourtIcon","⚖️","Cody Court",openCourt);
 
 /* ROCK PAPER SCISSORS */
 const RK="lizzyRpsV46",choices=["rock","paper","scissors"],ri={rock:"✊",paper:"✋",scissors:"✌️"},beats={rock:"scissors",paper:"rock",scissors:"paper"};
 function openRps(){const s=read(RK,{lizzy:0,mikael:0,draws:0}),w=win("rpsWindow","✊ ROCK PAPER SCISSORS.exe",`<div class="rpsScore">LIZZY <b id="rL">${s.lizzy}</b> — <b id="rM">${s.mikael}</b> MIKAEL <small>Draws: <span id="rD">${s.draws}</span></small></div><p>Mikael.exe is unnecessarily confident.</p><div class="rpsChoices">${choices.map(x=>`<button data-rps="${x}">${ri[x]}<small>${x}</small></button>`).join("")}</div><div id="rpsResult">Choose your weapon.</div>`);w.querySelectorAll("[data-rps]").forEach(b=>b.onclick=()=>{const you=b.dataset.rps,him=choices[Math.floor(Math.random()*3)],st=read(RK,{lizzy:0,mikael:0,draws:0});let t;if(you===him){st.draws++;t=`${ri[you]} vs ${ri[him]} — Draw. Mikael calls it tactical.`}else if(beats[you]===him){st.lizzy++;t=`${ri[you]} vs ${ri[him]} — Lizzy wins. Mikael.exe requests a recount.`}else{st.mikael++;t=`${ri[you]} vs ${ri[him]} — Mikael wins. You will hear about this again.`}write(RK,st);$("rpsResult").textContent=t;$("rL").textContent=st.lizzy;$("rM").textContent=st.mikael;$("rD").textContent=st.draws;notifyGameTelegram("Rock Paper Scissors",you===him?"Draw":(beats[you]===him?"Lizzy wins":"Mikael wins"),`Lizzy: ${you.toUpperCase()} • Mikael: ${him.toUpperCase()} • Score Lizzy ${st.lizzy} - ${st.mikael} Mikael • Draws ${st.draws}`)})}
-/* RPS launcher lives inside Games folder */
+icon("rpsIcon","✊","RPS.exe",openRps);
 
 /* LIZZY ASSISTANT */
 const qa={"Where is Mikael?":["Probably doing Batman nonsense.","Mikael.exe is running somewhere it shouldn't be.","Last seen confidently pretending he knows what he's doing.","He may be conducting an unnecessary classified operation.","Current location: suspiciously unavailable.","Probably somewhere calling himself Mr Perfect."],"Who is Mr Perfect?":["According to Mikael: Mikael. Independent verification unavailable.","A highly confident individual named Mikael.","The title appears to be self-certified.","Ask Mikael and prepare for a very long explanation.","LizzyOS found one nomination. It was submitted by Mikael.","CLASSIFIED records indicate the nickname has caused controversy."],"What should I do today?":["Do something that makes today slightly better.","Drink water, eat something good, and cause a reasonable amount of chaos.","Maybe pasta. Analytics strongly support pasta.","Do one thing you've been putting off, then reward yourself.","Find something that makes you laugh.","Today's mission: protect your peace and enjoy yourself."],"What does the system think of me?":["High value. High attitude. Continued observation required.","Smart, kind and suspiciously competitive.","Pretty great. Attitude surcharge may apply.","Agent Yelizaveta remains a highly valued system user.","Intelligence: high. Beauty: confirmed. Attitude: under investigation.","LizzyOS assessment: worth keeping around 💗"],"Is Mikael right?":["Connection lost.","Statistically possible. Emotionally controversial.","Contact the Hater Investigation department.","LizzyOS encountered an unexpected error while processing that sentence.","On rare occasions, yes. Please don't tell him I said that.","This question has been forwarded to an independent tribunal."],"Tell me something random":["Cody still has dedicated legal counsel.","Batman traditionally works at night. Mikael considers this optional.","The Bank of Micky refuses to explain its financial model.","Pasta remains one of LizzyOS's most trusted recommendations.","There is probably another Mikael reference hidden somewhere on this website.","Cody Court currently has jurisdiction over several questionable Mikael activities."],"Does Mikael actually like me?":["Evidence strongly suggests yes. Like… embarrassingly strongly.","LizzyOS has reviewed the files. The answer appears to be very yes.","He built you an operating system. Draw your own conclusions 😂","CLASSIFIED answer: yes.","Probability: extremely high.","The amount of unnecessary detail on this website is compelling evidence."],"What is Cody doing?":["Probably consulting his lawyer.","Preparing another case against Mikael.","Improving his grappling while maintaining plausible deniability.","Cody is unavailable. Legal conference in progress.","Probably minding his business better than Mikael is.","Monitoring Mikael from a safe, legally protected distance."],"Am I a hater?":["The Hater Investigation remains active.","Professional status has not yet been revoked.","98% according to highly questionable Mikael-funded research.","You have been accused. LizzyOS cannot comment during active proceedings.","Only toward Mikael, apparently 😂","Your defence attorney may wish to challenge the evidence."],"Why does Mikael call himself Mr Perfect?":["Confidence. Mostly confidence.","Because humility.exe failed to install.","The title appears to be entirely self-funded.","Mikael submitted the nomination and approved it himself.","Nobody has managed to stop him.","The Mr Perfect propaganda department remains extremely well funded."],"Should I trust Mikael.exe?":["With supervision.","Trust level: 72%. Chaos level: 94%.","Probably, but keep Cody's lawyer nearby.","Yes… unless Batman mode activates.","LizzyOS recommends cautious optimism.","Mikael.exe has passed several tests that Mikael.exe designed itself."],"What does Mikael think of me?":["He notices more about you than he probably admits.","The files contain suspiciously positive information.","Smart, beautiful, funny and occasionally a professional hater.","You appear to rank extremely highly in MikaelOS analytics.","CLASSIFIED — but the summary is very positive 💗","Enough good things to fill an unnecessarily large website."],"Give me a compliment":["You're ridiculously easy to appreciate.","Smart looks good on you. So does the attitude, unfortunately.","You have the kind of presence people notice.","LizzyOS confirms: very pretty 💗","You're funny, thoughtful and far more special than this system can quantify.","Your smile has received excellent internal reviews."],"Roast Mikael":["Mikael calls himself Mr Perfect because peer review was unavailable.","Batman has a secret identity. Mikael has a public announcement.","His confidence has its own postcode.","Mikael.exe uses 94% of its processing power defending Mikael.","He wants to wrestle bears before mastering humility.","The Bank of Micky has fewer regulations than his self-confidence."],"Roast me":["Your attitude has more uptime than the actual website.","You could turn 'okay' into a 40-minute debate.","Four Eyes but somehow still missing Mikael's obvious correctness 😂","Your crying PR team deserves an award for rebranding it as detox.","You investigate this website like you're being paid.","Little Miss Attitude has entered the server."],"What should I eat?":["Pasta. This was not a difficult calculation.","Something comforting and actually filling.","LizzyOS recommends pasta with unreasonable confidence.","Whatever you're craving — unless you're about to say nothing.","Food first. Debates with Mikael later.","A proper meal. Snacks are not legal substitutes."],"Should I cry today?":["Only if you need to. The detox propaganda is optional 😂","LizzyOS permits emotional maintenance.","A little cleansing session? Your PR department approves.","If it helps, yes. If not, save the tears for Mikael's next argument.","Crying privileges remain active.","The system supports whatever helps you feel lighter."],"Is crying actually a detox?":["That's what the propaganda department would like us to believe.","Scientifically? LizzyOS is staying out of this one. 😂","Your emotional-cleansing marketing team says absolutely.","The Hater Investigation calls it suspiciously effective PR.","LizzyOS classification: cleansing-ish.","Mikael remains unconvinced by the official propaganda."],"Who runs LizzyOS?":["Technically Lizzy. Mikael will dispute this.","Agent Yelizaveta has user privileges. Mikael keeps finding admin buttons.","The system belongs to Lizzy. The chaos belongs to Mikael.","Cody's lawyer has significant influence.","Depends whether Mikael Takeover is active.","Official answer: Lizzy. Unofficial answer: complicated."],"What's my threat level?":["Pink Alert: highly adorable, moderately dangerous.","Threat level: Attitude Orange.","To Mikael's peace? Significant.","Cody considers you an ally, so threat assessment reduced.","Competitive threat: HIGH.","Overall: safe unless someone says Mikael is right."],"Tell me a secret":["MikaelOS files contain an unreasonable number of nice things about you.","Some LizzyOS systems are much softer than their labels suggest.","Cody Legal Team has excellent job security.","Mr Perfect secretly enjoys being challenged.","There are probably still things on this website you haven't found.","CLASSIFIED: Mikael notices the little things."],"Give me a random mission":["Make yourself laugh before the next hour ends.","Find one thing on LizzyOS you haven't opened recently.","Send someone a message that makes them smile.","Get water. Yes, this counts as a mission.","Avoid arguing with Mikael for 20 minutes. Difficulty: Legendary.","Give Cody one piece of legal advice."],"What does Cody think of Mikael?":["Client confidentiality applies.","Useful human. Questionable grappling opinions.","Cody respects him enough to keep suing him.","Potential friend. Potential defendant. Often both.","His lawyer has advised him not to answer.","Cody's official position is CLASSIFIED."],"What crime has Mikael committed today?":["Excessive confidence in the first degree.","Operating as Batman during daylight hours.","Unlicensed use of the title Mr Perfect.","Attempted grappling without Cody Legal approval.","Disturbing the peace with unnecessary propaganda.","Being suspiciously Mikael in a public setting."],"Should Mikael be found guilty?":["Cody Court would like to remind you that YOU are basically the judge 😂","Evidence is concerning.","Mikael requests a fair trial and several compliments.","Probably. But make him argue his case first.","LizzyOS cannot prejudice active proceedings. Cody can.","The prosecution appears extremely enthusiastic."],"Is Mikael Batman?":["He certainly behaves as though Gotham issued him a contract.","Batman usually waits until dark. That's all LizzyOS will say.","The Bat-Signal evidence is difficult to ignore.","Identity classified. Ego unclassified.","Mikael denies nothing.","Gotham HR has stopped responding."],"Why is Mikael Batman in daylight?":["Scheduling conflict.","He believes crime has no office hours.","Night mode was apparently too restrictive.","Because nobody successfully explained Batman to him.","Mikael calls it proactive crime prevention.","LizzyOS calls it a workplace policy violation."],"Who would win: Mikael or Cody?":["In court? Cody. He has Lizzy.","In grappling? Negotiations are ongoing.","Mikael has size. Cody has lawyers.","Nobody wins once legal fees begin.","Cody's legal team objects to the premise.","LizzyOS recommends settling out of court."],"How much attitude do I have?":["Current reading: impressive.","Enough to power a small desktop environment.","97%. The remaining 3% is reserved for plausible deniability.","Little Miss Attitude mode is fully operational.","Above recommended operating limits.","Mikael has submitted multiple complaints."],"Am I competitive?":["The system laughed when you asked.","Yes. Next question.","Competitive level: please don't turn this into a competition.","Bowling records have been entered into evidence.","Suspiciously so.","LizzyOS recommends never saying 'I bet you can't' around you."],"What is Agent Yelizaveta's status?":["ONLINE. Observing everything.","Active. Clearance level: suspicious.","Operational with elevated attitude readings.","Currently investigating LizzyOS instead of minding her business.","Status: Pretty. Dangerous. Logged in.","Agent profile remains classified-ish."],"Give me a LizzyOS prediction":["You will open something you weren't planning to open.","Mikael will say something unnecessarily confident.","Pasta will remain a strong possibility.","Cody may require legal representation again.","You will probably find another reason to judge Mikael.","A random system message will become suspiciously accurate."],"Should I open CLASSIFIED?":["You were going to anyway.","Legally? Questionable. Spiritually? Absolutely.","Agent Yelizaveta has never respected a suspicious folder.","Cody's lawyer may already have clearance.","LizzyOS advises caution. MikaelOS advises drama.","OPEN FILE button detected. Self-control not detected."],"Should I check the Secret Shelf?":["Your Micky Bucs are already nervous.","Financial responsibility says no. Curiosity says immediately.","The Shelf has noticed you asking.","Only if you're prepared to negotiate.","Mikael's counteroffer department has entered the chat.","Secret Shelf addiction risk: elevated."],"Give me relationship advice":["Say what you mean, listen properly, and don't turn every disagreement into Cody Court.","Choose kindness even when you're annoyed.","Good communication beats mind-reading every time.","Make room for jokes and serious conversations.","Remember the little things. They usually aren't little.","And occasionally admit Mikael is right. For scientific purposes 😂"],"Give Mikael advice":["Use humility at least once per operating cycle.","Stop challenging creatures with lawyers to grappling matches.","Batman works nights.","Not every disagreement requires a closing argument.","Mr Perfect may benefit from peer review.","Keep noticing the little things. That part is working."],"How is my day going?":["LizzyOS only has partial data, but I'm hoping it's getting better.","Current forecast: manageable with a chance of nonsense.","System recommendation: one nice thing for yourself.","If it's good, enjoy it. If it's rough, don't let one part become the whole day.","Your daily mood button probably knows more than I do.","Still enough time left to improve it."],"Do I need a break?":["If you're asking, probably.","Five minutes away from the screen wouldn't hurt.","Yes. LizzyOS will survive without you briefly.","Take the break before your brain files a complaint.","Water, stretch, reset.","Permission granted. Go disappear for a little bit."]};
@@ -886,47 +886,247 @@ async function notifyAssistantTelegram(question,answer){
 }
 function openAssistant(){const w=win("lizzyAssistantWindow","✨ LIZZY ASSISTANT",`<div class="assistantOrb">✨</div><h2>Lizzy Assistant</h2><p>How may the operating system be unnecessarily helpful?</p><div class="assistantQuestions">${Object.keys(qa).map(q=>`<button data-q="${esc(q)}">${esc(q)}</button>`).join("")}</div><div id="assistantAnswer">Select a question.</div>`);w.querySelectorAll("[data-q]").forEach(b=>b.onclick=()=>{const question=b.dataset.q,a=qa[question],answer=a[Math.floor(Math.random()*a.length)];$("assistantAnswer").textContent=answer;notifyAssistantTelegram(question,answer)})}
 icon("lizzyAssistantIcon","✨","Lizzy Assistant",openAssistant);
-window.LizzyFunApps={openCourt,openRps,openAssistant,openDay};
 
 /* DYNAMIC WALLPAPER + BAT SIGNAL TAKEOVER */
 function phase(){const h=new Date().getHours();return h<5?"late":h<12?"morning":h<17?"afternoon":h<21?"evening":"night"}
-function takeover(){return document.body.classList.contains("mikaelTakeoverActive")}
+function takeover(){return document.documentElement.classList.contains("mikael-takeover")||document.body.classList.contains("mikael-takeover")||document.documentElement.dataset.mikaelTakeover==="true"||document.body.dataset.mikaelTakeover==="true"||!!document.querySelector(".mikaelTakeover.active,.mikael-takeover.active")}
 function wallpaper(){document.documentElement.dataset.dynamicWallpaper=phase();let s=$("mikaelBatSignal");if(!s){s=document.createElement("div");s.id="mikaelBatSignal";s.innerHTML='<div class="batBeam"></div><div class="batMark">🦇</div><small>MIKAEL TAKEOVER</small>';desk().appendChild(s)}s.classList.toggle("active",takeover())}
 wallpaper();LizzyPerf.add("dynamicWallpaper",30000,wallpaper);window.addEventListener("mikaelTakeoverChanged",wallpaper);
-window.LizzyFunApps={openCourt,openRps,openAssistant,openDay};
 })();
 
 /* V4.8 Cody Legal Documents theme */
-(()=>{const rx=/cody\s*(legal|documents)|legal\s*documents.*cody|subject:\s*cody/i;function scan(){for(const el of document.querySelectorAll(".classified-reader,.classifiedReader,.file-reader,.fileReader,.classified-file,.classifiedFile,.document-reader,.documentReader,.modal,.window"))if(rx.test((el.textContent||"").slice(0,6000))){el.classList.add("codyLegalTheme");if(!el.querySelector(".codyLegalWatermark")){const w=document.createElement("div");w.className="codyLegalWatermark";w.setAttribute("aria-hidden","true");w.innerHTML='<div class="codyPhotoBackground"></div><div class="codySeal">⚖</div><div class="codyStamp">SUBJECT: CODY<br><small>LEGAL REPRESENTATION ACTIVE</small></div>';el.prepend(w)}}}window.addEventListener("load",()=>setTimeout(scan,500));new MutationObserver(scan).observe(document.body,{childList:true,subtree:true})})();
+(()=>{const rx=/cody\s*(legal|documents)|legal\s*documents.*cody|subject:\s*cody/i;function scan(){for(const el of document.querySelectorAll(".classified-reader,.classifiedReader,.file-reader,.fileReader,.classified-file,.classifiedFile,.document-reader,.documentReader,.modal,.window"))if(rx.test((el.textContent||"").slice(0,6000))){el.classList.add("codyLegalTheme");if(!el.querySelector(".codyLegalWatermark")){const w=document.createElement("div");w.className="codyLegalWatermark";w.setAttribute("aria-hidden","true");w.innerHTML='<div class="codySilhouette">🐕</div><div class="codySeal">⚖</div><div class="codyStamp">SUBJECT: CODY<br><small>LEGAL REPRESENTATION ACTIVE</small></div>';el.prepend(w)}}}window.addEventListener("load",()=>setTimeout(scan,500));new MutationObserver(scan).observe(document.body,{childList:true,subtree:true})})();
 
 
-/* V4.11 — exact Cody purchased-file theming */
-function applyCodyPurchasedFileTheme(){
- document.querySelectorAll(".classifiedReader").forEach(reader=>{
-  const t=(reader.innerText||reader.textContent||"");
-  const isCody=/Cody Legal Documents/i.test(t)||(/CODY ALADEEN/i.test(t)&&/LEGAL COUNSEL/i.test(t));
-  reader.classList.toggle("codyLegalPhotoActive",isCody);
+/* =========================================================
+   LIZZYOS V4.9 — RECOVERY MODE + OPEN WHEN YOU'RE SICK
+   ========================================================= */
+(()=>{
+"use strict";
+const $=id=>document.getElementById(id);
+const read=(k,f)=>{try{const v=localStorage.getItem(k);return v===null?f:JSON.parse(v)}catch{return f}};
+const write=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
+const RECOVERY_KEY="lizzyRecoveryModeV49";
+const SICK_LETTER_KEY="lizzySickLetterOpenedV49";
+const WORKER=window.LIZZY_TELEGRAM_WORKER_URL||"https://lizzyos-notifications.mulaudzimikael73.workers.dev/";
+const SICK_LETTER=`Dear Lizzy,
+
+So apparently Little Miss Attitude has been defeated by… germs.
+
+Embarrassing.
+
+I’m not saying you’re weak, but I am saying I think you’re weak. 😂 And hopefully you’re not going to go telling your mommy that Mikael is bullying a sick person, because I feel like that would be a dramatic misrepresentation of events.
+
+But jokes aside, you actually need to get better soon.
+
+Because Mikael—
+I mean Lizzy—
+can’t survive without a healthy Lizzy.
+
+…
+
+That may have sounded wrong.
+
+But I said what I said.
+
+Unfortunately, this also means your Hug Token is temporarily useless because if you redeem it right now, you’ll probably get Mikael sick too.
+
+And Mikael thinks that wouldn’t be very good.
+
+Although…
+
+knowing him, he’d probably risk it anyway. 😭
+
+So for now your official instructions are:
+
+Rest properly.
+Drink lots of water.
+Eat something.
+Take care of yourself.
+Stop pretending you’re perfectly fine when you’re clearly not.
+
+And yes, you are allowed one of your famous “cleansing/detox” crying sessions if medically necessary. 😂
+
+Your only job right now is to get better. LizzyOS, Cody Legal Counsel, Agent Yelizaveta and even Mr Perfect need you back at full operating capacity.
+
+Get well soon, Four Eyes. 💗
+
+And don’t worry — I’ll try to be nice to you while you’re sick.
+
+Try.
+
+No promises.
+
+Mikael
+a.k.a. Mr Perfect 💗`;
+
+function recoveryOn(){
+ const s=read(RECOVERY_KEY,{enabled:false});
+ return !!s.enabled;
+}
+
+function recoveryState(){
+ return read(RECOVERY_KEY,{enabled:false,startedAt:null});
+}
+
+function saveRecovery(enabled){
+ const s={enabled,startedAt:enabled?new Date().toISOString():null};
+ write(RECOVERY_KEY,s);
+ renderRecovery();
+ window.dispatchEvent(new CustomEvent("lizzyRecoveryModeChanged",{detail:s}));
+}
+
+function ensureRecoveryBanner(){
+ let b=$("recoveryModeBanner");
+ if(!b){
+   b=document.createElement("div");
+   b.id="recoveryModeBanner";
+   b.className="recoveryModeBanner hidden";
+   b.innerHTML=`<div><span>🤒</span><div><b>RECOVERY MODE ACTIVE</b><small>Patient: Lizzy • Condition: Weak apparently 😂 • Doctor: Absolutely not Mikael</small></div></div><button type="button" id="endRecoveryMode">End</button>`;
+   document.body.appendChild(b);
+   $("endRecoveryMode")?.addEventListener("click",()=>saveRecovery(false));
+ }
+ return b;
+}
+
+function injectRecoveryControl(){
+ const living=$("livingDesktopWindow")||document.querySelector('[id*="living"][id*="Window"]');
+ if(!living)return;
+ const host=living.querySelector(".windowScroll")||living;
+ if($("recoveryModeControl"))return;
+ const card=document.createElement("section");
+ card.id="recoveryModeControl";
+ card.className="livingControlCard recoveryModeControl";
+ card.innerHTML=`<h3>🤒 Recovery Mode</h3><p id="recoveryModeStatus">Checking patient status…</p><div class="livingActions"><button type="button" id="toggleRecoveryMode">Activate Recovery Mode</button></div>`;
+ host.appendChild(card);
+ $("toggleRecoveryMode")?.addEventListener("click",()=>saveRecovery(!recoveryOn()));
+ renderRecovery();
+}
+
+function renderRecovery(){
+ const on=recoveryOn();
+ document.documentElement.classList.toggle("lizzyRecoveryMode",on);
+ document.body.classList.toggle("lizzyRecoveryMode",on);
+ const b=ensureRecoveryBanner();
+ b.classList.toggle("hidden",!on);
+ if($("recoveryModeStatus"))$("recoveryModeStatus").textContent=on?"Recovering 💗 — LizzyOS is being slightly nicer today.":"Offline — Patient claims to be functioning normally.";
+ if($("toggleRecoveryMode"))$("toggleRecoveryMode").textContent=on?"End Recovery Mode":"Activate Recovery Mode";
+ const hug=[...document.querySelectorAll("*")].find(el=>/hug token/i.test(el.textContent||"") && (el.tagName==="ARTICLE"||el.tagName==="DIV"||el.tagName==="SECTION"));
+ if(hug){
+   hug.classList.toggle("recoveryHugWarning",on);
+   if(on&&!hug.querySelector(".recoveryHugNotice")){
+     const n=document.createElement("div");
+     n.className="recoveryHugNotice";
+     n.innerHTML=`🫂 <b>HUG TOKEN — BIOHAZARD WARNING</b><br>Redemption technically permitted. Mikael accepts the risk. LizzyOS strongly recommends waiting until patient is less germy.`;
+     hug.appendChild(n);
+   }else if(!on){
+     hug.querySelector(".recoveryHugNotice")?.remove();
+   }
+ }
+}
+
+async function notifySickLetterOpened(){
+ try{
+   await fetch(WORKER,{
+     method:"POST",
+     headers:{"Content-Type":"application/json"},
+     body:JSON.stringify({
+       type:"sick_letter_opened",
+       letter:"Open When You're Sick",
+       openedAt:new Date().toISOString()
+     })
+   });
+ }catch(e){
+   console.warn("Sick letter Telegram notification failed",e);
+ }
+}
+
+function injectSickLetter(){
+ const win=$("openWhenWindow")||$("openWhenFolderWindow")||document.querySelector('[id*="openWhen"][id*="Window"]');
+ if(!win)return;
+ const host=win.querySelector(".windowScroll")||win;
+ if($("openWhenSickCard"))return;
+
+ const card=document.createElement("article");
+ card.id="openWhenSickCard";
+ card.className="openWhenCard sickOpenWhenCard";
+ card.innerHTML=`<div class="sickLetterIcon">🤒💌</div><div><small>OPEN WHEN…</small><h3>You’re Sick</h3><p>For when Little Miss Attitude loses a temporary fight with germs.</p></div><button type="button" id="openSickLetter">OPEN LETTER</button>`;
+ host.appendChild(card);
+
+ $("openSickLetter")?.addEventListener("click",()=>{
+   let modal=$("sickLetterWindow");
+   if(!modal){
+     modal=document.createElement("section");
+     modal.id="sickLetterWindow";
+     modal.className="sickLetterWindow";
+     document.body.appendChild(modal);
+   }
+   modal.innerHTML=`<div class="sickLetterTop"><b>💌 OPEN WHEN YOU’RE SICK</b><button type="button" id="closeSickLetter">×</button></div><div class="sickLetterPaper"><div class="sickLetterStamp">RECOVERY NOTICE</div><pre>${SICK_LETTER}</pre></div>`;
+   modal.classList.add("open");
+   $("closeSickLetter")?.addEventListener("click",()=>modal.classList.remove("open"));
+
+   const opened=read(SICK_LETTER_KEY,{count:0});
+   write(SICK_LETTER_KEY,{count:Number(opened.count||0)+1,lastOpened:new Date().toISOString()});
+   notifySickLetterOpened();
  });
 }
-if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",()=>{
- new MutationObserver(applyCodyPurchasedFileTheme).observe(document.body,{childList:true,subtree:true,characterData:true});
- applyCodyPurchasedFileTheme();
-}); else {
- new MutationObserver(applyCodyPurchasedFileTheme).observe(document.body,{childList:true,subtree:true,characterData:true});
- applyCodyPurchasedFileTheme();
+
+const recoveryAssistant={
+ "What should I do while I'm sick?":["Rest. Hydrate. Eat something. Stop pretending you're invincible.","Recovery Mode says your only job is to get better.","Bed, water, food, sleep. LizzyOS has spoken."],
+ "Can I use my Hug Token?":["Technically yes. Biohazard department says absolutely not 😂","Mikael would probably risk it. LizzyOS recommends patience.","Token valid. Germs unfortunately also valid."],
+ "Am I dying?":["LizzyOS medical credentials: zero. Please rest and stop being dramatic 😂","Probably not, but if you're seriously worried, speak to an actual medical professional.","System diagnosis: sick and dramatic. Medical diagnosis: unavailable."],
+ "Can Mikael come see me?":["Mikael says probably. Germ Control says terrible idea.","He would probably risk it. The operating system disapproves.","Possible. Hug Token biohazard rules still apply."]
+};
+
+function injectRecoveryAssistant(){
+ if(!recoveryOn())return;
+ const w=$("lizzyAssistantWindow");
+ if(!w)return;
+ const qbox=w.querySelector(".assistantQuestions");
+ if(!qbox||qbox.dataset.recoveryInjected==="1")return;
+ qbox.dataset.recoveryInjected="1";
+ Object.keys(recoveryAssistant).forEach(q=>{
+   const b=document.createElement("button");
+   b.type="button";b.dataset.recoveryQ=q;b.textContent=q;
+   qbox.appendChild(b);
+   b.onclick=()=>{
+     const arr=recoveryAssistant[q],answer=arr[Math.floor(Math.random()*arr.length)];
+     const a=$("assistantAnswer");if(a)a.textContent=answer;
+     if(typeof notifyAssistantTelegram==="function")notifyAssistantTelegram(q,answer);
+   };
+ });
 }
 
-/* V4.14 RELEASE: resilient app launcher */
-(function(){
- document.addEventListener("click",function(e){
-  const el=e.target.closest("#lizzyAssistantIcon,#dayCheckIcon,#codyCourtGameCard,#rpsGameCard");
-  if(!el)return;
-  const a=window.LizzyFunApps;
-  if(!a){console.error("LizzyFunApps API unavailable");return}
-  e.preventDefault();e.stopPropagation();
-  if(el.id==="lizzyAssistantIcon")return a.openAssistant();
-  if(el.id==="dayCheckIcon")return a.openDay();
-  if(el.id==="codyCourtGameCard"){document.getElementById("gamesFolderStaticWindow")?.classList.add("hidden");return a.openCourt()}
-  if(el.id==="rpsGameCard"){document.getElementById("gamesFolderStaticWindow")?.classList.add("hidden");return a.openRps()}
- },true);
+const recoveryActivities=[
+ "Checking patient status… still dramatic.",
+ "Cody Legal Team recommends bed rest.",
+ "Recovery Mode checking hydration… suspicious.",
+ "Hug Token biohazard warning remains active.",
+ "Mikael considering risking infection anyway…",
+ "Agent Yelizaveta temporarily operating below full capacity.",
+ "LizzyOS prescribing rest and absolutely no unnecessary arguments."
+];
+
+function recoveryActivity(){
+ if(!recoveryOn())return;
+ const box=$("lizzyActivityLines");
+ if(!box)return;
+ const row=document.createElement("div");
+ row.className="activityRow recoveryActivity";
+ row.innerHTML=`<small>${new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}</small><span>${recoveryActivities[Math.floor(Math.random()*recoveryActivities.length)]}</span>`;
+ box.prepend(row);
+ while(box.children.length>5)box.lastElementChild.remove();
+}
+
+window.addEventListener("load",()=>{
+ setTimeout(()=>{injectRecoveryControl();injectSickLetter();renderRecovery();},700);
+});
+document.addEventListener("click",()=>{
+ setTimeout(()=>{injectRecoveryControl();injectSickLetter();injectRecoveryAssistant();renderRecovery();},120);
+});
+if(window.LizzyPerf?.add){
+ LizzyPerf.add("recoveryActivity",45000,recoveryActivity);
+}else{
+ setInterval(()=>{if(!document.hidden)recoveryActivity()},45000);
+}
 })();
