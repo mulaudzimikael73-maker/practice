@@ -54,7 +54,7 @@ function renderClassified(){
  const unique=files.filter(f=>{const t=String(f.title||f.name||"Classified File");if(seen.has(t))return false;seen.add(t);return true});
  if(!unique.length){p.innerHTML=`<div class="classifiedEmpty">🔒<br><b>No purchased dossiers yet.</b><p>Buy classified files from Mikael's Secret Shelf and they will appear here.</p></div>`;return}
  p.innerHTML=`<div class="classifiedPurchasedGrid">${unique.map((f,i)=>`<article class="classifiedPurchasedCard"><div>📁</div><small>PURCHASED DOSSIER</small><b>${esc(f.title||f.name||"Classified File")}</b>${f.content?`<button type="button" data-classified-open="${i}">OPEN FILE</button>`:`<span>ARCHIVED</span>`}</article>`).join("")}</div><div id="classifiedPurchasedReader"></div>`;
- p.querySelectorAll("[data-classified-open]").forEach(btn=>btn.addEventListener("click",()=>{const f=unique[Number(btn.dataset.classifiedOpen)],r=$("classifiedPurchasedReader");if(!r||!f?.content)return;r.innerHTML=`<section class="classifiedReader"><button type="button" id="classifiedReaderClose">×</button><small>CLASSIFIED // PURCHASED FILE</small><h3>📁 ${esc(f.title||f.name||"Classified File")}</h3><pre>${esc(f.content)}</pre></section>`;const reader=r.querySelector(".classifiedReader");if(reader&&/cody/i.test(String(f.title||f.name||""))){reader.dataset.codyLegal="true";reader.classList.add("codyLegalPhotoActive","codyLegalTheme");if(!reader.querySelector(".codyLegalWatermark")){const wm=document.createElement("div");wm.className="codyLegalWatermark";wm.innerHTML='<div class="codyPhotoBackground"></div><div class="codySeal">⚖</div><div class="codyStamp">SUBJECT: CODY<br><small>LEGAL REPRESENTATION ACTIVE</small></div>';reader.prepend(wm)}}$("classifiedReaderClose")?.addEventListener("click",()=>r.innerHTML="");r.scrollIntoView({behavior:"smooth",block:"nearest"})}));
+ p.querySelectorAll("[data-classified-open]").forEach(btn=>btn.addEventListener("click",()=>{const f=unique[Number(btn.dataset.classifiedOpen)],r=$("classifiedPurchasedReader");if(!r||!f?.content)return;if(f.encrypted||String(f.id||"")==="aypp_006"){r.innerHTML=`<section class="classifiedReader ayppDecrypt"><button type="button" id="classifiedReaderClose">×</button><small>🔐 ENCRYPTED // AYPP-006</small><h3>DECRYPTION REQUIRED</h3><p>Clue: <b>Remember your birthday card… who signed it?</b></p><input type="password" id="ayppDecryptPassword" placeholder="Enter decryption key"><button type="button" id="ayppDecryptButton">DECRYPT FILE</button><div id="ayppDecryptError"></div></section>`;$("classifiedReaderClose")?.addEventListener("click",()=>r.innerHTML="");$("ayppDecryptButton")?.addEventListener("click",()=>{if(String($("ayppDecryptPassword")?.value||"").trim().toLowerCase()!=="micky the greatest"){$("ayppDecryptError").textContent="❌ ACCESS DENIED — incorrect decryption key.";return}r.innerHTML=`<section class="classifiedReader"><button type="button" id="classifiedReaderClose">×</button><small>CLASSIFIED // DECRYPTED FILE</small><h3>🔓 ${esc(f.title||f.name||"AYPP-006")}</h3><pre>${esc(f.content)}</pre></section>`;$("classifiedReaderClose")?.addEventListener("click",()=>r.innerHTML="")});return}r.innerHTML=`<section class="classifiedReader"><button type="button" id="classifiedReaderClose">×</button><small>CLASSIFIED // PURCHASED FILE</small><h3>📁 ${esc(f.title||f.name||"Classified File")}</h3><pre>${esc(f.content)}</pre></section>`;const reader=r.querySelector(".classifiedReader");if(reader&&/cody/i.test(String(f.title||f.name||""))){reader.dataset.codyLegal="true";reader.classList.add("codyLegalPhotoActive","codyLegalTheme");if(!reader.querySelector(".codyLegalWatermark")){const wm=document.createElement("div");wm.className="codyLegalWatermark";wm.innerHTML='<div class="codyPhotoBackground"></div><div class="codySeal">⚖</div><div class="codyStamp">SUBJECT: CODY<br><small>LEGAL REPRESENTATION ACTIVE</small></div>';reader.prepend(wm)}}$("classifiedReaderClose")?.addEventListener("click",()=>r.innerHTML="");r.scrollIntoView({behavior:"smooth",block:"nearest"})}));
 }
 window.addEventListener("lizzyClassifiedUpdated",renderClassified);
 
@@ -929,99 +929,4 @@ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",
   if(el.id==="codyCourtGameCard"){document.getElementById("gamesFolderStaticWindow")?.classList.add("hidden");return a.openCourt()}
   if(el.id==="rpsGameCard"){document.getElementById("gamesFolderStaticWindow")?.classList.add("hidden");return a.openRps()}
  },true);
-})();
-
-
-/* ============================================================
-   PERSONALITY UPDATE — SECRET SHELF BATCH
-   Added to uploaded working base; existing systems left intact.
-   ============================================================ */
-(()=>{
-"use strict";
-const KEY="lizzyPersonalityShelfBatchV1";
-const ITEMS={"letter003":{"id":"letter003","title":"Unreleased Letter 003","subtitle":"Things I Notice About You","kind":"letter","content":"Dear Lizzy,\n\nI’ve realised something slightly annoying.\n\nI notice a lot about you.\n\nYour facial expressions when I say something stupid. The way you try not to laugh because apparently admitting Mikael is funny would damage your reputation. How competitive you suddenly become the second there’s a winner and a loser.\n\nI notice your attitude — obviously. That would be difficult to miss.\n\nI notice when you’re excited, when you’re tired, when something is bothering you, and when you're pretending everything is perfectly fine.\n\nI notice your smile, your laugh, your glasses and obviously your beauty too.\n\nYou are very pretty.\n\nLike… very pretty.\n\nBut I’ll try not to mention that too much. Your head is already big enough and we have to maintain some level of balance around here.\n\nI also notice your “personality.”\n\nYou know…\n\nYour personality.\n\nVery noticeable.\n\nGreat personality, actually.\n\nMoving on before this investigation becomes inappropriate. 😂\n\nAnd somehow I remember more of the random things you tell me than you probably realise — even your ridiculous “crying is a detox” propaganda.\n\nApparently my brain has decided information concerning Lizzy deserves an unreasonable amount of storage.\n\nVery inefficient.\n\nBut I suppose I’ll keep noticing.\n\nEspecially the little things. 💗\n\nMikael\na.k.a. Mr Perfect"},"letter004":{"id":"letter004","title":"Unreleased Letter 004","subtitle":"Unfortunately, I’ve Gotten Used to You","kind":"letter","content":"Dear Lizzy,\n\nI have some unfortunate news.\n\nI’ve gotten used to you.\n\nUsed to talking to you, annoying you, hearing your stories, arguing about nonsense and trying to make you laugh.\n\nI've even gotten used to you doing absolutely everything in your power to ragebait me and generally be a menace to my peace.\n\nSometimes I genuinely believe you wake up and think:\n\nHow can I irritate Mikael today?\n\nAnd apparently I've just accepted this as part of my life now.\n\nI've gotten used to wanting to tell you random things too.\n\nSomething funny happens? I want to tell Lizzy.\n\nSomething ridiculous happens? Lizzy needs to hear this.\n\nAnd then there's the constant bamboozling.\n\nBecause every now and then I'll look at you and somehow forget that Four Eyes is actually ridiculously pretty.\n\nBeautiful.\n\nStunning.\n\nVery, very easy on the eyes.\n\nAnd stuff.\n\nImportant that I add “and stuff” there so this letter doesn't become too romantic. We have standards to maintain.\n\nBut somehow you've become part of what feels normal.\n\nWhich is inconvenient because now when we haven't spoken properly, I notice. When something's wrong with you, I care. And apparently when you're sick, I start writing you letters.\n\nThis is getting completely out of hand.\n\nSo no, this is NOT Mikael admitting anything.\n\nAll evidence is circumstantial.\n\nMr Perfect maintains plausible deniability.\n\nBut unfortunately, Four Eyes…\n\nI've gotten pretty used to having you around.\n\nThe ragebaiting.\n\nThe menace behaviour.\n\nThe bamboozling.\n\nThe beauty and stuff.\n\nAll of it.\n\nAnd I don't particularly want that to change. 💗\n\nMikael\na.k.a. Mr Perfect"},"o4e004":{"id":"o4e004","title":"O4E-004","subtitle":"Operation Four Eyes","kind":"dossier","content":"CLASSIFICATION: TOP SECRET\nCASE: O4E-004\nSUBJECT: Lizzy\nALIASES: Four Eyes / Specsy / Agent Yelizaveta\nSTATUS: ACTIVE\nINVESTIGATOR: Mikael\n\nOBJECTIVES\n1. Determine how blind Four Eyes actually is.\n2. Determine whether spectacles increase Lizzy’s already concerning attitude levels.\n3. Determine whether the Four Eyes somehow make Lizzy even prettier.\n\nThe third objective was added reluctantly by the lead investigator.\n\nFINDINGS\nSubject regularly operates with four theoretical eyes yet still demonstrates occasional selective blindness — particularly when Mikael is obviously correct.\n\nPossible causes:\nA) Spectacle malfunction\nB) Selective vision\nC) Hater behaviour\nD) Mikael being wrong\n\nOption D has been dismissed due to lack of credible evidence.\n\nSPECSY EFFECT\nInvestigators have discovered a major problem: the glasses actually appear to suit her. Potentially very well.\n\nLizzy + Spectacles = Specsy.\n\nWhether the Four Eyes make Lizzy even prettier remains under investigation. Early results are unfortunately concerning.\n\nATTITUDE TEST\nWithout glasses: HIGH\nWith glasses: HIGH but more professional-looking\nAgent Yelizaveta: NATIONAL SECURITY CONCERN\n\nFINAL ASSESSMENT\nIs Lizzy Four Eyes? YES.\nIs she actually blind? INCONCLUSIVE.\nDo the glasses suit her? REDACTED.\nDo they possibly make her prettier? EXTREMELY REDACTED.\n\nINVESTIGATOR’S PRIVATE NOTE:\nThey might.\n\nDelete this file."},"mwa005":{"id":"mwa005","title":"MWA-005","subtitle":"Mikael Weakness Assessment","kind":"dossier","content":"CLASSIFICATION: ULTRA SECRET\nFILE: MWA-005\nSUBJECT: Mikael\nALIASES: Micky / Mr Perfect / Batman\nAUTHORIZED ACCESS: Agent Yelizaveta\n\nWEAKNESS 01 — THE EYES 👀\nSeverity: CRITICAL\n\nResearch indicates prolonged eye contact with Lizzy may interfere with Mikael’s normal operating ability.\n\nAn experimental countermeasure was developed:\nLOOK AT HER FOREHEAD INSTEAD.\n\nTesting suggests this reduces exposure to the eyes.\n\nUnfortunately, Mikael rejected continued use of the technique.\n\nOfficial statement:\n“I prefer the risk.”\n\nWEAKNESS 02 — THE GIGGLE\nSeverity: HIGH\n\nResearch suggests Lizzy’s particular giggle causes Mikael to experience some sort of unidentified feeling.\n\nPotential symptoms include smiling, temporarily losing his train of thought and wanting to make her giggle again.\n\nIf questioned directly, Mikael is expected to deny these findings.\n\nWEAKNESS 03 — THE SMILE\nKnown to reduce sarcasm efficiency and occasionally compromise Mr Perfect protocols.\n\nWEAKNESS 04 — LIZZY BEING SWEET\nParticularly dangerous when unexpected. May temporarily disable Mikael’s ability to continue bullying Four Eyes.\n\nWEAKNESS 05 — WORRYING ABOUT LIZZY\nWhen something is genuinely wrong with Lizzy, normal joking protocols appear to shut down.\nEXPLOITABILITY: STRICTLY PROHIBITED.\n\nFINAL ASSESSMENT\nDespite repeated claims of perfection, Mikael possesses several vulnerabilities.\n\nUnfortunately, Agent Yelizaveta appears to have accidentally discovered most of them.\n\nMIKAEL’S OFFICIAL RESPONSE:\n“This dossier is fake. I have no weaknesses. And stop asking about the giggle.”"},"aypp006":{"id":"aypp006","title":"AYPP-006","subtitle":"Agent Yelizaveta Psychological Profile","kind":"dossier","encrypted":true,"content":"CLASSIFICATION: TOP SECRET // EYES ONLY\nFILE: AYPP-006\nSUBJECT: Agent Yelizaveta\nALIASES: Lizzy / Little Miss Attitude / Four Eyes / Specsy\nTHREAT LEVEL: 💗 PINK — ELEVATED\n\nINTELLIGENCE — HIGH\nQuick to notice inconsistencies and dangerously capable of questioning Mikael propaganda.\n\nCOMPETITIVENESS — EXTREME\nSubject can turn almost anything into a competition. Losing may result in allegations, investigations or an immediate rematch.\n\nATTITUDE — CRITICAL\nBaseline levels are already high. When Mikael is deliberately annoying, readings become difficult to measure.\n\nKINDNESS — SUSPICIOUSLY HIGH\nDespite extensive hater evidence, Subject is actually extremely kind.\n\nKNOWN TACTICS\nTHE LOOK — communicates an entire complaint without speaking.\nTHE LAUGH/GIGGLE — may compromise Mikael. See MWA-005.\nFOUR EYES MODE — somehow increases professionalism while maintaining attitude.\nTHE SIDE-EYE — commonly deployed after Mikael says something she considers stupid.\n\nEMOTIONAL ACTIVITY\nSubject occasionally cries and insists this is “cleansing” or “detoxing.”\nMikael maintains this is an extremely successful PR campaign for crying.\n\nCODY AFFILIATION\nSubject currently acts as Cody’s lawyer. Any Cody dispute should be considered high risk for Mikael.\n\nMIKAEL RELATIONSHIP ASSESSMENT\nSubject regularly argues with, judges, ragebaits and annoys Mikael.\nShe also continues voluntarily spending time with him.\nAnalysts find this suspicious.\n\nFINAL ASSESSMENT\nSmart. Funny. Kind. Stubborn. Competitive. Beautiful. Significant attitude problem.\n\nAnd apparently more important to Mikael than this report was originally supposed to reveal.\n\nSTATUS: 💗 HIGH-VALUE ASSET\n\nMIKAEL’S NOTE:\n“I approved most of this report. Not the parts that make me look vulnerable. Those are propaganda.”"}};
-
-function state(){try{return JSON.parse(localStorage.getItem(KEY))||{}}catch{return {}}}
-function save(s){localStorage.setItem(KEY,JSON.stringify(s))}
-function esc(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
-function purchased(id){return !!state()[id]?.purchased}
-function buy(id){
- const s=state(); s[id]={...(s[id]||{}),purchased:true,purchasedAt:new Date().toISOString()};
- save(s); renderAll();
-}
-function findWindow(words){
- return [...document.querySelectorAll("body *")].filter(el=>{
-   const id=(el.id||"").toLowerCase(), cls=String(el.className||"").toLowerCase(), txt=(el.textContent||"").toLowerCase();
-   return words.some(w=>id.includes(w)||cls.includes(w)||txt.slice(0,400).includes(w));
- }).sort((a,b)=>(a.children.length-b.children.length))[0]||null;
-}
-function hostFor(el){return el?.querySelector?.(".windowScroll,.window-content,.content,.folder-content,.shelf-grid,.classified-grid")||el}
-function openReader(item){
- let modal=document.getElementById("personalityBatchReader");
- if(!modal){
-   modal=document.createElement("div"); modal.id="personalityBatchReader"; modal.className="personalityBatchReader";
-   document.body.appendChild(modal);
- }
- const body=()=>`<div class="pbTop"><b>${esc(item.title)} — ${esc(item.subtitle)}</b><button id="pbClose">×</button></div><div class="pbPaper"><pre>${esc(item.content)}</pre></div>`;
- if(item.encrypted){
-   modal.innerHTML=`<div class="pbTop"><b>🔐 ENCRYPTED FILE — AYPP-006</b><button id="pbClose">×</button></div><div class="pbDecrypt"><h3>DECRYPTION REQUIRED</h3><p>Clue: <b>Remember your birthday card… who signed it?</b></p><input id="pbPass" type="password" placeholder="Enter password"><button id="pbUnlock">DECRYPT</button><div id="pbError"></div></div>`;
-   modal.classList.add("open");
-   modal.querySelector("#pbClose").onclick=()=>modal.classList.remove("open");
-   modal.querySelector("#pbUnlock").onclick=()=>{
-     const pass=(modal.querySelector("#pbPass").value||"").trim().toLowerCase();
-     if(pass==="micky the greatest"){
-       modal.innerHTML=body(); modal.querySelector("#pbClose").onclick=()=>modal.classList.remove("open");
-     } else modal.querySelector("#pbError").textContent="❌ ACCESS DENIED — incorrect decryption key.";
-   };
- } else {
-   modal.innerHTML=body(); modal.classList.add("open");
-   modal.querySelector("#pbClose").onclick=()=>modal.classList.remove("open");
- }
-}
-function card(item,shop){
- const d=document.createElement("div"); d.className="personalityShelfCard"; d.dataset.pb=item.id;
- if(shop){
-   d.innerHTML=`<div class="pbIcon">${item.kind==="letter"?"💌":"🔐"}</div><div><small>${item.kind==="letter"?"UNRELEASED LETTER":"CLASSIFIED DOSSIER"}</small><h3>${esc(item.title)}</h3><p>${esc(item.subtitle)}</p></div><button>PLACE BID</button>`;
-   d.querySelector("button").onclick=()=>{
-      const offer=prompt(`Enter your bid for ${item.title}:`,"");
-      if(offer===null)return;
-      const s=state(); s[item.id]={...(s[item.id]||{}),bid:String(offer),bidAt:new Date().toISOString()};
-      save(s);
-      const confirmPurchase=confirm(`Bid saved: ${offer}\n\nFor this local test, mark the auction as purchased now?`);
-      if(confirmPurchase)buy(item.id); else renderAll();
-   };
-   const bid=state()[item.id]?.bid;
-   if(bid) d.querySelector("p").insertAdjacentHTML("afterend",`<div class="pbBid">Current bid: ${esc(bid)}</div>`);
- } else {
-   d.innerHTML=`<div class="pbIcon">${item.kind==="letter"?"💌":"📁"}</div><div><small>${item.encrypted?"ENCRYPTED • ":""}PURCHASED</small><h3>${esc(item.title)}</h3><p>${esc(item.subtitle)}</p></div><button>OPEN</button>`;
-   d.querySelector("button").onclick=()=>openReader(item);
- }
- return d;
-}
-function injectShelf(){
- const shelf=findWindow(["secret shelf","secretshelf"]);
- if(!shelf)return;
- const h=hostFor(shelf); if(!h)return;
- let section=h.querySelector("#personalityShelfBatch");
- if(!section){section=document.createElement("section");section.id="personalityShelfBatch";section.innerHTML='<div class="pbBatchTitle">🆕 PERSONALITY UPDATE AUCTIONS</div><div class="pbGrid"></div>';h.appendChild(section)}
- const grid=section.querySelector(".pbGrid"); grid.innerHTML="";
- Object.values(ITEMS).filter(x=>!purchased(x.id)).forEach(x=>grid.appendChild(card(x,true)));
- section.style.display=grid.children.length?"":"none";
-}
-function injectPurchased(kind){
- const win=findWindow(kind==="letter"?["open when","openwhen"]:["classified"]);
- if(!win)return;
- const h=hostFor(win); if(!h)return;
- const id=kind==="letter"?"personalityPurchasedLetters":"personalityPurchasedDossiers";
- let section=h.querySelector("#"+id);
- if(!section){section=document.createElement("section");section.id=id;section.innerHTML=`<div class="pbBatchTitle">${kind==="letter"?"💌 PURCHASED UNRELEASED LETTERS":"🔐 PURCHASED DOSSIERS"}</div><div class="pbGrid"></div>`;h.appendChild(section)}
- const grid=section.querySelector(".pbGrid"); grid.innerHTML="";
- Object.values(ITEMS).filter(x=>x.kind===kind&&purchased(x.id)).forEach(x=>grid.appendChild(card(x,false)));
- section.style.display=grid.children.length?"":"none";
-}
-function renderAll(){injectShelf();injectPurchased("letter");injectPurchased("dossier")}
-window.addEventListener("load",()=>setTimeout(renderAll,900));
-document.addEventListener("click",()=>setTimeout(renderAll,160));
-new MutationObserver(()=>{clearTimeout(window.__pbTimer);window.__pbTimer=setTimeout(renderAll,100)}).observe(document.body,{childList:true,subtree:true});
-window.PersonalityShelfBatch={items:ITEMS,state,buy,render:renderAll};
 })();
