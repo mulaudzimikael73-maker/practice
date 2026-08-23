@@ -18,6 +18,17 @@
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
+
+<style>
+#lizzyAssistantIcon,#dayCheckIcon,#codyCourtGameCard,#rpsGameCard{
+  pointer-events:auto!important;
+  cursor:pointer!important;
+  position:relative;
+  z-index:50;
+}
+#gamesFolderStaticWindow #codyCourtGameCard,
+#gamesFolderStaticWindow #rpsGameCard{z-index:5}
+</style>
 </head>
 
 <body>
@@ -1542,7 +1553,48 @@ if (window.netlifyIdentity) {
 </div>
 
 <script src="script.js?v=20260822-v27-redo"></script>
-<script src="living-desktop.js?v=20260823-v414-final"></script>
+<script src="living-desktop.js?v=20260823-v415-launch-hotfix"></script>
+<script>
+(function(){
+  function launch(name){
+    var api=window.LizzyFunApps;
+    if(!api || typeof api[name] !== "function"){
+      console.error("LizzyOS launcher unavailable:", name, api);
+      return;
+    }
+    api[name]();
+  }
+  function bind(){
+    var map={
+      lizzyAssistantIcon:"openAssistant",
+      dayCheckIcon:"openDay",
+      codyCourtGameCard:"openCourt",
+      rpsGameCard:"openRps"
+    };
+    Object.keys(map).forEach(function(id){
+      var el=document.getElementById(id);
+      if(!el)return;
+      el.style.pointerEvents="auto";
+      el.style.cursor="pointer";
+      el.onclick=function(ev){
+        ev.preventDefault();
+        ev.stopImmediatePropagation();
+        if(id==="codyCourtGameCard" || id==="rpsGameCard"){
+          var games=document.getElementById("gamesFolderStaticWindow");
+          if(games)games.classList.add("hidden");
+        }
+        launch(map[id]);
+        return false;
+      };
+    });
+  }
+  if(document.readyState==="loading") document.addEventListener("DOMContentLoaded",bind);
+  else bind();
+  window.addEventListener("load",bind);
+  setTimeout(bind,500);
+  setTimeout(bind,1500);
+})();
+</script>
 <script src="internet.js?v=20260821-bank-selfcontained-final"></script>
 
 
