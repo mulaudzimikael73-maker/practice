@@ -77,7 +77,7 @@ export default{async fetch(req,env){
      await tg(env,"answerCallbackQuery",{callback_query_id:q.id});
      if(!c)return json({ok:true});
      if(action==="accept"){
-       c.status="accepted";c.decidedAt=new Date().toISOString();await putClaim(env,c);await putShelfState(env,c);
+       c.status="accepted";c.acceptedPrice=Number(c.offer||0);c.decidedAt=new Date().toISOString();await putClaim(env,c);await putShelfState(env,c);
        await tg(env,"editMessageText",{chat_id:q.message.chat.id,message_id:q.message.message_id,text:`${q.message.text}\n\n━━━━━━━━━━━━━━\n✅ ACCEPTED BY MIKAEL`});
      }else if(action==="reject"){
        c.status="rejected";c.decidedAt=new Date().toISOString();await putClaim(env,c);await putShelfState(env,c);
@@ -105,6 +105,32 @@ export default{async fetch(req,env){
 
  if(req.method!=="POST")return json({error:"Method not allowed"},405);
  const b=await req.json();
+ if(b?.type==="game_result"){
+ const game=String(b.game||"Game").slice(0,120),result=String(b.result||"").slice(0,300),details=String(b.details||"").slice(0,1800);
+ if(!result)return json({success:false,error:"Missing game result"},400);
+ const text=`🎮 LIZZYOS GAME RESULT
+
+🎯 ${game}
+🏁 ${result}
+
+${details}`;
+ const sent=await tg(env,"sendMessage",{chat_id:env.TELEGRAM_CHAT_ID,text});
+ return json({success:true,type:"game_result",telegram:!!sent?.ok});
+}
+if(b?.type==="assistant_activity"){
+   const question=String(b.question||"").slice(0,500),answer=String(b.answer||"").slice(0,1500);
+   if(!question||!answer)return json({success:false,error:"Missing assistant activity"},400);
+   const text=`✨ LIZZY ASSISTANT ACTIVITY
+
+👤 Agent Yelizaveta asked:
+"${question}"
+
+🤖 LizzyOS answered:
+"${answer}"`;
+   const sent=await tg(env,"sendMessage",{chat_id:env.TELEGRAM_CHAT_ID,text});
+   return json({success:true,type:"assistant_activity",telegram:!!sent?.ok});
+ }
+
 
  if(b.type==="mikael_reverse_token_award"){
    const name=String(b.name||"").trim(),emoji=String(b.emoji||"🔄"),desc=String(b.desc||"").trim();
@@ -163,7 +189,10 @@ export default{async fetch(req,env){
    const names={
      letter_002:"Unreleased Letter #002",
      mystery_reward:"Mystery Reward",
-     archive_x17:"Sealed Archive X-17 [Cody Legal Documents]"
+     archive_x17:"Sealed Archive X-17 [Cody Legal Documents]",
+     dossier_001:"Classified File #001 — Initial Subject Assessment",
+     hater_file:"Classified File #002 — The Hater Investigation",
+     mrperfect_file:"Classified File #003 — Operation: Mr Perfect"
    };
    if(!names[b.item])return json({success:false,error:"Unknown Secret Shelf item"},400);
    const offer=Math.floor(Number(b.offer));
@@ -171,7 +200,7 @@ export default{async fetch(req,env){
    const c={claimId:id(),type:"secret_shelf_bid",item:names[b.item],itemId:b.item,offer,status:"pending",counterOffer:null,createdAt:new Date().toISOString()};
    await putClaim(env,c);
    await putShelfState(env,c);
-   await tg(env,"sendMessage",{chat_id:env.TELEGRAM_CHAT_ID,text:`🛒 LIZZYOS SECRET SHELF / VAULT\n\n💌 NEW OFFER\n\nItem: ${c.item}\nLizzy's Offer: ${offer} MB\n\nStatus: ⏳ PENDING\n\nClaim ID:\n${c.claimId}`,reply_markup:{inline_keyboard:[[{text:"✅ ACCEPT",callback_data:`accept:${c.claimId}`},{text:"❌ REJECT",callback_data:`reject:${c.claimId}`}],[{text:"💬 COUNTER",callback_data:`counter:${c.claimId}`}]]}});
+   await tg(env,"sendMessage",{chat_id:env.TELEGRAM_CHAT_ID,text:`🛒 LIZZYOS SECRET SHELF\n\n💌 NEW OFFER\n\nItem: ${c.item}\nLizzy's Offer: ${offer} MB\n\nStatus: ⏳ PENDING\n\nClaim ID:\n${c.claimId}`,reply_markup:{inline_keyboard:[[{text:"✅ ACCEPT",callback_data:`accept:${c.claimId}`},{text:"❌ REJECT",callback_data:`reject:${c.claimId}`}],[{text:"💬 COUNTER",callback_data:`counter:${c.claimId}`}]]}});
    return json({success:true,claimId:c.claimId,status:"pending"});
  }
 

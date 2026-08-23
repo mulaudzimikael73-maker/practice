@@ -54,7 +54,7 @@ function renderClassified(){
  const unique=files.filter(f=>{const t=String(f.title||f.name||"Classified File");if(seen.has(t))return false;seen.add(t);return true});
  if(!unique.length){p.innerHTML=`<div class="classifiedEmpty">🔒<br><b>No purchased dossiers yet.</b><p>Buy classified files from Mikael's Secret Shelf and they will appear here.</p></div>`;return}
  p.innerHTML=`<div class="classifiedPurchasedGrid">${unique.map((f,i)=>`<article class="classifiedPurchasedCard"><div>📁</div><small>PURCHASED DOSSIER</small><b>${esc(f.title||f.name||"Classified File")}</b>${f.content?`<button type="button" data-classified-open="${i}">OPEN FILE</button>`:`<span>ARCHIVED</span>`}</article>`).join("")}</div><div id="classifiedPurchasedReader"></div>`;
- p.querySelectorAll("[data-classified-open]").forEach(btn=>btn.addEventListener("click",()=>{const f=unique[Number(btn.dataset.classifiedOpen)],r=$("classifiedPurchasedReader");if(!r||!f?.content)return;r.innerHTML=`<section class="classifiedReader"><button type="button" id="classifiedReaderClose">×</button><small>CLASSIFIED // PURCHASED FILE</small><h3>📁 ${esc(f.title||f.name||"Classified File")}</h3><pre>${esc(f.content)}</pre></section>`;const reader=r.querySelector(".classifiedReader");if(reader&&/cody/i.test(String(f.title||f.name||""))){reader.classList.add("codyLegalPhotoActive","codyLegalTheme");if(!reader.querySelector(".codyLegalWatermark")){const wm=document.createElement("div");wm.className="codyLegalWatermark";wm.innerHTML='<div class="codyPhotoBackground"></div><div class="codySeal">⚖</div><div class="codyStamp">SUBJECT: CODY<br><small>LEGAL REPRESENTATION ACTIVE</small></div>';reader.prepend(wm)}}$("classifiedReaderClose")?.addEventListener("click",()=>r.innerHTML="");r.scrollIntoView({behavior:"smooth",block:"nearest"})}));
+ p.querySelectorAll("[data-classified-open]").forEach(btn=>btn.addEventListener("click",()=>{const f=unique[Number(btn.dataset.classifiedOpen)],r=$("classifiedPurchasedReader");if(!r||!f?.content)return;r.innerHTML=`<section class="classifiedReader"><button type="button" id="classifiedReaderClose">×</button><small>CLASSIFIED // PURCHASED FILE</small><h3>📁 ${esc(f.title||f.name||"Classified File")}</h3><pre>${esc(f.content)}</pre></section>`;const reader=r.querySelector(".classifiedReader");if(reader&&/cody/i.test(String(f.title||f.name||""))){reader.dataset.codyLegal="true";reader.classList.add("codyLegalPhotoActive","codyLegalTheme");if(!reader.querySelector(".codyLegalWatermark")){const wm=document.createElement("div");wm.className="codyLegalWatermark";wm.innerHTML='<div class="codyPhotoBackground"></div><div class="codySeal">⚖</div><div class="codyStamp">SUBJECT: CODY<br><small>LEGAL REPRESENTATION ACTIVE</small></div>';reader.prepend(wm)}}$("classifiedReaderClose")?.addEventListener("click",()=>r.innerHTML="");r.scrollIntoView({behavior:"smooth",block:"nearest"})}));
 }
 window.addEventListener("lizzyClassifiedUpdated",renderClassified);
 
@@ -900,27 +900,6 @@ window.LizzyFunApps={openCourt,openRps,openAssistant,openDay};
 (()=>{const rx=/cody\s*(legal|documents)|legal\s*documents.*cody|subject:\s*cody/i;function scan(){for(const el of document.querySelectorAll(".classified-reader,.classifiedReader,.file-reader,.fileReader,.classified-file,.classifiedFile,.document-reader,.documentReader,.modal,.window"))if(rx.test((el.textContent||"").slice(0,6000))){el.classList.add("codyLegalTheme");if(!el.querySelector(".codyLegalWatermark")){const w=document.createElement("div");w.className="codyLegalWatermark";w.setAttribute("aria-hidden","true");w.innerHTML='<div class="codyPhotoBackground"></div><div class="codySeal">⚖</div><div class="codyStamp">SUBJECT: CODY<br><small>LEGAL REPRESENTATION ACTIVE</small></div>';el.prepend(w)}}}window.addEventListener("load",()=>setTimeout(scan,500));new MutationObserver(scan).observe(document.body,{childList:true,subtree:true})})();
 
 
-/* =========================================================
-   V4.12 — REAL APP BINDING + GAMES FOLDER
-   ========================================================= */
-function bindLizzyFunAppsV412(){
- const api=window.LizzyFunApps;
- if(!api)return;
- const bind=(id,fn)=>{
-  const el=document.getElementById(id);if(!el)return;
-  el.onclick=(ev)=>{ev.preventDefault();ev.stopPropagation();fn()};
-  el.onkeydown=(ev)=>{if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();fn()}};
- };
- bind("lizzyAssistantIcon",api.openAssistant);
- bind("dayCheckIcon",api.openDay);
- bind("codyCourtGameCard",()=>{document.getElementById("gamesFolderStaticWindow")?.classList.add("hidden");api.openCourt()});
- bind("rpsGameCard",()=>{document.getElementById("gamesFolderStaticWindow")?.classList.add("hidden");api.openRps()});
-}
-if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",bindLizzyFunAppsV412);
-else bindLizzyFunAppsV412();
-window.addEventListener("load",bindLizzyFunAppsV412);
-setTimeout(bindLizzyFunAppsV412,800);
-
 /* V4.11 — exact Cody purchased-file theming */
 function applyCodyPurchasedFileTheme(){
  document.querySelectorAll(".classifiedReader").forEach(reader=>{
@@ -936,3 +915,18 @@ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",
  new MutationObserver(applyCodyPurchasedFileTheme).observe(document.body,{childList:true,subtree:true,characterData:true});
  applyCodyPurchasedFileTheme();
 }
+
+/* V4.14 RELEASE: resilient app launcher */
+(function(){
+ document.addEventListener("click",function(e){
+  const el=e.target.closest("#lizzyAssistantIcon,#dayCheckIcon,#codyCourtGameCard,#rpsGameCard");
+  if(!el)return;
+  const a=window.LizzyFunApps;
+  if(!a){console.error("LizzyFunApps API unavailable");return}
+  e.preventDefault();e.stopPropagation();
+  if(el.id==="lizzyAssistantIcon")return a.openAssistant();
+  if(el.id==="dayCheckIcon")return a.openDay();
+  if(el.id==="codyCourtGameCard"){document.getElementById("gamesFolderStaticWindow")?.classList.add("hidden");return a.openCourt()}
+  if(el.id==="rpsGameCard"){document.getElementById("gamesFolderStaticWindow")?.classList.add("hidden");return a.openRps()}
+ },true);
+})();

@@ -4278,3 +4278,11 @@ body.mikaelTakeoverActive #desktopArea:before{background:rgba(20,10,40,.12)!impo
 .classifiedReader.codyLegalPhotoActive h3,
 .classifiedReader.codyLegalPhotoActive small,
 .classifiedReader.codyLegalPhotoActive pre{color:#fff!important;text-shadow:0 1px 3px rgba(0,0,0,.45)}
+
+/* V4.14 deterministic Cody legal wallpaper */
+.classifiedReader[data-cody-legal="true"],.classifiedReader.codyLegalPhotoActive{
+ background:linear-gradient(rgba(35,17,34,.42),rgba(35,17,34,.60)),url("./cody-legal-background.jpeg") center 32%/cover no-repeat!important;
+}
+.classifiedReader[data-cody-legal="true"] pre,.classifiedReader.codyLegalPhotoActive pre{
+ background:rgba(35,18,34,.58)!important;color:#fff!important;border-radius:16px!important;padding:18px!important;
+}
