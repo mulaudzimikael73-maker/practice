@@ -8,7 +8,8 @@ const BUILTIN_NAMES = {
   miss: "❤️ Open When You Miss Me",
   amazing: "🌸 Open When You Need Reminding How Amazing You Are",
   hug: "🫂 Open When You Need a Hug",
-  laugh: "😂 Open When You Need to Laugh"
+  laugh: "😂 Open When You Need to Laugh",
+  sick: "🤒 Open When You’re Sick"
 };
 
 const recentlySent = new Map();

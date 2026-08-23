@@ -8,7 +8,7 @@
 
     <title>Lizzy ❤️</title>
 
-    <link rel="stylesheet" href="style.css?v=20260823-v48">
+    <link rel="stylesheet" href="style.css?v=20260823-v417-answer-space">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
 
@@ -17,6 +17,18 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+
+<style>
+#lizzyAssistantIcon,#dayCheckIcon,#codyCourtGameCard,#rpsGameCard{
+  pointer-events:auto!important;
+  cursor:pointer!important;
+  position:relative;
+  z-index:50;
+}
+#gamesFolderStaticWindow #codyCourtGameCard,
+#gamesFolderStaticWindow #rpsGameCard{z-index:5}
+</style>
 </head>
 
 <body>
@@ -584,7 +596,8 @@
                 <div class="desktopEmoji">🛒</div>
                 <span>Seed Store</span>
             </div>
-
+            <div class="desktopIcon livingDesktopIcon" id="lizzyAssistantIcon" role="button" tabindex="0"><div class="desktopEmoji">✨</div><span>Lizzy Assistant</span></div>
+            <div class="desktopIcon livingDesktopIcon" id="dayCheckIcon" role="button" tabindex="0"><div class="desktopEmoji">💗</div><span>How's Today?</span></div>
             <div class="desktopIcon calendarFolderIcon" id="calendarIcon">
                 <div class="desktopEmoji calendarFolderEmoji"><span class="folderCalendarBadge">📅</span></div>
                 <span>Our Date</span>
@@ -612,7 +625,9 @@
                     <button class="gameFolderCard" data-open-game="heartGameIcon" onclick="document.getElementById('gamesFolderStaticWindow').classList.add('hidden');var w=document.getElementById('heartGameWindow');if(w){w.classList.remove('hidden');}else{var i=document.getElementById('heartGameIcon');if(i)i.click();}"><span>💗</span><b>Heart Catch</b><small>Catch them before they escape.</small></button>
                     <button class="gameFolderCard" data-open-game="mysteryBoxIcon" onclick="document.getElementById('gamesFolderStaticWindow').classList.add('hidden');var w=document.getElementById('mysteryBoxWindow');if(w){w.classList.remove('hidden');}else{var i=document.getElementById('mysteryBoxIcon');if(i)i.click();}"><span>🎁</span><b>Daily Mystery</b><small>Your daily classified reward.</small></button>
                     <button class="gameFolderCard" data-open-game="ticTacToeIcon" onclick="document.getElementById('gamesFolderStaticWindow').classList.add('hidden');var w=document.getElementById('ticTacToeWindow');if(w){w.classList.remove('hidden');}else{var i=document.getElementById('ticTacToeIcon');if(i)i.click();}"><span>❌⭕</span><b>Tic-Tac-Toe</b><small>Lizzy vs Mikael.</small></button>
-                    <button class="gameFolderCard" data-open-game="crackCodeIcon" onclick="document.getElementById('gamesFolderStaticWindow').classList.add('hidden');var w=document.getElementById('crackCodeWindow');if(w){w.classList.remove('hidden');}else{var i=document.getElementById('crackCodeIcon');if(i)i.click();}"><span>🔐</span><b>Crack the Code</b><small>Agent-level puzzles.</small></button>
+                                        <button class="gameFolderCard" id="codyCourtGameCard" type="button"><span>⚖️</span><b>Cody Court</b><small>Review evidence and deliver your ruling.</small></button>
+                    <button class="gameFolderCard" id="rpsGameCard" type="button"><span>✊</span><b>Rock Paper Scissors</b><small>Lizzy vs Mikael. Best record wins.</small></button>
+<button class="gameFolderCard" data-open-game="crackCodeIcon" onclick="document.getElementById('gamesFolderStaticWindow').classList.add('hidden');var w=document.getElementById('crackCodeWindow');if(w){w.classList.remove('hidden');}else{var i=document.getElementById('crackCodeIcon');if(i)i.click();}"><span>🔐</span><b>Crack the Code</b><small>Agent-level puzzles.</small></button>
                 </div>
             </div>
             <button id="closeGamesFolderStatic" class="windowCloseButton"
@@ -836,6 +851,7 @@
                     <button class="letterButton" data-letter="amazing">🌸 Open when you need reminding how amazing you are</button>
                     <button class="letterButton" data-letter="hug">🫂 Open when you need a hug</button>
                     <button class="letterButton" data-letter="laugh">😂 Open when you need to laugh</button>
+                    <button class="letterButton" data-letter="sick">🤒 Open when you’re sick</button>
                 </div>
 
                 <article id="letterContent" class="letterPaper hidden">
@@ -1065,7 +1081,7 @@
     <button type="button" id="takeoverRareClaim">Investigate</button>
   </div>
 </div>
-id="rareMikael" class="rareMikael hidden"><span>🕴🏾</span><small>MIKAEL</small></div>
+<div id="rareMikael" class="rareMikael hidden"><span>🕴🏾</span><small>MIKAEL</small></div>
 
 <div id="crackCodeWindow" class="desktopWindow hidden">
 <div class="windowTop"><div class="windowDots"><span class="windowCloseDot" id="crackCodeClose"></span><span class="windowMinDot"></span><span class="windowMaxDot"></span></div><h2>🔐 Crack the Code</h2></div>
@@ -1537,8 +1553,9 @@ if (window.netlifyIdentity) {
   <button id="closeUnreleasedLetter" class="windowCloseButton">Close Classified File</button>
 </div>
 
-<script src="script.js?v=20260822-v27-redo"></script>
-<script src="living-desktop.js?v=20260823-v48"></script>
+<script src="script.js?v=20260823-v417-sick-letter"></script>
+<script src="living-desktop.js?v=20260823-v415-launch-hotfix"></script>
+
 <script src="internet.js?v=20260821-bank-selfcontained-final"></script>
 
 
@@ -1607,7 +1624,7 @@ if (window.netlifyIdentity) {
         </div>
 
 <script src="seed-store.js?v=20260822-v43"></script>
-<script src="letter-notifications.js?v=20260821-open-when-telegram-fixed"></script>
+<script src="letter-notifications.js?v=20260823-v417-sick-letter"></script>
 <script src="mikael-exe.js?v=20260822-v29-layout"></script>
 
 <div id="livingAmbientStrip" class="livingAmbientStrip"><span id="ambientTimeGreeting">LizzyOS Online</span><i>•</i><span id="ambientMood">Mood: Normal</span><i>•</i><span id="ambientCountdown">No countdown</span></div><div id="mikaelTakeoverBoot" class="mikaelTakeoverBoot hidden" aria-hidden="true">
@@ -1630,27 +1647,6 @@ if (window.netlifyIdentity) {
   <p id="mikaelTakeoverPopupText"></p>
 </div>
 
-<!-- Recovery Mode SAFE loader: never participates in LizzyOS boot -->
-<script>
-window.addEventListener("load", function () {
-  window.setTimeout(function () {
-    try {
-      var css=document.createElement("link");
-      css.rel="stylesheet";
-      css.href="recovery-mode.css?v=3-safe";
-      document.head.appendChild(css);
-
-      var js=document.createElement("script");
-      js.src="recovery-mode.js?v=3-safe";
-      js.async=true;
-      js.onerror=function(){console.warn("Recovery add-on did not load; core LizzyOS remains unaffected.");};
-      document.body.appendChild(js);
-    } catch(e) {
-      console.warn("Recovery add-on skipped:",e);
-    }
-  }, 3500);
-});
-</script>
-
+<script src="fun-apps.js?v=20260823-v416-selfcontained"></script>
 </body>
 </html>

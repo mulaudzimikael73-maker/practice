@@ -934,6 +934,58 @@ Whenever you forget, come back here. I'll happily remind you again.<br><br>
 
 };
 
+openWhenLetters.sick = {
+    title: "🤒 Open When You’re Sick",
+    content: `
+        <p>Dear Lizzy,</p>
+
+        <p>So apparently Little Miss Attitude has been defeated by… <b>germs</b>.</p>
+
+        <p>Embarrassing.</p>
+
+        <p>I’m not saying you’re weak, but I <b>am</b> saying I think you’re weak. 😂 And hopefully you won’t go telling your mommy that Mikael is bullying a sick person, because I feel like that would be a dramatic misrepresentation of events.</p>
+
+        <p>But jokes aside, you actually need to get better soon.</p>
+
+        <p>Because Mikael—<br>
+        I mean <b>Lizzy</b>—can’t survive without a healthy Lizzy.</p>
+
+        <p>…</p>
+
+        <p>That may sound wrong.</p>
+
+        <p><b>But I said what I said.</b></p>
+
+        <p>Unfortunately, this also means you can’t even properly use your <b>Hug Token</b> right now because you’ll probably get Mikael sick too.</p>
+
+        <p>And Mikael thinks that wouldn’t be very good.</p>
+
+        <p>Although… knowing him, he would probably risk it anyway. 😭</p>
+
+        <p>So for now, your official instructions are:</p>
+
+        <p>Rest properly.<br>
+        Drink lots of water.<br>
+        Eat something.<br>
+        Take care of yourself.<br>
+        And stop pretending you’re perfectly fine when you clearly aren’t.</p>
+
+        <p>And yes, you are allowed one of your famous <b>“cleansing/detox” crying sessions</b> if medically necessary. 😂</p>
+
+        <p>Your only job right now is to get better. LizzyOS, Cody Legal Counsel, Agent Yelizaveta and even Mr Perfect need you back at full operating capacity.</p>
+
+        <p><b>Get better soon, Four Eyes. 💗</b></p>
+
+        <p>And don’t worry — I’ll try to be nice to you while you’re sick.</p>
+
+        <p><b>Try.</b></p>
+
+        <p>No promises.</p>
+
+        <p>Mikael<br><i>a.k.a. Mr Perfect 💗</i></p>
+    `
+};
+
 openWhenLetters.hug = {
     title: "🫂 Open When You Need a Hug",
     body: `
