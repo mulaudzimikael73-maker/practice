@@ -17,8 +17,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
-
-<link rel="stylesheet" href="recovery-mode.css?v=2-hotfix">
 </head>
 
 <body>
@@ -1632,6 +1630,27 @@ if (window.netlifyIdentity) {
   <p id="mikaelTakeoverPopupText"></p>
 </div>
 
-<script src="recovery-mode.js?v=2-hotfix"></script>
+<!-- Recovery Mode SAFE loader: never participates in LizzyOS boot -->
+<script>
+window.addEventListener("load", function () {
+  window.setTimeout(function () {
+    try {
+      var css=document.createElement("link");
+      css.rel="stylesheet";
+      css.href="recovery-mode.css?v=3-safe";
+      document.head.appendChild(css);
+
+      var js=document.createElement("script");
+      js.src="recovery-mode.js?v=3-safe";
+      js.async=true;
+      js.onerror=function(){console.warn("Recovery add-on did not load; core LizzyOS remains unaffected.");};
+      document.body.appendChild(js);
+    } catch(e) {
+      console.warn("Recovery add-on skipped:",e);
+    }
+  }, 3500);
+});
+</script>
+
 </body>
 </html>

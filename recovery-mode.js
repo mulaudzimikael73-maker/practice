@@ -166,20 +166,16 @@ a.k.a. Mr Perfect 💗`;
 
   window.openLizzySickLetter = openSickLetter;
   window.setLizzyRecoveryMode = setRecovery;
-  window.addEventListener("load", () => setTimeout(mount, 500));
-  document.addEventListener("click", (e) => {
-    // Existing desktop apps are opened by clicks, so check once after a click.
-    // This is bounded and does not recursively observe our own DOM writes.
-    if (e.isTrusted) setTimeout(mount, 140);
-  });
-  // HOTFIX: Do NOT observe the entire document.
+// HOTFIX: Do NOT observe the entire document.
   // The previous observer retriggered itself whenever Recovery Mode changed the DOM,
   // causing an infinite mutation loop and Chrome's "Page Unresponsive" warning.
-  let mountTimer = 0;
-  const scheduleMount = () => {
-    clearTimeout(mountTimer);
-    mountTimer = setTimeout(mount, 120);
-  };
-  window.addEventListener("lizzy:window-opened", scheduleMount);
-  window.addEventListener("hashchange", scheduleMount);
+
+  // SAFE MOUNT: finite attempts only; cannot block LizzyOS startup.
+  let safeMountAttempts=0;
+  const safeMountTimer=setInterval(()=>{
+    safeMountAttempts++;
+    try{ mount(); }catch(e){ console.warn("Recovery mount skipped",e); }
+    if(safeMountAttempts>=12) clearInterval(safeMountTimer);
+  },1000);
+  try{ mount(); }catch(e){ console.warn("Recovery initial mount skipped",e); }
 })();
