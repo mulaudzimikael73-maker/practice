@@ -4315,15 +4315,8 @@ body.mikaelTakeoverActive #desktopArea:before{background:rgba(20,10,40,.12)!impo
   padding-bottom:28px!important;
 }
 
-/* Personality Update — Secret Shelf batch */
-#personalityShelfBatch,#personalityPurchasedLetters,#personalityPurchasedDossiers{margin-top:18px;padding-top:14px;border-top:1px solid rgba(255,255,255,.12)}
-.pbBatchTitle{font-size:9px;font-weight:900;letter-spacing:1.3px;opacity:.72;margin-bottom:10px}
-.pbGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:11px}
-.personalityShelfCard{display:grid;grid-template-columns:auto 1fr;gap:10px;padding:13px;border:1px solid rgba(255,255,255,.13);border-radius:14px;background:rgba(255,255,255,.065);align-items:center}
-.personalityShelfCard .pbIcon{font-size:27px}.personalityShelfCard small{font-size:7px;letter-spacing:1px;opacity:.55;font-weight:900}
-.personalityShelfCard h3{font-size:12px;margin:3px 0}.personalityShelfCard p{font-size:9px;margin:0;opacity:.7}
-.personalityShelfCard button{grid-column:1/-1;margin-top:4px}.pbBid{font-size:8px;margin-top:5px;font-weight:800;opacity:.75}
-.personalityBatchReader{display:none;position:fixed;z-index:60000;left:50%;top:50%;transform:translate(-50%,-50%);width:min(760px,94vw);height:min(760px,88vh);border:1px solid rgba(255,255,255,.18);border-radius:20px;overflow:hidden;background:rgba(28,18,36,.97);box-shadow:0 30px 100px rgba(0,0,0,.5);color:white}
-.personalityBatchReader.open{display:block}.pbTop{height:54px;padding:0 15px;display:flex;align-items:center;border-bottom:1px solid rgba(255,255,255,.1)}.pbTop b{flex:1;font-size:11px}.pbTop button{width:31px!important;height:31px!important;padding:0!important;border-radius:50%!important}
-.pbPaper{height:calc(100% - 54px);overflow:auto;padding:22px}.pbPaper pre{white-space:pre-wrap;font-family:inherit;font-size:12px;line-height:1.7;margin:0;padding:20px;border-radius:15px;background:rgba(255,255,255,.06)}
-.pbDecrypt{padding:34px;max-width:520px;margin:auto}.pbDecrypt h3{font-size:17px}.pbDecrypt p{font-size:11px;line-height:1.6}.pbDecrypt input{width:100%;box-sizing:border-box;margin:15px 0 10px;padding:12px;border-radius:10px}.pbDecrypt button{width:100%}.pbDecrypt #pbError{font-size:9px;margin-top:10px}
+/* Secret Shelf purchased-letter open notifications */
+.purchasedLetterHead{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.purchasedLetterHead button{flex:0 0 auto}
+.purchasedLetterBody{margin-top:10px}
+.purchasedLetterBody.hidden{display:none!important}
