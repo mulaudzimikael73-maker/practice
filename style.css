@@ -4257,3 +4257,9 @@ body.mikaelTakeoverActive #desktopArea:before{background:rgba(20,10,40,.12)!impo
  background:rgba(52,25,47,.38)!important;
  backdrop-filter:blur(1px);
 }
+
+/* V4.12 direct Cody reader photo */
+.classifiedReader.codyLegalPhotoActive{position:relative!important;isolation:isolate!important;overflow:hidden!important;background:rgba(42,20,40,.88)!important}
+.classifiedReader.codyLegalPhotoActive .codyLegalWatermark{position:absolute!important;inset:0!important;z-index:0!important;pointer-events:none!important}
+.classifiedReader.codyLegalPhotoActive .codyPhotoBackground{position:absolute!important;inset:0!important;background:linear-gradient(rgba(42,20,40,.62),rgba(42,20,40,.80)),url("cody-legal-background.jpeg") center 38%/cover no-repeat!important;opacity:.82!important}
+.classifiedReader.codyLegalPhotoActive>button,.classifiedReader.codyLegalPhotoActive>small,.classifiedReader.codyLegalPhotoActive>h3,.classifiedReader.codyLegalPhotoActive>pre{position:relative!important;z-index:2!important}

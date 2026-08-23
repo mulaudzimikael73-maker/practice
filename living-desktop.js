@@ -54,7 +54,7 @@ function renderClassified(){
  const unique=files.filter(f=>{const t=String(f.title||f.name||"Classified File");if(seen.has(t))return false;seen.add(t);return true});
  if(!unique.length){p.innerHTML=`<div class="classifiedEmpty">🔒<br><b>No purchased dossiers yet.</b><p>Buy classified files from Mikael's Secret Shelf and they will appear here.</p></div>`;return}
  p.innerHTML=`<div class="classifiedPurchasedGrid">${unique.map((f,i)=>`<article class="classifiedPurchasedCard"><div>📁</div><small>PURCHASED DOSSIER</small><b>${esc(f.title||f.name||"Classified File")}</b>${f.content?`<button type="button" data-classified-open="${i}">OPEN FILE</button>`:`<span>ARCHIVED</span>`}</article>`).join("")}</div><div id="classifiedPurchasedReader"></div>`;
- p.querySelectorAll("[data-classified-open]").forEach(btn=>btn.addEventListener("click",()=>{const f=unique[Number(btn.dataset.classifiedOpen)],r=$("classifiedPurchasedReader");if(!r||!f?.content)return;r.innerHTML=`<section class="classifiedReader"><button type="button" id="classifiedReaderClose">×</button><small>CLASSIFIED // PURCHASED FILE</small><h3>📁 ${esc(f.title||f.name||"Classified File")}</h3><pre>${esc(f.content)}</pre></section>`;$("classifiedReaderClose")?.addEventListener("click",()=>r.innerHTML="");r.scrollIntoView({behavior:"smooth",block:"nearest"})}));
+ p.querySelectorAll("[data-classified-open]").forEach(btn=>btn.addEventListener("click",()=>{const f=unique[Number(btn.dataset.classifiedOpen)],r=$("classifiedPurchasedReader");if(!r||!f?.content)return;r.innerHTML=`<section class="classifiedReader"><button type="button" id="classifiedReaderClose">×</button><small>CLASSIFIED // PURCHASED FILE</small><h3>📁 ${esc(f.title||f.name||"Classified File")}</h3><pre>${esc(f.content)}</pre></section>`;const reader=r.querySelector(".classifiedReader");if(reader&&/cody/i.test(String(f.title||f.name||""))){reader.classList.add("codyLegalPhotoActive","codyLegalTheme");if(!reader.querySelector(".codyLegalWatermark")){const wm=document.createElement("div");wm.className="codyLegalWatermark";wm.innerHTML='<div class="codyPhotoBackground"></div><div class="codySeal">⚖</div><div class="codyStamp">SUBJECT: CODY<br><small>LEGAL REPRESENTATION ACTIVE</small></div>';reader.prepend(wm)}}$("classifiedReaderClose")?.addEventListener("click",()=>r.innerHTML="");r.scrollIntoView({behavior:"smooth",block:"nearest"})}));
 }
 window.addEventListener("lizzyClassifiedUpdated",renderClassified);
 
@@ -892,6 +892,7 @@ function phase(){const h=new Date().getHours();return h<5?"late":h<12?"morning":
 function takeover(){return document.body.classList.contains("mikaelTakeoverActive")}
 function wallpaper(){document.documentElement.dataset.dynamicWallpaper=phase();let s=$("mikaelBatSignal");if(!s){s=document.createElement("div");s.id="mikaelBatSignal";s.innerHTML='<div class="batBeam"></div><div class="batMark">🦇</div><small>MIKAEL TAKEOVER</small>';desk().appendChild(s)}s.classList.toggle("active",takeover())}
 wallpaper();LizzyPerf.add("dynamicWallpaper",30000,wallpaper);window.addEventListener("mikaelTakeoverChanged",wallpaper);
+window.LizzyFunApps={openCourt,openRps,openAssistant,openDay};
 })();
 
 /* V4.8 Cody Legal Documents theme */
@@ -899,28 +900,25 @@ wallpaper();LizzyPerf.add("dynamicWallpaper",30000,wallpaper);window.addEventLis
 
 
 /* =========================================================
-   V4.11 — POST-DOM NATIVE ICON BINDING
+   V4.12 — REAL APP BINDING + GAMES FOLDER
    ========================================================= */
-function bindLizzyFunApps(){
- const bindings=[
-  ["codyCourtIcon",openCourt],
-  ["rpsIcon",openRps],
-  ["lizzyAssistantIcon",openAssistant],
-  ["dayCheckIcon",openDay]
- ];
- for(const [id,fn] of bindings){
-  const el=document.getElementById(id);
-  if(!el) continue;
+function bindLizzyFunAppsV412(){
+ const api=window.LizzyFunApps;
+ if(!api)return;
+ const bind=(id,fn)=>{
+  const el=document.getElementById(id);if(!el)return;
   el.onclick=(ev)=>{ev.preventDefault();ev.stopPropagation();fn()};
   el.onkeydown=(ev)=>{if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();fn()}};
-  el.style.pointerEvents="auto";
- }
+ };
+ bind("lizzyAssistantIcon",api.openAssistant);
+ bind("dayCheckIcon",api.openDay);
+ bind("codyCourtGameCard",()=>{document.getElementById("gamesFolderStaticWindow")?.classList.add("hidden");api.openCourt()});
+ bind("rpsGameCard",()=>{document.getElementById("gamesFolderStaticWindow")?.classList.add("hidden");api.openRps()});
 }
-if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",bindLizzyFunApps);
-else bindLizzyFunApps();
-window.addEventListener("load",bindLizzyFunApps);
-setTimeout(bindLizzyFunApps,800);
-
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",bindLizzyFunAppsV412);
+else bindLizzyFunAppsV412();
+window.addEventListener("load",bindLizzyFunAppsV412);
+setTimeout(bindLizzyFunAppsV412,800);
 
 /* V4.11 — exact Cody purchased-file theming */
 function applyCodyPurchasedFileTheme(){
