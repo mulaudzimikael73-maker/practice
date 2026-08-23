@@ -4234,35 +4234,83 @@ html[data-dynamic-wallpaper="night"] .desktop,html[data-dynamic-wallpaper="late"
 
 .codyLegalTheme{position:relative!important;isolation:isolate;overflow:hidden!important;background:linear-gradient(rgba(9,12,18,.91),rgba(9,12,18,.95))!important}.codyLegalTheme>*:not(.codyLegalWatermark){position:relative;z-index:2}.codyLegalWatermark{position:absolute!important;inset:0!important;z-index:0!important;pointer-events:none!important}.codySilhouette{position:absolute;right:5%;bottom:-5%;font-size:min(38vw,380px);filter:grayscale(1) brightness(.08);opacity:.48;transform:scaleX(-1)}.codySeal{position:absolute;left:7%;top:15%;font-size:100px;opacity:.035}.codyStamp{position:absolute;right:6%;top:8%;border:2px solid rgba(255,255,255,.06);padding:10px 14px;transform:rotate(3deg);font-size:10px;font-weight:900;letter-spacing:2px;color:rgba(255,255,255,.08);text-align:center}.codyStamp small{font-size:6px}.courtEvidenceList{display:grid;gap:9px;margin:12px 0}.evidenceChoice{display:flex;gap:10px;padding:12px;border:1px solid rgba(255,255,255,.1);border-radius:12px;background:rgba(255,255,255,.045);cursor:pointer}.evidenceChoice span{font-size:10px;line-height:1.45}.evidenceChoice b{font-size:8px;letter-spacing:1px}.courtInstruction{opacity:.65;font-size:10px!important}
 
-/* =========================================================
-   V4.9 RECOVERY MODE
-   ========================================================= */
-.recoveryModeBanner{
- position:fixed;left:50%;top:12px;transform:translateX(-50%);
- z-index:18000;width:min(760px,92vw);padding:10px 12px 10px 15px;
- border-radius:16px;background:rgba(52,28,61,.92);color:white;
- border:1px solid rgba(255,255,255,.18);box-shadow:0 12px 40px rgba(0,0,0,.25);
- backdrop-filter:blur(16px);display:flex;align-items:center;justify-content:space-between;gap:12px
+/* V4.10 ROOT FIX */
+body.mikaelTakeoverActive #desktopArea{background-image:linear-gradient(rgba(10,15,40,.38),rgba(40,15,55,.45)),url("mikael-takeover-batsignal.jpeg")!important;background-size:cover!important;background-position:center!important;background-attachment:fixed!important}
+body.mikaelTakeoverActive #desktopArea:before{background:rgba(20,10,40,.12)!important}
+#mikaelBatSignal{display:none!important}
+.classifiedReader.codyLegalTheme{position:relative!important;isolation:isolate;overflow:hidden!important;background:rgba(42,20,40,.9)!important}
+.classifiedReader.codyLegalTheme>*:not(.codyLegalWatermark){position:relative;z-index:3}
+.classifiedReader.codyLegalTheme .codyLegalWatermark{position:absolute!important;inset:0!important;z-index:1!important;pointer-events:none!important}
+.codyPhotoBackground{position:absolute;inset:0;background-image:linear-gradient(rgba(35,15,35,.68),rgba(35,15,35,.82)),url("cody-legal-background.jpeg");background-size:cover;background-position:center 35%;opacity:.76}
+.classifiedReader.codyLegalTheme .codySeal{position:absolute;left:6%;bottom:8%;font-size:90px;opacity:.08}
+.classifiedReader.codyLegalTheme .codyStamp{position:absolute;right:5%;top:8%;opacity:.18}
+#codyCourtIcon,#rpsIcon,#lizzyAssistantIcon,#dayCheckIcon{cursor:pointer}
+
+/* V4.11 — Cody photo directly on the real reader */
+.classifiedReader.codyLegalPhotoActive{
+ background:
+   linear-gradient(rgba(53,25,48,.72),rgba(53,25,48,.82)),
+   url("cody-legal-background.jpeg") center 36% / cover no-repeat!important;
 }
-.recoveryModeBanner.hidden{display:none!important}
-.recoveryModeBanner>div{display:flex;align-items:center;gap:10px}
-.recoveryModeBanner>div>span{font-size:26px}
-.recoveryModeBanner b{display:block;font-size:10px;letter-spacing:.9px}
-.recoveryModeBanner small{display:block;font-size:8px;opacity:.7;margin-top:2px}
-.recoveryModeBanner button{padding:7px 11px!important;border-radius:10px!important}
-.recoveryModeControl{border:1px solid rgba(255,255,255,.16)!important}
-html.lizzyRecoveryMode .desktop,body.lizzyRecoveryMode .desktop{filter:saturate(.92) brightness(.99)}
-.recoveryHugWarning{position:relative!important;box-shadow:0 0 0 2px rgba(255,205,120,.35) inset!important}
-.recoveryHugNotice{margin-top:9px;padding:9px;border-radius:10px;background:rgba(255,215,130,.14);font-size:9px;line-height:1.4}
-.sickOpenWhenCard{display:grid!important;grid-template-columns:auto 1fr auto!important;align-items:center!important;gap:14px!important;margin-top:14px!important;padding:16px!important;border-radius:16px!important;background:rgba(255,255,255,.1)!important;border:1px solid rgba(255,255,255,.14)!important}
-.sickLetterIcon{font-size:34px}.sickOpenWhenCard small{font-size:8px;font-weight:900;letter-spacing:1px;opacity:.55}.sickOpenWhenCard h3{margin:3px 0 5px!important;font-size:17px!important}.sickOpenWhenCard p{margin:0!important;font-size:10px!important;opacity:.7}
-.sickLetterWindow{display:none;position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:50000;width:min(760px,94vw);height:min(760px,88vh);border-radius:22px;overflow:hidden;background:rgba(37,20,46,.96);color:white;border:1px solid rgba(255,255,255,.18);box-shadow:0 28px 90px rgba(0,0,0,.42);backdrop-filter:blur(18px)}
-.sickLetterWindow.open{display:block}.sickLetterTop{height:55px;display:flex;align-items:center;padding:0 16px;border-bottom:1px solid rgba(255,255,255,.1)}.sickLetterTop b{flex:1;font-size:12px;letter-spacing:.5px}.sickLetterTop button{width:31px!important;height:31px!important;padding:0!important;border-radius:50%!important}
-.sickLetterPaper{position:relative;height:calc(100% - 55px);overflow:auto;padding:28px;background:linear-gradient(180deg,rgba(255,235,244,.12),rgba(255,255,255,.04))}
-.sickLetterPaper pre{white-space:pre-wrap;font-family:inherit;font-size:13px;line-height:1.75;margin:0;padding:22px;border-radius:17px;background:rgba(255,255,255,.08)}
-.sickLetterStamp{position:absolute;right:34px;top:18px;padding:6px 9px;border:2px solid rgba(255,255,255,.12);font-size:8px;font-weight:900;letter-spacing:1.4px;transform:rotate(4deg);opacity:.55}
-.recoveryActivity span{font-weight:700}
-@media(max-width:650px){
- .sickOpenWhenCard{grid-template-columns:auto 1fr!important}.sickOpenWhenCard>button{grid-column:1/-1!important}
- .recoveryModeBanner small{display:none}.sickLetterPaper{padding:18px}.sickLetterPaper pre{font-size:12px;padding:17px}
+.classifiedReader.codyLegalPhotoActive .classifiedReaderBody,
+.classifiedReader.codyLegalPhotoActive .classifiedReaderContent{
+ background:rgba(52,25,47,.38)!important;
+ backdrop-filter:blur(1px);
+}
+
+/* V4.12 direct Cody reader photo */
+.classifiedReader.codyLegalPhotoActive{position:relative!important;isolation:isolate!important;overflow:hidden!important;background:rgba(42,20,40,.88)!important}
+.classifiedReader.codyLegalPhotoActive .codyLegalWatermark{position:absolute!important;inset:0!important;z-index:0!important;pointer-events:none!important}
+.classifiedReader.codyLegalPhotoActive .codyPhotoBackground{position:absolute!important;inset:0!important;background:linear-gradient(rgba(42,20,40,.62),rgba(42,20,40,.80)),url("cody-legal-background.jpeg") center 38%/cover no-repeat!important;opacity:.82!important}
+.classifiedReader.codyLegalPhotoActive>button,.classifiedReader.codyLegalPhotoActive>small,.classifiedReader.codyLegalPhotoActive>h3,.classifiedReader.codyLegalPhotoActive>pre{position:relative!important;z-index:2!important}
+
+/* V4.13 Cody visual correction */
+.classifiedReader.codyLegalPhotoActive{
+  background:
+    linear-gradient(rgba(42,20,40,.38),rgba(42,20,40,.58)),
+    url("cody-legal-background.jpeg") center 34% / cover no-repeat!important;
+}
+.classifiedReader.codyLegalPhotoActive .codyLegalWatermark{display:none!important}
+.classifiedReader.codyLegalPhotoActive pre{
+  background:rgba(38,20,37,.58)!important;
+  backdrop-filter:blur(2px)!important;
+}
+.classifiedReader.codyLegalPhotoActive h3,
+.classifiedReader.codyLegalPhotoActive small,
+.classifiedReader.codyLegalPhotoActive pre{color:#fff!important;text-shadow:0 1px 3px rgba(0,0,0,.45)}
+
+/* V4.14 deterministic Cody legal wallpaper */
+.classifiedReader[data-cody-legal="true"],.classifiedReader.codyLegalPhotoActive{
+ background:linear-gradient(rgba(35,17,34,.42),rgba(35,17,34,.60)),url("./cody-legal-background.jpeg") center 32%/cover no-repeat!important;
+}
+.classifiedReader[data-cody-legal="true"] pre,.classifiedReader.codyLegalPhotoActive pre{
+ background:rgba(35,18,34,.58)!important;color:#fff!important;border-radius:16px!important;padding:18px!important;
+}
+
+/* V4.16 SELF-CONTAINED FUN APPS */
+.funAppOverlay{position:fixed!important;inset:0!important;z-index:50000!important;background:rgba(12,8,18,.56)!important;backdrop-filter:blur(8px)!important;display:flex!important;align-items:center!important;justify-content:center!important;padding:20px!important}
+.funAppModal{width:min(680px,94vw)!important;max-height:84vh!important;overflow:hidden!important;border-radius:22px!important;background:linear-gradient(145deg,rgba(48,26,51,.98),rgba(24,20,35,.98))!important;color:#fff!important;border:1px solid rgba(255,255,255,.18)!important;box-shadow:0 30px 100px rgba(0,0,0,.55)!important}
+.funAppModal>header{display:flex!important;align-items:center!important;padding:14px 18px!important;border-bottom:1px solid rgba(255,255,255,.12)!important}.funAppModal>header b{flex:1!important}.funAppModal>header button{width:34px!important;height:34px!important;border:0!important;border-radius:50%!important;background:rgba(255,255,255,.12)!important;color:#fff!important;font-size:20px!important}
+.funAppModal>main{padding:22px!important;overflow:auto!important;max-height:calc(84vh - 62px)!important}.funAppModal h2{margin:4px 0 12px!important}.funAppModal p{line-height:1.55!important}
+.v416Choices{display:grid!important;grid-template-columns:repeat(3,1fr)!important;gap:10px!important;margin:18px 0!important}.v416Choices button,.v416QuestionGrid button{padding:13px!important;border:1px solid rgba(255,255,255,.14)!important;border-radius:13px!important;background:rgba(255,255,255,.09)!important;color:#fff!important;cursor:pointer!important}.v416Choices button:hover,.v416QuestionGrid button:hover{background:rgba(255,255,255,.17)!important}
+.v416QuestionGrid{display:grid!important;grid-template-columns:repeat(2,1fr)!important;gap:8px!important;max-height:330px!important;overflow:auto!important}.v416Result{margin-top:16px!important;padding:15px!important;border-radius:14px!important;background:rgba(255,255,255,.09)!important;font-weight:700!important}.v416Score{padding:10px 0!important;opacity:.8!important}
+.v416Evidence{display:grid!important;gap:9px!important}.v416Evidence label{display:flex!important;gap:10px!important;padding:12px!important;border:1px solid rgba(255,255,255,.12)!important;border-radius:13px!important;background:rgba(255,255,255,.06)!important}.v416Charge{padding:12px!important;border-radius:12px!important;background:rgba(255,255,255,.08)!important;font-weight:900!important}.v416Orb{font-size:44px!important;text-align:center!important}
+@media(max-width:650px){.v416QuestionGrid,.v416Choices{grid-template-columns:1fr!important}}
+
+
+/* V4.17 — Larger Lizzy Assistant answer area */
+#v416Assistant .v416Result{
+  min-height:110px!important;
+  padding:22px 24px!important;
+  display:flex!important;
+  align-items:center!important;
+  font-size:20px!important;
+  line-height:1.45!important;
+  margin-top:20px!important;
+  margin-bottom:8px!important;
+  overflow:visible!important;
+  white-space:normal!important;
+}
+#v416Assistant .funAppModal>main{
+  padding-bottom:28px!important;
 }

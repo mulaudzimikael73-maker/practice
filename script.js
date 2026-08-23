@@ -940,21 +940,18 @@ openWhenLetters.sick = {
         <p>Dear Lizzy,</p>
         <p>So apparently Little Miss Attitude has been defeated by… <strong>germs</strong>.</p>
         <p>Embarrassing.</p>
-        <p>I’m not saying you’re weak, but I <strong>am</strong> saying I think you’re weak. 😂 And hopefully you won’t go telling your mommy that Mikael is bullying a sick person, because I feel like that would be a dramatic misrepresentation of events.</p>
+        <p>I’m not saying you’re weak, but I <strong>am</strong> saying I think you’re weak. 😂 And hopefully you won’t go telling your mommy that Mikael is bullying a sick person, because that would be a dramatic misrepresentation of events.</p>
         <p>But jokes aside, you actually need to get better soon.</p>
         <p>Because Mikael—<br>I mean <strong>Lizzy</strong>—can’t survive without a healthy Lizzy.</p>
-        <p>…</p>
         <p>That may sound wrong.</p>
         <p><strong>But I said what I said.</strong></p>
-        <p>Unfortunately, this also means you can’t even properly use your <strong>Hug Token</strong> right now because you’ll probably get Mikael sick too.</p>
-        <p>And Mikael thinks that wouldn’t be very good.</p>
-        <p>Although… knowing him, he would probably risk it anyway. 😭</p>
-        <p>So for now, your official instructions are:</p>
-        <p>Rest properly.<br>Drink lots of water.<br>Eat something.<br>Take care of yourself.<br>And stop pretending you’re perfectly fine when you clearly aren’t.</p>
+        <p>Unfortunately, you can’t even properly use your <strong>Hug Token</strong> right now because you’ll probably get Mikael sick too.</p>
+        <p>Mikael thinks that wouldn’t be good… although he would probably risk it anyway. 😭</p>
+        <p>So rest properly, drink lots of water, eat something, take care of yourself, and stop pretending you’re perfectly fine when you clearly aren’t.</p>
         <p>And yes, you are allowed one of your famous <strong>“cleansing/detox” crying sessions</strong> if medically necessary. 😂</p>
-        <p>Your only job right now is to get better. LizzyOS, Cody Legal Counsel, Agent Yelizaveta and even Mr Perfect need you back at full operating capacity.</p>
+        <p>Your only job is to get better. LizzyOS, Cody Legal Counsel, Agent Yelizaveta and even Mr Perfect need you back at full operating capacity.</p>
         <p><strong>Get better soon, Four Eyes. 💗</strong></p>
-        <p>And don’t worry — I’ll try to be nice to you while you’re sick.</p>
+        <p>I’ll try to be nice while you’re sick.</p>
         <p><strong>Try.</strong></p>
         <p>No promises.</p>
         <p class="letterSignature">— Mikael a.k.a Mr Perfect 💗</p>
