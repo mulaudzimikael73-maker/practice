@@ -840,9 +840,9 @@ const $=id=>document.getElementById(id);
 const read=(k,f)=>{try{const v=localStorage.getItem(k);return v===null?f:JSON.parse(v)}catch{return f}};
 const write=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
 const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-const desk=()=>document.querySelector(".desktop")||document.body;
+const desk=()=>document.querySelector("#desktopArea")||document.querySelector("#desktop")||document.body;
 function win(id,title,body){let w=$(id);if(!w){w=document.createElement("section");w.id=id;w.className="v46Window";desk().appendChild(w)}w.innerHTML=`<div class="v46Head"><b>${title}</b><button data-x>×</button></div><div class="v46Body">${body}</div>`;w.classList.add("open");w.querySelector("[data-x]").onclick=()=>w.classList.remove("open");return w}
-function icon(id,emoji,label,fn){if($(id))return;const a=document.querySelector(".desktop-icons,.desktopIcons,.icons")||desk(),b=document.createElement("button");b.id=id;b.className="v46DesktopIcon";b.innerHTML=`<span>${emoji}</span><small>${label}</small>`;b.onclick=fn;a.appendChild(b)}
+function icon(id,emoji,label,fn){let b=$(id);if(b){b.onclick=fn;b.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();fn()}};return b}const a=document.querySelector("#desktopArea")||desk();b=document.createElement("div");b.id=id;b.className="desktopIcon livingDesktopIcon";b.tabIndex=0;b.innerHTML=`<div class="desktopEmoji">${emoji}</div><span>${label}</span>`;b.onclick=fn;a.appendChild(b);return b}
 
 /* GOOD DAY / BAD DAY */
 const DAY="lizzyDayFeelingV46";
@@ -889,10 +889,10 @@ icon("lizzyAssistantIcon","✨","Lizzy Assistant",openAssistant);
 
 /* DYNAMIC WALLPAPER + BAT SIGNAL TAKEOVER */
 function phase(){const h=new Date().getHours();return h<5?"late":h<12?"morning":h<17?"afternoon":h<21?"evening":"night"}
-function takeover(){return document.documentElement.classList.contains("mikael-takeover")||document.body.classList.contains("mikael-takeover")||document.documentElement.dataset.mikaelTakeover==="true"||document.body.dataset.mikaelTakeover==="true"||!!document.querySelector(".mikaelTakeover.active,.mikael-takeover.active")}
+function takeover(){return document.body.classList.contains("mikaelTakeoverActive")}
 function wallpaper(){document.documentElement.dataset.dynamicWallpaper=phase();let s=$("mikaelBatSignal");if(!s){s=document.createElement("div");s.id="mikaelBatSignal";s.innerHTML='<div class="batBeam"></div><div class="batMark">🦇</div><small>MIKAEL TAKEOVER</small>';desk().appendChild(s)}s.classList.toggle("active",takeover())}
 wallpaper();LizzyPerf.add("dynamicWallpaper",30000,wallpaper);window.addEventListener("mikaelTakeoverChanged",wallpaper);
 })();
 
 /* V4.8 Cody Legal Documents theme */
-(()=>{const rx=/cody\s*(legal|documents)|legal\s*documents.*cody|subject:\s*cody/i;function scan(){for(const el of document.querySelectorAll(".classified-reader,.classifiedReader,.file-reader,.fileReader,.classified-file,.classifiedFile,.document-reader,.documentReader,.modal,.window"))if(rx.test((el.textContent||"").slice(0,6000))){el.classList.add("codyLegalTheme");if(!el.querySelector(".codyLegalWatermark")){const w=document.createElement("div");w.className="codyLegalWatermark";w.setAttribute("aria-hidden","true");w.innerHTML='<div class="codySilhouette">🐕</div><div class="codySeal">⚖</div><div class="codyStamp">SUBJECT: CODY<br><small>LEGAL REPRESENTATION ACTIVE</small></div>';el.prepend(w)}}}window.addEventListener("load",()=>setTimeout(scan,500));new MutationObserver(scan).observe(document.body,{childList:true,subtree:true})})();
+(()=>{const rx=/cody\s*(legal|documents)|legal\s*documents.*cody|subject:\s*cody/i;function scan(){for(const el of document.querySelectorAll(".classified-reader,.classifiedReader,.file-reader,.fileReader,.classified-file,.classifiedFile,.document-reader,.documentReader,.modal,.window"))if(rx.test((el.textContent||"").slice(0,6000))){el.classList.add("codyLegalTheme");if(!el.querySelector(".codyLegalWatermark")){const w=document.createElement("div");w.className="codyLegalWatermark";w.setAttribute("aria-hidden","true");w.innerHTML='<div class="codyPhotoBackground"></div><div class="codySeal">⚖</div><div class="codyStamp">SUBJECT: CODY<br><small>LEGAL REPRESENTATION ACTIVE</small></div>';el.prepend(w)}}}window.addEventListener("load",()=>setTimeout(scan,500));new MutationObserver(scan).observe(document.body,{childList:true,subtree:true})})();

@@ -4233,3 +4233,15 @@ html[data-dynamic-wallpaper="night"] .desktop,html[data-dynamic-wallpaper="late"
 @media(max-width:600px){.assistantQuestions,.dayChoice,.courtVerdicts{grid-template-columns:1fr}.v46Body{padding:18px}}
 
 .codyLegalTheme{position:relative!important;isolation:isolate;overflow:hidden!important;background:linear-gradient(rgba(9,12,18,.91),rgba(9,12,18,.95))!important}.codyLegalTheme>*:not(.codyLegalWatermark){position:relative;z-index:2}.codyLegalWatermark{position:absolute!important;inset:0!important;z-index:0!important;pointer-events:none!important}.codySilhouette{position:absolute;right:5%;bottom:-5%;font-size:min(38vw,380px);filter:grayscale(1) brightness(.08);opacity:.48;transform:scaleX(-1)}.codySeal{position:absolute;left:7%;top:15%;font-size:100px;opacity:.035}.codyStamp{position:absolute;right:6%;top:8%;border:2px solid rgba(255,255,255,.06);padding:10px 14px;transform:rotate(3deg);font-size:10px;font-weight:900;letter-spacing:2px;color:rgba(255,255,255,.08);text-align:center}.codyStamp small{font-size:6px}.courtEvidenceList{display:grid;gap:9px;margin:12px 0}.evidenceChoice{display:flex;gap:10px;padding:12px;border:1px solid rgba(255,255,255,.1);border-radius:12px;background:rgba(255,255,255,.045);cursor:pointer}.evidenceChoice span{font-size:10px;line-height:1.45}.evidenceChoice b{font-size:8px;letter-spacing:1px}.courtInstruction{opacity:.65;font-size:10px!important}
+
+/* V4.10 ROOT FIX */
+body.mikaelTakeoverActive #desktopArea{background-image:linear-gradient(rgba(10,15,40,.38),rgba(40,15,55,.45)),url("mikael-takeover-batsignal.jpeg")!important;background-size:cover!important;background-position:center!important;background-attachment:fixed!important}
+body.mikaelTakeoverActive #desktopArea:before{background:rgba(20,10,40,.12)!important}
+#mikaelBatSignal{display:none!important}
+.classifiedReader.codyLegalTheme{position:relative!important;isolation:isolate;overflow:hidden!important;background:rgba(42,20,40,.9)!important}
+.classifiedReader.codyLegalTheme>*:not(.codyLegalWatermark){position:relative;z-index:3}
+.classifiedReader.codyLegalTheme .codyLegalWatermark{position:absolute!important;inset:0!important;z-index:1!important;pointer-events:none!important}
+.codyPhotoBackground{position:absolute;inset:0;background-image:linear-gradient(rgba(35,15,35,.68),rgba(35,15,35,.82)),url("cody-legal-background.jpeg");background-size:cover;background-position:center 35%;opacity:.76}
+.classifiedReader.codyLegalTheme .codySeal{position:absolute;left:6%;bottom:8%;font-size:90px;opacity:.08}
+.classifiedReader.codyLegalTheme .codyStamp{position:absolute;right:5%;top:8%;opacity:.18}
+#codyCourtIcon,#rpsIcon,#lizzyAssistantIcon,#dayCheckIcon{cursor:pointer}
