@@ -4174,3 +4174,62 @@ body[data-living-time="late"]:not(.mikaelTakeoverActive) #desktopArea{filter:bri
 .livingStickyNote.rareMikaelNote{box-shadow:0 10px 32px rgba(0,0,0,.28),0 0 0 2px rgba(255,255,255,.28) inset}
 .livingStickyNote.stickyHidden{display:none!important}
 @media(max-width:700px){.livingStickyNote{right:12px;bottom:54px;width:205px;min-height:125px;padding:20px 16px 15px}.livingStickyNote p{font-size:12px}}
+
+/* =========================================================
+   V4.5 TIME / MOOD
+   ========================================================= */
+#lizzyTimeMoodBadge{
+ position:fixed;left:18px;bottom:55px;z-index:34;display:flex;align-items:center;gap:9px;
+ padding:8px 11px;border-radius:13px;background:rgba(20,20,30,.36);
+ border:1px solid rgba(255,255,255,.16);backdrop-filter:blur(10px);
+ color:#fff;box-shadow:0 8px 22px rgba(0,0,0,.14);pointer-events:none;
+}
+#lizzyTimeMoodBadge>span{font-size:21px}#lizzyTimeMoodBadge div{display:flex;flex-direction:column}
+#lizzyTimeMoodBadge b{font-size:10px;line-height:1.1}#lizzyTimeMoodBadge small{font-size:7px;opacity:.7;margin-top:2px;letter-spacing:.5px}
+html[data-lizzy-time="morning"] .desktop{filter:brightness(1.025)}
+html[data-lizzy-time="evening"] .desktop{filter:brightness(.985)}
+html[data-lizzy-time="night"] .desktop,html[data-lizzy-time="late"] .desktop{filter:brightness(.955)}
+
+/* SYSTEM ACTIVITY */
+.lizzySystemActivity{
+ position:fixed;left:18px;bottom:105px;width:285px;z-index:33;
+ background:rgba(12,14,22,.72);color:#e9edf7;border:1px solid rgba(255,255,255,.14);
+ border-radius:14px;overflow:hidden;backdrop-filter:blur(12px);box-shadow:0 10px 30px rgba(0,0,0,.2);
+}
+.activityHead{height:34px;display:flex;align-items:center;gap:7px;padding:0 10px;border-bottom:1px solid rgba(255,255,255,.1)}
+.activityHead>span{font-size:8px;opacity:.7}.activityHead b{font-size:8px;letter-spacing:1.1px;flex:1}
+.activityHead button{width:23px!important;height:23px!important;padding:0!important;border:0!important;background:transparent!important;color:#fff!important}
+#lizzyActivityLines{padding:5px 9px 8px}.activityRow{display:grid;grid-template-columns:43px 1fr;gap:5px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.055)}
+.activityRow:last-child{border:0}.activityRow small{font-size:7px;opacity:.45}.activityRow span{font-size:8px;line-height:1.35;opacity:.82}
+.activityRow.rareActivity span{font-weight:800;opacity:1}.activityCollapsed #lizzyActivityLines{display:none}.activityCollapsed{width:190px}
+
+/* RARE MIKAEL */
+.rareMikaelAppearance{
+ position:fixed;right:-390px;top:90px;z-index:9999;width:330px;display:flex;align-items:center;gap:13px;
+ padding:16px 38px 16px 16px;border-radius:18px;background:rgba(22,20,31,.94);color:white;
+ border:1px solid rgba(255,255,255,.2);box-shadow:0 18px 48px rgba(0,0,0,.34);
+ backdrop-filter:blur(16px);transition:right .45s cubic-bezier(.2,.8,.2,1),transform .45s ease;
+}
+.rareMikaelAppearance.show{right:18px}.rareMikaelEmoji{font-size:39px}.rareMikaelAppearance small{font-size:8px;font-weight:900;letter-spacing:1.1px;opacity:.62}
+.rareMikaelAppearance p{font-size:11px;line-height:1.45;margin:5px 0 0}.rareMikaelAppearance button{position:absolute;right:8px;top:8px;width:25px!important;height:25px!important;padding:0!important;border:0!important;background:transparent!important;color:white!important}
+.rareMikaelAppearance.batman{box-shadow:0 18px 48px rgba(0,0,0,.45),0 0 35px rgba(255,255,255,.08)}
+@media(max-width:700px){
+ .lizzySystemActivity{left:10px;bottom:98px;width:245px}
+ #lizzyTimeMoodBadge{left:10px;bottom:52px}
+ .rareMikaelAppearance{width:285px;top:72px}.rareMikaelAppearance.show{right:10px}
+}
+
+/* V4.6 */
+html[data-dynamic-wallpaper="morning"] .desktop{box-shadow:inset 0 0 180px rgba(255,220,175,.08)}
+html[data-dynamic-wallpaper="afternoon"] .desktop{box-shadow:inset 0 0 180px rgba(180,225,255,.07)}
+html[data-dynamic-wallpaper="evening"] .desktop{box-shadow:inset 0 0 190px rgba(100,65,145,.12)}
+html[data-dynamic-wallpaper="night"] .desktop,html[data-dynamic-wallpaper="late"] .desktop{box-shadow:inset 0 0 220px rgba(5,10,35,.20)}
+#mikaelBatSignal{position:absolute;inset:0;z-index:2;pointer-events:none;opacity:0;transition:opacity .8s;overflow:hidden}#mikaelBatSignal.active{opacity:1;background:radial-gradient(circle at 72% 28%,rgba(255,247,190,.16),transparent 24%),rgba(3,6,18,.24)}#mikaelBatSignal .batBeam{position:absolute;right:7%;top:-8%;width:320px;height:520px;background:linear-gradient(rgba(255,249,194,.20),transparent);clip-path:polygon(43% 0,57% 0,100% 100%,0 100%);transform:rotate(12deg)}#mikaelBatSignal .batMark{position:absolute;right:18%;top:18%;font-size:108px;filter:grayscale(1) brightness(.2);text-shadow:0 0 30px rgba(255,250,205,.75)}#mikaelBatSignal small{position:absolute;right:17%;top:37%;color:rgba(255,255,255,.4);font-size:8px;letter-spacing:3px;font-weight:900}
+.v46DesktopIcon{width:78px!important;min-height:72px!important;padding:5px!important;border:0!important;background:transparent!important;color:inherit!important;display:flex!important;flex-direction:column;align-items:center;justify-content:center;gap:4px}.v46DesktopIcon span{font-size:34px}.v46DesktopIcon small{font-size:9px;text-align:center}
+.v46Window{display:none;position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:min(620px,92vw);max-height:78vh;z-index:10020;border-radius:19px;overflow:hidden;background:rgba(24,22,34,.96);color:#fff;border:1px solid rgba(255,255,255,.18);box-shadow:0 28px 80px rgba(0,0,0,.42);backdrop-filter:blur(18px)}.v46Window.open{display:block}.v46Head{height:43px;display:flex;align-items:center;padding:0 13px;border-bottom:1px solid rgba(255,255,255,.1)}.v46Head b{flex:1;font-size:11px}.v46Head button{width:29px!important;height:29px!important;padding:0!important;border:0!important;background:rgba(255,255,255,.08)!important;color:#fff!important;border-radius:50%!important}.v46Body{padding:24px;max-height:calc(78vh - 43px);overflow:auto}.v46Body h2{font-size:22px}.v46Body p{font-size:12px;line-height:1.55}
+.dayChoice,.courtVerdicts{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0}.dayChoice button,.courtVerdicts button{padding:16px!important;border-radius:13px!important;font-weight:900!important}#dayFeelingResult,#courtResult,#rpsResult,#assistantAnswer{padding:14px;border-radius:12px;background:rgba(255,255,255,.07);font-size:11px;line-height:1.5}
+.courtSeal{text-align:center;font-size:55px}.courtCharge{padding:11px;border-radius:11px;background:rgba(255,255,255,.08);font-size:11px;font-weight:900}.courtEvidence{margin:15px 0;padding:15px;border-left:3px solid rgba(255,255,255,.28);background:rgba(255,255,255,.05);font-size:11px;line-height:1.55}.courtRecord{text-align:center;margin-top:13px;font-size:9px;opacity:.65}
+.rpsScore{text-align:center;font-size:14px;margin-bottom:18px}.rpsScore b{font-size:25px}.rpsScore small{display:block}.rpsChoices{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.rpsChoices button{min-height:100px!important;font-size:38px!important;border-radius:16px!important}.rpsChoices small{display:block;font-size:8px!important;text-transform:uppercase}.assistantOrb{text-align:center;font-size:55px}.assistantQuestions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:17px 0}.assistantQuestions button{padding:11px!important;border-radius:11px!important;font-size:10px!important}
+@media(max-width:600px){.assistantQuestions,.dayChoice,.courtVerdicts{grid-template-columns:1fr}.v46Body{padding:18px}}
+
+.codyLegalTheme{position:relative!important;isolation:isolate;overflow:hidden!important;background:linear-gradient(rgba(9,12,18,.91),rgba(9,12,18,.95))!important}.codyLegalTheme>*:not(.codyLegalWatermark){position:relative;z-index:2}.codyLegalWatermark{position:absolute!important;inset:0!important;z-index:0!important;pointer-events:none!important}.codySilhouette{position:absolute;right:5%;bottom:-5%;font-size:min(38vw,380px);filter:grayscale(1) brightness(.08);opacity:.48;transform:scaleX(-1)}.codySeal{position:absolute;left:7%;top:15%;font-size:100px;opacity:.035}.codyStamp{position:absolute;right:6%;top:8%;border:2px solid rgba(255,255,255,.06);padding:10px 14px;transform:rotate(3deg);font-size:10px;font-weight:900;letter-spacing:2px;color:rgba(255,255,255,.08);text-align:center}.codyStamp small{font-size:6px}.courtEvidenceList{display:grid;gap:9px;margin:12px 0}.evidenceChoice{display:flex;gap:10px;padding:12px;border:1px solid rgba(255,255,255,.1);border-radius:12px;background:rgba(255,255,255,.045);cursor:pointer}.evidenceChoice span{font-size:10px;line-height:1.45}.evidenceChoice b{font-size:8px;letter-spacing:1px}.courtInstruction{opacity:.65;font-size:10px!important}

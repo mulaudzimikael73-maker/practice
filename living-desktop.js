@@ -663,3 +663,236 @@ console.log("Lizzy Mail Daily Messages: ONLINE", MESSAGES.length, "messages");
  window.addEventListener("load",()=>setTimeout(render,350));
  LizzyPerf.add("stickyDayCheck",60000,refreshForNewDay);
 })();
+
+
+/* =========================================================
+   LIZZYOS V4.5 — LIVING DESKTOP PHASE 3
+   Time/Mood + Rare Mikael + System Activity
+   ========================================================= */
+(()=>{
+"use strict";
+const $=id=>document.getElementById(id);
+const read=(k,f)=>{try{const v=localStorage.getItem(k);return v===null?f:JSON.parse(v)}catch{return f}};
+const write=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const today=()=>new Date().toISOString().slice(0,10);
+const h=()=>new Date().getHours();
+
+function phase(){
+ const x=h();
+ if(x<5)return {id:"late",label:"Late Night",icon:"🌙",greet:"You're still awake?",mood:"Quiet Mode"};
+ if(x<12)return {id:"morning",label:"Morning",icon:"☀️",greet:"Good morning, Mabebeza",mood:"Fresh Start"};
+ if(x<17)return {id:"afternoon",label:"Afternoon",icon:"🌤️",greet:"Good afternoon, Agent Yelizaveta",mood:"Operational"};
+ if(x<21)return {id:"evening",label:"Evening",icon:"🌆",greet:"Good evening, Lizzy",mood:"Wind Down"};
+ return {id:"night",label:"Night",icon:"🌙",greet:"Night mode territory",mood:"After Hours"};
+}
+function applyPhase(){
+ const p=phase();
+ document.documentElement.dataset.lizzyTime=p.id;
+ let badge=$("lizzyTimeMoodBadge");
+ if(!badge){
+   badge=document.createElement("div");badge.id="lizzyTimeMoodBadge";
+   const desktop=document.querySelector(".desktop")||document.body;
+   desktop.appendChild(badge);
+ }
+ badge.innerHTML=`<span>${p.icon}</span><div><b>${esc(p.label)}</b><small>${esc(p.mood)}</small></div>`;
+ badge.title=p.greet;
+}
+applyPhase();
+LizzyPerf.add("timeMoodRefresh",60000,applyPhase);
+
+/* ---------- SYSTEM ACTIVITY ---------- */
+const normalActivity=[
+ "Desktop sync complete.",
+ "Checking local files… all good.",
+ "Background services stable.",
+ "Sticky Note service standing by.",
+ "Calendar service checked.",
+ "Lizzy Mail inbox synced.",
+ "Micky Bucs ledger balanced.",
+ "Daily Reward engine idle.",
+ "Token Jar inventory checked.",
+ "CLASSIFIED permissions verified.",
+ "Secret Shelf connection standing by.",
+ "Desktop mood engine recalibrated.",
+ "Checking for unread notifications…",
+ "System clock synchronized.",
+ "Personality module responding normally.",
+ "Agent session active.",
+ "Cleaning temporary desktop nonsense…",
+ "Memory cache optimized.",
+ "Window manager stable.",
+ "No critical errors detected."
+];
+const funActivity=[
+ "Scanning for attitude… elevated levels detected.",
+ "Agent Yelizaveta activity detected.",
+ "Four Eyes authentication successful.",
+ "Little Miss Attitude protocol armed.",
+ "Checking whether Mikael is right… result classified.",
+ "Searching for unnecessary arguments… 3 found.",
+ "Pink preference database verified.",
+ "Pasta priority remains unusually high.",
+ "MrPerfect.exe running in background.",
+ "Mabebeza status: online 💗",
+ "Checking Mikael confidence levels… still excessive.",
+ "Batman activity detected during daylight hours.",
+ "Cody Legal Team connection established.",
+ "Cody grappling assessment: decent.",
+ "Monitoring for anti-Mikael propaganda.",
+ "Hater Investigation remains open.",
+ "Bank of Micky audit mysteriously passed.",
+ "Reverse Token probability recalculated.",
+ "Checking if Lizzy is crying for 'detox' purposes… inconclusive.",
+ "Emotional cleansing propaganda database updated.",
+ "Mikael dance rating remains under dispute.",
+ "Bowling threat assessment: HIGH.",
+ "Operating system survived another Lizzy session."
+];
+const rareActivity=[
+ "⚠ RARE EVENT: Mikael.exe briefly achieved administrator privileges.",
+ "🦇 Gotham uplink detected. Batman insists daylight is acceptable.",
+ "⚖ Cody's lawyer has entered the server.",
+ "🔴 CLASSIFIED: Agent Mikhail Petrov accessed subject records.",
+ "👀 Mikael was detected behind a desktop folder. He has escaped.",
+ "💗 SYSTEM ANOMALY: Lizzy presence improved performance by 97%.",
+ "🚨 Mr Perfect self-rating detected: 10/10. Verification refused.",
+ "🕵️ Agent Yelizaveta surveillance counter-surveillance detected."
+];
+let activityHistory=[];
+function activityLine(){
+ const roll=Math.random();
+ const pool=roll<0.03?rareActivity:roll<0.34?funActivity:normalActivity;
+ const options=pool.filter(x=>!activityHistory.includes(x));
+ const list=options.length?options:pool;
+ const text=list[Math.floor(Math.random()*list.length)];
+ activityHistory.push(text);activityHistory=activityHistory.slice(-8);
+ return {text,rare:pool===rareActivity,at:new Date()};
+}
+function ensureActivity(){
+ let panel=$("lizzySystemActivity");
+ if(panel)return panel;
+ panel=document.createElement("section");panel.id="lizzySystemActivity";panel.className="lizzySystemActivity";
+ panel.innerHTML=`<div class="activityHead"><span>●</span><b>SYSTEM ACTIVITY</b><button type="button" id="activityCollapse">−</button></div><div id="lizzyActivityLines"></div>`;
+ (document.querySelector(".desktop")||document.body).appendChild(panel);
+ $("activityCollapse")?.addEventListener("click",()=>{
+   panel.classList.toggle("activityCollapsed");
+   $("activityCollapse").textContent=panel.classList.contains("activityCollapsed")?"+":"−";
+ });
+ return panel;
+}
+function pushActivity(){
+ const panel=ensureActivity(),box=$("lizzyActivityLines");if(!box)return;
+ const a=activityLine(),row=document.createElement("div");
+ row.className="activityRow"+(a.rare?" rareActivity":"");
+ row.innerHTML=`<small>${a.at.toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})}</small><span>${esc(a.text)}</span>`;
+ box.prepend(row);
+ while(box.children.length>5)box.lastElementChild.remove();
+}
+ensureActivity();
+pushActivity();
+LizzyPerf.add("systemActivityFeed",18000,pushActivity);
+
+/* ---------- RARE MIKAEL APPEARANCES ---------- */
+const APPEAR_KEY="lizzyRareMikaelV45";
+const appearances=[
+ {type:"peek",emoji:"👀",title:"MIKAEL DETECTED",text:"He was hiding behind a folder. Apparently this counts as work."},
+ {type:"batman",emoji:"🦇",title:"DAYLIGHT BATMAN",text:"Mikael has ignored Gotham's operating hours again."},
+ {type:"exe",emoji:"🕴️",title:"MIKAEL.EXE",text:"A wild Mikael.exe appeared, checked the system, and refused to elaborate."},
+ {type:"perfect",emoji:"😌",title:"MR PERFECT",text:"Rare system message: Mikael would like it recorded that he remains Mr Perfect."},
+ {type:"wave",emoji:"👋🏾",title:"RARE MIKAEL APPEARANCE",text:"Just checking that you're having a good day, Mabebeza."}
+];
+function canAppear(){
+ const s=read(APPEAR_KEY,{day:"",count:0,last:0});
+ if(s.day!==today())return true;
+ return s.count<2 && Date.now()-Number(s.last||0)>1000*60*90;
+}
+function maybeMikael(){
+ if(!canAppear()||Math.random()>0.10)return; // checked infrequently; appearance remains rare
+ const state=read(APPEAR_KEY,{day:today(),count:0,last:0});
+ const current=state.day===today()?state:{day:today(),count:0,last:0};
+ const a=appearances[Math.floor(Math.random()*appearances.length)];
+ current.count++;current.last=Date.now();write(APPEAR_KEY,current);
+ showMikael(a);
+}
+function showMikael(a){
+ if($("rareMikaelAppearance"))return;
+ const el=document.createElement("div");el.id="rareMikaelAppearance";el.className=`rareMikaelAppearance ${a.type}`;
+ el.innerHTML=`<div class="rareMikaelEmoji">${a.emoji}</div><div><small>${esc(a.title)}</small><p>${esc(a.text)}</p></div><button type="button" aria-label="close">×</button>`;
+ (document.querySelector(".desktop")||document.body).appendChild(el);
+ requestAnimationFrame(()=>el.classList.add("show"));
+ el.querySelector("button").onclick=()=>dismissMikael(el);
+ setTimeout(()=>dismissMikael(el),11000);
+}
+function dismissMikael(el){
+ if(!el||!el.isConnected)return;
+ el.classList.remove("show");setTimeout(()=>el.remove(),450);
+}
+// One check every ~12 minutes; 10% roll + max 2/day + 90m cooldown.
+LizzyPerf.add("rareMikaelCheck",720000,maybeMikael);
+})();
+
+
+/* LIZZYOS V4.6 — FUN PACK */
+(()=>{
+"use strict";
+const $=id=>document.getElementById(id);
+const read=(k,f)=>{try{const v=localStorage.getItem(k);return v===null?f:JSON.parse(v)}catch{return f}};
+const write=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const desk=()=>document.querySelector(".desktop")||document.body;
+function win(id,title,body){let w=$(id);if(!w){w=document.createElement("section");w.id=id;w.className="v46Window";desk().appendChild(w)}w.innerHTML=`<div class="v46Head"><b>${title}</b><button data-x>×</button></div><div class="v46Body">${body}</div>`;w.classList.add("open");w.querySelector("[data-x]").onclick=()=>w.classList.remove("open");return w}
+function icon(id,emoji,label,fn){if($(id))return;const a=document.querySelector(".desktop-icons,.desktopIcons,.icons")||desk(),b=document.createElement("button");b.id=id;b.className="v46DesktopIcon";b.innerHTML=`<span>${emoji}</span><small>${label}</small>`;b.onclick=fn;a.appendChild(b)}
+
+/* GOOD DAY / BAD DAY */
+const DAY="lizzyDayFeelingV46";
+function applyFeeling(){const s=read(DAY,{}),d=new Date().toISOString().slice(0,10);document.documentElement.dataset.lizzyFeeling=s.date===d?s.feeling:"neutral"}
+function openDay(){const s=read(DAY,{}),w=win("dayCheckWindow","💗 HOW'S TODAY?",`<h2>How are we doing today, Mabebeza?</h2><p>LizzyOS will adjust today's mood slightly.</p><div class="dayChoice"><button data-feel="good">☀️ GOOD DAY</button><button data-feel="bad">🌧️ BAD DAY</button></div><div id="dayFeelingResult">${s.feeling?`Current setting: ${esc(s.feeling.toUpperCase())} DAY`:"No mood logged today."}</div>`);w.querySelectorAll("[data-feel]").forEach(b=>b.onclick=()=>{const x={date:new Date().toISOString().slice(0,10),feeling:b.dataset.feel,at:new Date().toISOString()};write(DAY,x);applyFeeling();$("dayFeelingResult").textContent=x.feeling==="good"?"Good day logged 💗 LizzyOS will try not to ruin it.":"Bad day logged 💗 Gentler mode activated.";window.dispatchEvent(new CustomEvent("lizzyFeelingChanged",{detail:x}))})}
+applyFeeling();icon("dayCheckIcon","💗","How's Today?",openDay);
+
+/* CODY COURT */
+const CK="lizzyCodyCourtV48";
+const cases=[{"charge":"Unauthorized Grappling","story":"Mikael allegedly attempted a takedown drill on Cody without legal approval.","evidence":["Cody was found wearing a tiny necktie after the incident.","Mikael searched 'can dogs tap out?' earlier that day.","No grappling permit exists."],"correct":"guilty"},{"charge":"Treat Misappropriation","story":"Three treats disappeared while Mikael was alone near Cody's snack container.","evidence":["One wrapper was found near Mikael.","Cody had already eaten two treats that morning.","Security footage is unavailable."],"correct":"guilty"},{"charge":"Defamation of Grappling Ability","story":"Mikael described Cody's grappling as 'decent'.","evidence":["The statement exists in writing.","Cody has zero officially sanctioned losses.","Mikael calls it constructive analysis."],"correct":"guilty"},{"charge":"Unlicensed Batman Activity","story":"Mikael was reportedly operating as Batman at 14:07.","evidence":["A Bat-Signal appeared on LizzyOS.","It was broad daylight.","Mikael refuses to disclose his whereabouts."],"correct":"guilty"},{"charge":"Window Territory Dispute","story":"Cody accuses Mikael of occupying his preferred window position.","evidence":["Cody stared for 14 seconds.","No written reservation existed.","The window belongs to neither party."],"correct":"notGuilty"},{"charge":"Witness Tampering","story":"Mikael offered belly rubs during active litigation.","evidence":["The offer occurred during litigation.","Cody accepted.","No request to change testimony was recorded."],"correct":"notGuilty"},{"charge":"Excessive Mr Perfect Propaganda","story":"Mikael repeatedly distributed claims that he is Mr Perfect.","evidence":["All endorsements originate from Mikael.","Independent verification unavailable.","Humility.exe was not installed."],"correct":"guilty"},{"charge":"Attempted Legal Interference","story":"Mikael allegedly told Cody dogs cannot retain lawyers.","evidence":["Lizzy is visibly acting as Cody's lawyer.","Mikael called it a legal theory.","Cody filed another case."],"correct":"guilty"},{"charge":"Reckless Bear-Wrestling Intent","story":"Mikael announced plans to wrestle bears in Dagestan.","evidence":["The statement appears in CLASSIFIED.","No bear consented.","The trip has not occurred."],"correct":"notGuilty"},{"charge":"Calling Cody Easy Work","story":"Cody alleges Mikael called him 'easy work'.","evidence":["Two witnesses heard 'easy'.","Mikael claims he said 'easy, boy'.","Audio is poor."],"correct":"notGuilty"},{"charge":"Unauthorized Nickname Usage","story":"Mikael referred to Cody as opposing counsel.","evidence":["Cody is the client.","Lizzy is counsel.","Mikael admits the terminology was wrong."],"correct":"guilty"},{"charge":"Obstruction of Nap","story":"Mikael allegedly woke Cody for no urgent reason.","evidence":["Cody was asleep.","Mikael needed a quick opinion.","The opinion concerned basketball."],"correct":"guilty"},{"charge":"Illegal Snack Tax","story":"Mikael demanded one bite as tax whenever Cody received food.","evidence":["No tax legislation exists.","Mikael invented the rule.","Cody signed no treaty."],"correct":"guilty"},{"charge":"False Batman Identification","story":"Mikael claims a mysterious daytime vigilante was not him.","evidence":["The vigilante had Mikael-level confidence.","No face was visible.","No registered cape exists."],"correct":"notGuilty"},{"charge":"Failure to Respect Counsel","story":"Mikael ignored Lizzy saying 'objection'.","evidence":["Lizzy said objection.","This occurred in a kitchen.","Cody considered proceedings official."],"correct":"notGuilty"},{"charge":"Attempted Grappling Rematch","story":"After Cody retained Lizzy, Mikael proposed a rematch.","evidence":["Proposal confirmed.","No contact occurred.","Counsel had not approved terms."],"correct":"notGuilty"},{"charge":"Criminal Overconfidence","story":"Mikael predicted a 100% victory rate against Cody.","evidence":["Prediction was unsolicited.","No match took place.","Confidence exceeded limits."],"correct":"notGuilty"},{"charge":"Treat Bribery","story":"A treat appeared immediately after Cody stopped barking at Mikael.","evidence":["Mikael possessed treats.","Cody stopped barking.","Correlation is not necessarily bribery."],"correct":"notGuilty"},{"charge":"Legal Document Surveillance","story":"Mikael attempted to inspect Cody's legal documents.","evidence":["CLASSIFIED logs show Mikael activity.","Mikael built parts of LizzyOS.","The documents are attorney-client sensitive."],"correct":"guilty"},{"charge":"Disturbing the Peace","story":"Mikael celebrated an RPS victory loudly enough to wake Cody.","evidence":["RPS confirms a Mikael win.","Cody woke moments later.","No volume measurement exists."],"correct":"notGuilty"},{"charge":"Impersonating a Grappling Coach","story":"Mikael gave Cody unsolicited grappling coaching.","evidence":["Mikael has grappling ambitions.","No coaching certificate was presented.","Cody did not request instruction."],"correct":"guilty"},{"charge":"Contempt of Cody Court","story":"Mikael called a previous guilty verdict 'fake news'.","evidence":["The verdict exists.","The statement was witnessed.","Appeal procedures were ignored."],"correct":"guilty"},{"charge":"Unauthorized Window Photography","story":"Mikael took a photo near Cody's window position.","evidence":["A photo exists.","Cody appears in the background.","No evidence Cody objected."],"correct":"notGuilty"},{"charge":"Attempted Case Dismissal","story":"Mikael asked Lizzy to 'just drop the case'.","evidence":["Lizzy represents Cody.","No formal motion was filed.","Mikael offered no legal grounds."],"correct":"guilty"}];
+
+async function notifyGameTelegram(game,result,details){try{await fetch(WORKER,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({type:"game_result",game,result,details,createdAt:new Date().toISOString()})})}catch(e){console.warn("Game Telegram failed",e)}}
+function openCourt(){
+ let s=read(CK,{heard:[],score:0,wrong:0,streak:0,best:0,record:[]}),pool=cases.map((_,i)=>i).filter(i=>!s.heard.includes(i));if(!pool.length){s.heard=[];pool=cases.map((_,i)=>i)}
+ const idx=pool[Math.floor(Math.random()*pool.length)],c=cases[idx];s.current=idx;write(CK,s);
+ const exhibits=c.evidence.map((e,i)=>`<label class="evidenceChoice"><input type="checkbox" data-evidence="${i}"><span><b>EXHIBIT ${String.fromCharCode(65+i)}</b><br>${esc(e)}</span></label>`).join("");
+ const w=win("codyCourtWindow","⚖️ CODY COURT — CASE FILE",`<div class="courtSeal">🐶⚖️</div><small>COUNSEL FOR CODY: LIZZY</small><h2>Cody Aladeen v. Mikael Mulaudzi</h2><div class="courtCharge">CHARGE: ${esc(c.charge)}</div><p>${esc(c.story)}</p><h3>Review the evidence</h3><div class="courtEvidenceList">${exhibits}</div><p class="courtInstruction">Select at least one exhibit before giving your ruling.</p><div class="courtVerdicts"><button data-v="guilty">🔨 GUILTY</button><button data-v="notGuilty">😇 NOT GUILTY</button></div><div id="courtResult"></div><div class="courtRecord">Legal score: <b>${s.score}</b> correct • ${s.wrong} wrong • Best streak: ${s.best}</div>`);
+ w.querySelectorAll("[data-v]").forEach(btn=>btn.onclick=()=>{
+  const selected=[...w.querySelectorAll("[data-evidence]:checked")].map(x=>Number(x.dataset.evidence));if(!selected.length){$("courtResult").textContent="⚠ Counsel must submit at least one exhibit.";return}
+  let st=read(CK,{heard:[],score:0,wrong:0,streak:0,best:0,record:[]}),verdict=btn.dataset.v,isCorrect=(verdict===c.correct);if(!st.heard.includes(idx))st.heard.push(idx);
+  if(isCorrect){st.score++;st.streak++;st.best=Math.max(st.best,st.streak)}else{st.wrong++;st.streak=0}
+  st.record.push({case:c.charge,verdict,correct:isCorrect,evidence:selected,at:new Date().toISOString()});st.record=st.record.slice(-50);write(CK,st);
+  $("courtResult").innerHTML=isCorrect?`<b>✅ STRONG RULING.</b> The court agrees: ${c.correct==="guilty"?"GUILTY":"NOT GUILTY"}.`:`<b>❌ OVERRULED.</b> The stronger ruling was ${c.correct==="guilty"?"GUILTY":"NOT GUILTY"}.`;
+  w.querySelectorAll("[data-v],[data-evidence]").forEach(x=>x.disabled=true);w.querySelector(".courtRecord").innerHTML=`Legal score: <b>${st.score}</b> correct • ${st.wrong} wrong • Best streak: ${st.best}`;
+  notifyGameTelegram("Cody Court",isCorrect?"Correct ruling":"Overruled",`${c.charge} — Lizzy chose ${verdict.toUpperCase()} using Exhibit${selected.length>1?"s":""} ${selected.map(i=>String.fromCharCode(65+i)).join(", ")}. Court answer: ${c.correct.toUpperCase()}. Score ${st.score}-${st.wrong}.`);
+ });
+}
+icon("codyCourtIcon","⚖️","Cody Court",openCourt);
+
+/* ROCK PAPER SCISSORS */
+const RK="lizzyRpsV46",choices=["rock","paper","scissors"],ri={rock:"✊",paper:"✋",scissors:"✌️"},beats={rock:"scissors",paper:"rock",scissors:"paper"};
+function openRps(){const s=read(RK,{lizzy:0,mikael:0,draws:0}),w=win("rpsWindow","✊ ROCK PAPER SCISSORS.exe",`<div class="rpsScore">LIZZY <b id="rL">${s.lizzy}</b> — <b id="rM">${s.mikael}</b> MIKAEL <small>Draws: <span id="rD">${s.draws}</span></small></div><p>Mikael.exe is unnecessarily confident.</p><div class="rpsChoices">${choices.map(x=>`<button data-rps="${x}">${ri[x]}<small>${x}</small></button>`).join("")}</div><div id="rpsResult">Choose your weapon.</div>`);w.querySelectorAll("[data-rps]").forEach(b=>b.onclick=()=>{const you=b.dataset.rps,him=choices[Math.floor(Math.random()*3)],st=read(RK,{lizzy:0,mikael:0,draws:0});let t;if(you===him){st.draws++;t=`${ri[you]} vs ${ri[him]} — Draw. Mikael calls it tactical.`}else if(beats[you]===him){st.lizzy++;t=`${ri[you]} vs ${ri[him]} — Lizzy wins. Mikael.exe requests a recount.`}else{st.mikael++;t=`${ri[you]} vs ${ri[him]} — Mikael wins. You will hear about this again.`}write(RK,st);$("rpsResult").textContent=t;$("rL").textContent=st.lizzy;$("rM").textContent=st.mikael;$("rD").textContent=st.draws;notifyGameTelegram("Rock Paper Scissors",you===him?"Draw":(beats[you]===him?"Lizzy wins":"Mikael wins"),`Lizzy: ${you.toUpperCase()} • Mikael: ${him.toUpperCase()} • Score Lizzy ${st.lizzy} - ${st.mikael} Mikael • Draws ${st.draws}`)})}
+icon("rpsIcon","✊","RPS.exe",openRps);
+
+/* LIZZY ASSISTANT */
+const qa={"Where is Mikael?":["Probably doing Batman nonsense.","Mikael.exe is running somewhere it shouldn't be.","Last seen confidently pretending he knows what he's doing.","He may be conducting an unnecessary classified operation.","Current location: suspiciously unavailable.","Probably somewhere calling himself Mr Perfect."],"Who is Mr Perfect?":["According to Mikael: Mikael. Independent verification unavailable.","A highly confident individual named Mikael.","The title appears to be self-certified.","Ask Mikael and prepare for a very long explanation.","LizzyOS found one nomination. It was submitted by Mikael.","CLASSIFIED records indicate the nickname has caused controversy."],"What should I do today?":["Do something that makes today slightly better.","Drink water, eat something good, and cause a reasonable amount of chaos.","Maybe pasta. Analytics strongly support pasta.","Do one thing you've been putting off, then reward yourself.","Find something that makes you laugh.","Today's mission: protect your peace and enjoy yourself."],"What does the system think of me?":["High value. High attitude. Continued observation required.","Smart, kind and suspiciously competitive.","Pretty great. Attitude surcharge may apply.","Agent Yelizaveta remains a highly valued system user.","Intelligence: high. Beauty: confirmed. Attitude: under investigation.","LizzyOS assessment: worth keeping around 💗"],"Is Mikael right?":["Connection lost.","Statistically possible. Emotionally controversial.","Contact the Hater Investigation department.","LizzyOS encountered an unexpected error while processing that sentence.","On rare occasions, yes. Please don't tell him I said that.","This question has been forwarded to an independent tribunal."],"Tell me something random":["Cody still has dedicated legal counsel.","Batman traditionally works at night. Mikael considers this optional.","The Bank of Micky refuses to explain its financial model.","Pasta remains one of LizzyOS's most trusted recommendations.","There is probably another Mikael reference hidden somewhere on this website.","Cody Court currently has jurisdiction over several questionable Mikael activities."],"Does Mikael actually like me?":["Evidence strongly suggests yes. Like… embarrassingly strongly.","LizzyOS has reviewed the files. The answer appears to be very yes.","He built you an operating system. Draw your own conclusions 😂","CLASSIFIED answer: yes.","Probability: extremely high.","The amount of unnecessary detail on this website is compelling evidence."],"What is Cody doing?":["Probably consulting his lawyer.","Preparing another case against Mikael.","Improving his grappling while maintaining plausible deniability.","Cody is unavailable. Legal conference in progress.","Probably minding his business better than Mikael is.","Monitoring Mikael from a safe, legally protected distance."],"Am I a hater?":["The Hater Investigation remains active.","Professional status has not yet been revoked.","98% according to highly questionable Mikael-funded research.","You have been accused. LizzyOS cannot comment during active proceedings.","Only toward Mikael, apparently 😂","Your defence attorney may wish to challenge the evidence."],"Why does Mikael call himself Mr Perfect?":["Confidence. Mostly confidence.","Because humility.exe failed to install.","The title appears to be entirely self-funded.","Mikael submitted the nomination and approved it himself.","Nobody has managed to stop him.","The Mr Perfect propaganda department remains extremely well funded."],"Should I trust Mikael.exe?":["With supervision.","Trust level: 72%. Chaos level: 94%.","Probably, but keep Cody's lawyer nearby.","Yes… unless Batman mode activates.","LizzyOS recommends cautious optimism.","Mikael.exe has passed several tests that Mikael.exe designed itself."],"What does Mikael think of me?":["He notices more about you than he probably admits.","The files contain suspiciously positive information.","Smart, beautiful, funny and occasionally a professional hater.","You appear to rank extremely highly in MikaelOS analytics.","CLASSIFIED — but the summary is very positive 💗","Enough good things to fill an unnecessarily large website."],"Give me a compliment":["You're ridiculously easy to appreciate.","Smart looks good on you. So does the attitude, unfortunately.","You have the kind of presence people notice.","LizzyOS confirms: very pretty 💗","You're funny, thoughtful and far more special than this system can quantify.","Your smile has received excellent internal reviews."],"Roast Mikael":["Mikael calls himself Mr Perfect because peer review was unavailable.","Batman has a secret identity. Mikael has a public announcement.","His confidence has its own postcode.","Mikael.exe uses 94% of its processing power defending Mikael.","He wants to wrestle bears before mastering humility.","The Bank of Micky has fewer regulations than his self-confidence."],"Roast me":["Your attitude has more uptime than the actual website.","You could turn 'okay' into a 40-minute debate.","Four Eyes but somehow still missing Mikael's obvious correctness 😂","Your crying PR team deserves an award for rebranding it as detox.","You investigate this website like you're being paid.","Little Miss Attitude has entered the server."],"What should I eat?":["Pasta. This was not a difficult calculation.","Something comforting and actually filling.","LizzyOS recommends pasta with unreasonable confidence.","Whatever you're craving — unless you're about to say nothing.","Food first. Debates with Mikael later.","A proper meal. Snacks are not legal substitutes."],"Should I cry today?":["Only if you need to. The detox propaganda is optional 😂","LizzyOS permits emotional maintenance.","A little cleansing session? Your PR department approves.","If it helps, yes. If not, save the tears for Mikael's next argument.","Crying privileges remain active.","The system supports whatever helps you feel lighter."],"Is crying actually a detox?":["That's what the propaganda department would like us to believe.","Scientifically? LizzyOS is staying out of this one. 😂","Your emotional-cleansing marketing team says absolutely.","The Hater Investigation calls it suspiciously effective PR.","LizzyOS classification: cleansing-ish.","Mikael remains unconvinced by the official propaganda."],"Who runs LizzyOS?":["Technically Lizzy. Mikael will dispute this.","Agent Yelizaveta has user privileges. Mikael keeps finding admin buttons.","The system belongs to Lizzy. The chaos belongs to Mikael.","Cody's lawyer has significant influence.","Depends whether Mikael Takeover is active.","Official answer: Lizzy. Unofficial answer: complicated."],"What's my threat level?":["Pink Alert: highly adorable, moderately dangerous.","Threat level: Attitude Orange.","To Mikael's peace? Significant.","Cody considers you an ally, so threat assessment reduced.","Competitive threat: HIGH.","Overall: safe unless someone says Mikael is right."],"Tell me a secret":["MikaelOS files contain an unreasonable number of nice things about you.","Some LizzyOS systems are much softer than their labels suggest.","Cody Legal Team has excellent job security.","Mr Perfect secretly enjoys being challenged.","There are probably still things on this website you haven't found.","CLASSIFIED: Mikael notices the little things."],"Give me a random mission":["Make yourself laugh before the next hour ends.","Find one thing on LizzyOS you haven't opened recently.","Send someone a message that makes them smile.","Get water. Yes, this counts as a mission.","Avoid arguing with Mikael for 20 minutes. Difficulty: Legendary.","Give Cody one piece of legal advice."],"What does Cody think of Mikael?":["Client confidentiality applies.","Useful human. Questionable grappling opinions.","Cody respects him enough to keep suing him.","Potential friend. Potential defendant. Often both.","His lawyer has advised him not to answer.","Cody's official position is CLASSIFIED."],"What crime has Mikael committed today?":["Excessive confidence in the first degree.","Operating as Batman during daylight hours.","Unlicensed use of the title Mr Perfect.","Attempted grappling without Cody Legal approval.","Disturbing the peace with unnecessary propaganda.","Being suspiciously Mikael in a public setting."],"Should Mikael be found guilty?":["Cody Court would like to remind you that YOU are basically the judge 😂","Evidence is concerning.","Mikael requests a fair trial and several compliments.","Probably. But make him argue his case first.","LizzyOS cannot prejudice active proceedings. Cody can.","The prosecution appears extremely enthusiastic."],"Is Mikael Batman?":["He certainly behaves as though Gotham issued him a contract.","Batman usually waits until dark. That's all LizzyOS will say.","The Bat-Signal evidence is difficult to ignore.","Identity classified. Ego unclassified.","Mikael denies nothing.","Gotham HR has stopped responding."],"Why is Mikael Batman in daylight?":["Scheduling conflict.","He believes crime has no office hours.","Night mode was apparently too restrictive.","Because nobody successfully explained Batman to him.","Mikael calls it proactive crime prevention.","LizzyOS calls it a workplace policy violation."],"Who would win: Mikael or Cody?":["In court? Cody. He has Lizzy.","In grappling? Negotiations are ongoing.","Mikael has size. Cody has lawyers.","Nobody wins once legal fees begin.","Cody's legal team objects to the premise.","LizzyOS recommends settling out of court."],"How much attitude do I have?":["Current reading: impressive.","Enough to power a small desktop environment.","97%. The remaining 3% is reserved for plausible deniability.","Little Miss Attitude mode is fully operational.","Above recommended operating limits.","Mikael has submitted multiple complaints."],"Am I competitive?":["The system laughed when you asked.","Yes. Next question.","Competitive level: please don't turn this into a competition.","Bowling records have been entered into evidence.","Suspiciously so.","LizzyOS recommends never saying 'I bet you can't' around you."],"What is Agent Yelizaveta's status?":["ONLINE. Observing everything.","Active. Clearance level: suspicious.","Operational with elevated attitude readings.","Currently investigating LizzyOS instead of minding her business.","Status: Pretty. Dangerous. Logged in.","Agent profile remains classified-ish."],"Give me a LizzyOS prediction":["You will open something you weren't planning to open.","Mikael will say something unnecessarily confident.","Pasta will remain a strong possibility.","Cody may require legal representation again.","You will probably find another reason to judge Mikael.","A random system message will become suspiciously accurate."],"Should I open CLASSIFIED?":["You were going to anyway.","Legally? Questionable. Spiritually? Absolutely.","Agent Yelizaveta has never respected a suspicious folder.","Cody's lawyer may already have clearance.","LizzyOS advises caution. MikaelOS advises drama.","OPEN FILE button detected. Self-control not detected."],"Should I check the Secret Shelf?":["Your Micky Bucs are already nervous.","Financial responsibility says no. Curiosity says immediately.","The Shelf has noticed you asking.","Only if you're prepared to negotiate.","Mikael's counteroffer department has entered the chat.","Secret Shelf addiction risk: elevated."],"Give me relationship advice":["Say what you mean, listen properly, and don't turn every disagreement into Cody Court.","Choose kindness even when you're annoyed.","Good communication beats mind-reading every time.","Make room for jokes and serious conversations.","Remember the little things. They usually aren't little.","And occasionally admit Mikael is right. For scientific purposes 😂"],"Give Mikael advice":["Use humility at least once per operating cycle.","Stop challenging creatures with lawyers to grappling matches.","Batman works nights.","Not every disagreement requires a closing argument.","Mr Perfect may benefit from peer review.","Keep noticing the little things. That part is working."],"How is my day going?":["LizzyOS only has partial data, but I'm hoping it's getting better.","Current forecast: manageable with a chance of nonsense.","System recommendation: one nice thing for yourself.","If it's good, enjoy it. If it's rough, don't let one part become the whole day.","Your daily mood button probably knows more than I do.","Still enough time left to improve it."],"Do I need a break?":["If you're asking, probably.","Five minutes away from the screen wouldn't hurt.","Yes. LizzyOS will survive without you briefly.","Take the break before your brain files a complaint.","Water, stretch, reset.","Permission granted. Go disappear for a little bit."]};
+
+async function notifyAssistantTelegram(question,answer){
+ try{await fetch(WORKER,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({type:"assistant_activity",question,answer,createdAt:new Date().toISOString()})})}
+ catch(e){console.warn("Assistant Telegram failed",e)}
+}
+function openAssistant(){const w=win("lizzyAssistantWindow","✨ LIZZY ASSISTANT",`<div class="assistantOrb">✨</div><h2>Lizzy Assistant</h2><p>How may the operating system be unnecessarily helpful?</p><div class="assistantQuestions">${Object.keys(qa).map(q=>`<button data-q="${esc(q)}">${esc(q)}</button>`).join("")}</div><div id="assistantAnswer">Select a question.</div>`);w.querySelectorAll("[data-q]").forEach(b=>b.onclick=()=>{const question=b.dataset.q,a=qa[question],answer=a[Math.floor(Math.random()*a.length)];$("assistantAnswer").textContent=answer;notifyAssistantTelegram(question,answer)})}
+icon("lizzyAssistantIcon","✨","Lizzy Assistant",openAssistant);
+
+/* DYNAMIC WALLPAPER + BAT SIGNAL TAKEOVER */
+function phase(){const h=new Date().getHours();return h<5?"late":h<12?"morning":h<17?"afternoon":h<21?"evening":"night"}
+function takeover(){return document.documentElement.classList.contains("mikael-takeover")||document.body.classList.contains("mikael-takeover")||document.documentElement.dataset.mikaelTakeover==="true"||document.body.dataset.mikaelTakeover==="true"||!!document.querySelector(".mikaelTakeover.active,.mikael-takeover.active")}
+function wallpaper(){document.documentElement.dataset.dynamicWallpaper=phase();let s=$("mikaelBatSignal");if(!s){s=document.createElement("div");s.id="mikaelBatSignal";s.innerHTML='<div class="batBeam"></div><div class="batMark">🦇</div><small>MIKAEL TAKEOVER</small>';desk().appendChild(s)}s.classList.toggle("active",takeover())}
+wallpaper();LizzyPerf.add("dynamicWallpaper",30000,wallpaper);window.addEventListener("mikaelTakeoverChanged",wallpaper);
+})();
+
+/* V4.8 Cody Legal Documents theme */
+(()=>{const rx=/cody\s*(legal|documents)|legal\s*documents.*cody|subject:\s*cody/i;function scan(){for(const el of document.querySelectorAll(".classified-reader,.classifiedReader,.file-reader,.fileReader,.classified-file,.classifiedFile,.document-reader,.documentReader,.modal,.window"))if(rx.test((el.textContent||"").slice(0,6000))){el.classList.add("codyLegalTheme");if(!el.querySelector(".codyLegalWatermark")){const w=document.createElement("div");w.className="codyLegalWatermark";w.setAttribute("aria-hidden","true");w.innerHTML='<div class="codySilhouette">🐕</div><div class="codySeal">⚖</div><div class="codyStamp">SUBJECT: CODY<br><small>LEGAL REPRESENTATION ACTIVE</small></div>';el.prepend(w)}}}window.addEventListener("load",()=>setTimeout(scan,500));new MutationObserver(scan).observe(document.body,{childList:true,subtree:true})})();
