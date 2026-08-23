@@ -896,3 +896,44 @@ wallpaper();LizzyPerf.add("dynamicWallpaper",30000,wallpaper);window.addEventLis
 
 /* V4.8 Cody Legal Documents theme */
 (()=>{const rx=/cody\s*(legal|documents)|legal\s*documents.*cody|subject:\s*cody/i;function scan(){for(const el of document.querySelectorAll(".classified-reader,.classifiedReader,.file-reader,.fileReader,.classified-file,.classifiedFile,.document-reader,.documentReader,.modal,.window"))if(rx.test((el.textContent||"").slice(0,6000))){el.classList.add("codyLegalTheme");if(!el.querySelector(".codyLegalWatermark")){const w=document.createElement("div");w.className="codyLegalWatermark";w.setAttribute("aria-hidden","true");w.innerHTML='<div class="codyPhotoBackground"></div><div class="codySeal">⚖</div><div class="codyStamp">SUBJECT: CODY<br><small>LEGAL REPRESENTATION ACTIVE</small></div>';el.prepend(w)}}}window.addEventListener("load",()=>setTimeout(scan,500));new MutationObserver(scan).observe(document.body,{childList:true,subtree:true})})();
+
+
+/* =========================================================
+   V4.11 — POST-DOM NATIVE ICON BINDING
+   ========================================================= */
+function bindLizzyFunApps(){
+ const bindings=[
+  ["codyCourtIcon",openCourt],
+  ["rpsIcon",openRps],
+  ["lizzyAssistantIcon",openAssistant],
+  ["dayCheckIcon",openDay]
+ ];
+ for(const [id,fn] of bindings){
+  const el=document.getElementById(id);
+  if(!el) continue;
+  el.onclick=(ev)=>{ev.preventDefault();ev.stopPropagation();fn()};
+  el.onkeydown=(ev)=>{if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();fn()}};
+  el.style.pointerEvents="auto";
+ }
+}
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",bindLizzyFunApps);
+else bindLizzyFunApps();
+window.addEventListener("load",bindLizzyFunApps);
+setTimeout(bindLizzyFunApps,800);
+
+
+/* V4.11 — exact Cody purchased-file theming */
+function applyCodyPurchasedFileTheme(){
+ document.querySelectorAll(".classifiedReader").forEach(reader=>{
+  const t=(reader.innerText||reader.textContent||"");
+  const isCody=/Cody Legal Documents/i.test(t)||(/CODY ALADEEN/i.test(t)&&/LEGAL COUNSEL/i.test(t));
+  reader.classList.toggle("codyLegalPhotoActive",isCody);
+ });
+}
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",()=>{
+ new MutationObserver(applyCodyPurchasedFileTheme).observe(document.body,{childList:true,subtree:true,characterData:true});
+ applyCodyPurchasedFileTheme();
+}); else {
+ new MutationObserver(applyCodyPurchasedFileTheme).observe(document.body,{childList:true,subtree:true,characterData:true});
+ applyCodyPurchasedFileTheme();
+}

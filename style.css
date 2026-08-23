@@ -4245,3 +4245,15 @@ body.mikaelTakeoverActive #desktopArea:before{background:rgba(20,10,40,.12)!impo
 .classifiedReader.codyLegalTheme .codySeal{position:absolute;left:6%;bottom:8%;font-size:90px;opacity:.08}
 .classifiedReader.codyLegalTheme .codyStamp{position:absolute;right:5%;top:8%;opacity:.18}
 #codyCourtIcon,#rpsIcon,#lizzyAssistantIcon,#dayCheckIcon{cursor:pointer}
+
+/* V4.11 — Cody photo directly on the real reader */
+.classifiedReader.codyLegalPhotoActive{
+ background:
+   linear-gradient(rgba(53,25,48,.72),rgba(53,25,48,.82)),
+   url("cody-legal-background.jpeg") center 36% / cover no-repeat!important;
+}
+.classifiedReader.codyLegalPhotoActive .classifiedReaderBody,
+.classifiedReader.codyLegalPhotoActive .classifiedReaderContent{
+ background:rgba(52,25,47,.38)!important;
+ backdrop-filter:blur(1px);
+}
