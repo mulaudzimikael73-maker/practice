@@ -945,13 +945,14 @@ openWhenLetters.sick = {
         <p>Because Mikael—<br>I mean <strong>Lizzy</strong>—can’t survive without a healthy Lizzy.</p>
         <p>That may sound wrong.</p>
         <p><strong>But I said what I said.</strong></p>
-        <p>Unfortunately, you can’t even properly use your <strong>Hug Token</strong> right now because you’ll probably get Mikael sick too.</p>
-        <p>Mikael thinks that wouldn’t be good… although he would probably risk it anyway. 😭</p>
+        <p>Unfortunately, this also means you can’t even properly use your <strong>Hug Token</strong> right now because you’ll probably get Mikael sick too.</p>
+        <p>And Mikael thinks that wouldn’t be very good.</p>
+        <p>Although… knowing him, he would probably risk it anyway. 😭</p>
         <p>So rest properly, drink lots of water, eat something, take care of yourself, and stop pretending you’re perfectly fine when you clearly aren’t.</p>
         <p>And yes, you are allowed one of your famous <strong>“cleansing/detox” crying sessions</strong> if medically necessary. 😂</p>
         <p>Your only job is to get better. LizzyOS, Cody Legal Counsel, Agent Yelizaveta and even Mr Perfect need you back at full operating capacity.</p>
         <p><strong>Get better soon, Four Eyes. 💗</strong></p>
-        <p>I’ll try to be nice while you’re sick.</p>
+        <p>And don’t worry — I’ll try to be nice to you while you’re sick.</p>
         <p><strong>Try.</strong></p>
         <p>No promises.</p>
         <p class="letterSignature">— Mikael a.k.a Mr Perfect 💗</p>
@@ -3675,3 +3676,147 @@ window.addEventListener("load", () => {
 });
 
 if (typeof lizzyTelegramNotify === "function") window.lizzyTelegramNotify = lizzyTelegramNotify;
+
+
+/* ============================================================
+   LIZZYOS STORY-END LOGIN
+   Password: purple (Mikael's favourite colour)
+   ============================================================ */
+(()=>{
+"use strict";
+const $=id=>document.getElementById(id);
+const LOGIN_KEY="lizzyStoryLoginV1";
+const ATTEMPT_KEY="lizzyStoryLoginAttemptsV1";
+const wrongMessages=[
+  "ACCESS DENIED — Really, Four Eyes? After everything you've learned about Mikael?",
+  "Incorrect password. Mr Perfect expected better.",
+  "ACCESS DENIED — Agent Yelizaveta, think Mikael.",
+  "Wrong again. Somewhere, Mikael is judging this attempt."
+];
+
+function attempts(){
+  try{return Number(localStorage.getItem(ATTEMPT_KEY)||0)}catch{return 0}
+}
+function setAttempts(n){
+  try{localStorage.setItem(ATTEMPT_KEY,String(n))}catch{}
+  const el=$("storyLoginAttempts");
+  if(el) el.textContent=n ? `FAILED ATTEMPTS: ${n}` : "";
+}
+function loginScreen(){return $("lizzyStoryLogin")}
+function desktopRoot(){
+  return document.querySelector("#desktop,.desktop,#lizzyDesktop,.lizzy-desktop,[data-desktop]");
+}
+function hideDesktopForLogin(){
+  const d=desktopRoot();
+  if(d){ d.dataset.preLoginDisplay=d.style.display||""; d.classList.add("storyLoginDesktopLocked"); }
+}
+function restoreDesktop(){
+  const d=desktopRoot();
+  if(d) d.classList.remove("storyLoginDesktopLocked");
+}
+window.showLizzyStoryLogin=function(){
+  const el=loginScreen();
+  if(!el)return;
+  hideDesktopForLogin();
+  el.classList.add("open");
+  el.setAttribute("aria-hidden","false");
+  document.body.classList.add("storyLoginActive");
+  setAttempts(attempts());
+  setTimeout(()=>$("storyLoginPassword")?.focus(),180);
+};
+function closeLogin(){
+  const el=loginScreen();
+  if(el){el.classList.remove("open");el.setAttribute("aria-hidden","true")}
+  document.body.classList.remove("storyLoginActive");
+  restoreDesktop();
+}
+function unlock(){
+  try{localStorage.setItem(LOGIN_KEY,JSON.stringify({unlocked:true,at:new Date().toISOString()}))}catch{}
+  closeLogin();
+  const success=$("lizzyLoginSuccess");
+  if(success){
+    success.classList.add("open");
+    success.setAttribute("aria-hidden","false");
+    setTimeout(()=>{
+      success.classList.add("booting");
+      setTimeout(()=>{
+        success.classList.remove("open","booting");
+        success.setAttribute("aria-hidden","true");
+      },900);
+    },1050);
+  }
+  window.dispatchEvent(new CustomEvent("lizzyOSLoginSuccess"));
+}
+function checkPassword(value){
+  return String(value||"").trim().toLowerCase()==="purple";
+}
+function initLogin(){
+  const form=$("storyLoginForm"), input=$("storyLoginPassword");
+  if(!form||!input)return;
+  form.addEventListener("submit",e=>{
+    e.preventDefault();
+    const msg=$("storyLoginMessage");
+    if(checkPassword(input.value)){
+      if(msg){msg.className="storyLoginMessage success";msg.textContent="✓ ACCESS GRANTED";}
+      setAttempts(0);
+      setTimeout(unlock,500);
+    }else{
+      const n=attempts()+1;
+      setAttempts(n);
+      if(msg){
+        msg.className="storyLoginMessage error";
+        msg.textContent=wrongMessages[(n-1)%wrongMessages.length];
+      }
+      input.value="";
+      input.classList.remove("shake");
+      void input.offsetWidth;
+      input.classList.add("shake");
+      input.focus();
+    }
+  });
+  $("storyLoginToggle")?.addEventListener("click",()=>{
+    input.type=input.type==="password"?"text":"password";
+    $("storyLoginToggle").textContent=input.type==="password"?"👁":"🙈";
+  });
+  $("storyLoginHint")?.addEventListener("click",()=>{
+    const msg=$("storyLoginMessage");
+    if(msg){
+      msg.className="storyLoginMessage hint";
+      msg.innerHTML="🔐 <b>PASSWORD HINT</b><br>You know Mr Perfect pretty well by now…<br>What’s <b>his</b> favourite colour?";
+    }
+  });
+}
+
+/* Attach to the END of the existing Story.
+   We listen for explicit end/continue controls without altering Story code. */
+function looksLikeStoryEndControl(el){
+  if(!el)return false;
+  const txt=(el.textContent||el.value||"").trim().toLowerCase();
+  const id=((el.id||"")+" "+(el.className||"")).toLowerCase();
+  const storyContext=!!el.closest?.('[id*="story" i],[class*="story" i]');
+  if(!storyContext)return false;
+  return /continue to lizzyos|enter lizzyos|finish story|end story|continue|enter desktop|open lizzyos/.test(txt)
+      || /story.*(continue|finish|end)|(?:continue|finish|end).*story/.test(id);
+}
+document.addEventListener("click",e=>{
+  const control=e.target.closest?.("button,a,[role='button']");
+  if(!looksLikeStoryEndControl(control))return;
+  /* Let the Story's own click handler finish first, then place login between it and desktop. */
+  setTimeout(()=>window.showLizzyStoryLogin(),80);
+},true);
+
+/* Compatibility hooks for Story implementations that dispatch completion events. */
+["storyComplete","storyCompleted","lizzyStoryComplete","lizzyStoryCompleted"].forEach(name=>{
+  window.addEventListener(name,()=>window.showLizzyStoryLogin());
+  document.addEventListener(name,()=>window.showLizzyStoryLogin());
+});
+
+window.LizzyStoryLogin={
+  show:()=>window.showLizzyStoryLogin(),
+  unlock,
+  isCorrect:checkPassword,
+  reset:()=>{try{localStorage.removeItem(LOGIN_KEY);localStorage.removeItem(ATTEMPT_KEY)}catch{}}
+};
+
+window.addEventListener("load",()=>setTimeout(initLogin,150));
+})();

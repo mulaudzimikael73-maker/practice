@@ -4320,3 +4320,32 @@ body.mikaelTakeoverActive #desktopArea:before{background:rgba(20,10,40,.12)!impo
 .purchasedLetterHead button{flex:0 0 auto}
 .purchasedLetterBody{margin-top:10px}
 .purchasedLetterBody.hidden{display:none!important}
+
+
+/* ============================================================
+   STORY-END LOGIN
+   ============================================================ */
+.lizzyStoryLogin{display:none;position:fixed;inset:0;z-index:90000;align-items:center;justify-content:center;padding:20px}
+.lizzyStoryLogin.open{display:flex}
+.storyLoginBackdrop{position:absolute;inset:0;background:
+ radial-gradient(circle at 50% 20%,rgba(139,92,246,.25),transparent 34%),
+ linear-gradient(145deg,rgba(15,8,28,.98),rgba(37,17,55,.98));backdrop-filter:blur(16px)}
+.storyLoginCard{position:relative;width:min(390px,92vw);padding:34px 30px 28px;text-align:center;color:#fff;border:1px solid rgba(255,255,255,.16);border-radius:24px;background:rgba(35,20,50,.72);box-shadow:0 30px 100px rgba(0,0,0,.48)}
+.storyLoginAvatar{width:78px;height:78px;margin:0 auto 15px;display:grid;place-items:center;border-radius:50%;font-size:38px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16)}
+.storyLoginSystem{font-size:8px;font-weight:900;letter-spacing:1.8px;opacity:.58}
+.storyLoginCard h1{margin:7px 0 5px;font-size:25px}.storyLoginSub{margin:0 auto 22px;font-size:10px;opacity:.65;max-width:270px;line-height:1.5}
+.storyLoginCard label{display:block;text-align:left;margin:0 0 6px;font-size:8px;font-weight:900;letter-spacing:1.2px;opacity:.58}
+.storyLoginPasswordRow{display:flex;gap:7px}
+.storyLoginPasswordRow input{min-width:0;flex:1;padding:12px 13px;border-radius:11px;border:1px solid rgba(255,255,255,.15);background:rgba(0,0,0,.2);color:white;outline:none}
+.storyLoginPasswordRow input:focus{border-color:rgba(192,132,252,.8);box-shadow:0 0 0 3px rgba(168,85,247,.12)}
+.storyLoginPasswordRow button{width:43px!important;flex:0 0 43px!important;padding:0!important;border-radius:11px!important}
+.storyLoginEnter{width:100%;margin-top:10px!important;padding:12px!important;font-weight:900;letter-spacing:.5px}
+.storyLoginHint{margin-top:12px!important;background:transparent!important;border:0!important;box-shadow:none!important;font-size:9px!important;text-decoration:underline;opacity:.7}
+.storyLoginMessage{min-height:30px;margin-top:11px;font-size:9px;line-height:1.5}.storyLoginMessage.error{color:#ffc2d4}.storyLoginMessage.success{color:#d8ffd9}.storyLoginMessage.hint{padding:9px;border-radius:10px;background:rgba(255,255,255,.06);color:#eee}
+.storyLoginAttempts{font-size:7px;letter-spacing:1px;opacity:.38;margin-top:5px}
+.storyLoginDesktopLocked{visibility:hidden!important;pointer-events:none!important}
+.storyLoginPasswordRow input.shake{animation:storyLoginShake .32s linear}
+@keyframes storyLoginShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+.lizzyLoginSuccess{display:none;position:fixed;inset:0;z-index:91000;place-items:center;text-align:center;color:white;background:rgba(19,9,29,.96);backdrop-filter:blur(20px)}
+.lizzyLoginSuccess.open{display:grid}.lizzyLoginSuccess>div{transition:.7s ease}.lizzyLoginSuccess.booting>div{opacity:0;transform:scale(1.05)}
+.loginUnlockIcon{font-size:52px;margin-bottom:12px}.lizzyLoginSuccess small{font-size:8px;font-weight:900;letter-spacing:2px;opacity:.55}.lizzyLoginSuccess h2{margin:7px 0 5px;font-size:23px}.lizzyLoginSuccess p{font-size:11px;opacity:.65;margin:0 0 6px}.lizzyLoginSuccess strong{font-size:13px}.loginBootLine{margin-top:22px;font-size:8px;letter-spacing:1px;opacity:.4}
