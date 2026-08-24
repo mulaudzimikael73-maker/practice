@@ -2263,7 +2263,7 @@ const missions={
 ]},
 5:{title:"❤️ LizzyOS Treasure Hunt",reward:"LEGENDARY TREASURE UNLOCKED",scavenger:true,stages:[
 {q:`<h3>Maximum-Security Treasure Hunt</h3><p>Five keys have been hidden across the real LizzyOS desktop.</p><p>Search <b>Calendar → Recycle Bin → TV/Read Me → Mikhail Quiz → Open When</b> and recover every glowing key.</p><div id="crackScavengerStatus"></div>`,a:["ready"],auto:true,hint:"Each key appears only while this mission is active."},
-{q:`<h3>Final Treasure Lock</h3><p>Recover all five keys first.</p><div id="crackScavengerStatus"></div><div class="cipher">CALENDAR • FOUR EYES • 6 • 4 • NEED A HUG</div><p>Enter the numeric lock made from: letters in CALENDAR • letters in EYES • TV key • jersey key • letters in HUG.</p>`,a:["84243"],requires:["m5_calendar","m5_recycle","m5_tv","m5_jersey","m5_hug"],hint:"8 • 4 • 6 • 4 • 3"}
+{q:`<h3>Final Treasure Lock</h3><p>Recover all five keys first.</p><div id="crackScavengerStatus"></div><div class="cipher">CALENDAR • FOUR EYES • 6 • 4 • NEED A HUG</div><p>Enter the numeric lock made from: letters in CALENDAR • letters in EYES • TV key • jersey key • letters in HUG.</p>`,a:["84643"],requires:["m5_calendar","m5_recycle","m5_tv","m5_jersey","m5_hug"],hint:"8 • 4 • 6 • 4 • 3"}
 ]},
 6:{title:"🕴️ Operation Miknak",reward:"MIKNАK ARCHIVE AUTHENTICATED",stages:[
 {q:`<h3>Question 1 — Childhood Identifier</h3><div class="cipher">MI _ NA _</div><p>Enter Mikael's full childhood nickname.</p>`,a:["miknak"],hint:"Two missing letters are the same."},
@@ -2311,38 +2311,38 @@ const missions={
 {q:`<h3>Final Protocol</h3><p>Porsche number • favourite number • meaningful number.</p>`,a:["91124"],hint:"911 • 2 • 4"}
 ]},
 12:{title:"🗄️ Vault Breach",reward:"VAULT CLEARANCE +1",stages:[
-{q:`<h3>Key I — Origin</h3><p>Before basketball and soccer entered the investigation, what sport did Mikael first play? Enter the number of letters in the sport.</p>`,a:["7"],hint:"CRICKET."},
+{q:`<h3>Key I — Origin</h3><p>Before basketball and soccer entered the investigation, what sport did Mikael first play? Enter the number of letters in the sport.</p>`,a:["7","cricket"],hint:"CRICKET has 7 letters."},
 {q:`<h3>Key II — The Number</h3><p>Mikael's favourite number.</p>`,a:["2","two"],hint:"Not #4."},
-{q:`<h3>Key III — The Builder</h3><div class="cipher">BOB THE _______</div><p>Complete it, then enter the number of letters in the missing word.</p>`,a:["7"],hint:"BUILDER has 7 letters."},
-{q:`<h3>Key IV — The Enemy</h3><p>Mikael's primary-school ______ eventually became his best friend in high school. Enter the number of letters in the missing word.</p>`,a:["5"],hint:"ENEMY."},
-{q:`<h3>Key V — The Myth</h3><p>Who said: “If I didn't know better I would say she's a myth”?</p><p>A. Lizzy &nbsp; B. Mikael &nbsp; C. Michael Scott &nbsp; D. LizzyOS</p><p>Enter the number of letters in the speaker's first name.</p>`,a:["6"],hint:"Mikael."},
+{q:`<h3>Key III — The Builder</h3><div class="cipher">BOB THE _______</div><p>Complete it, then enter the number of letters in the missing word.</p>`,a:["7","builder"],hint:"BUILDER has 7 letters."},
+{q:`<h3>Key IV — The Enemy</h3><p>Mikael's primary-school ______ eventually became his best friend in high school. Enter the number of letters in the missing word.</p>`,a:["5","enemy"],hint:"ENEMY has 5 letters."},
+{q:`<h3>Key V — The Myth</h3><p>Who said: “If I didn't know better I would say she's a myth”?</p><p>A. Lizzy &nbsp; B. Mikael &nbsp; C. Michael Scott &nbsp; D. LizzyOS</p><p>Enter the number of letters in the speaker's first name.</p>`,a:["6","mikael","b"],hint:"Mikael has 6 letters."},
 {q:`<h3>Final Vault Breach Code</h3><p>Enter Keys I–V in order.</p>`,a:["72756"],hint:"7 • 2 • 7 • 5 • 6"}
 ]}
 };
 
 const scavengerDefs={
 2:[
- {id:"m2_recycle",host:"#recycleBinWindow .windowScroll",value:"RECYCLE BIN",label:"FRAGMENT I — TRASH RETRIEVAL"},
- {id:"m2_readme",host:"#readMeWindow .windowScroll",value:"READ ME",label:"FRAGMENT II — ORIGIN FILE"},
- {id:"m2_laugh",host:"#openWhenWindow .windowScroll",value:"NEED TO LAUGH",label:"FRAGMENT III — EMERGENCY COMEDY"},
+ {id:"m2_recycle",host:"#recycleBinWindow .windowScroll, #missionRecycleEvidenceHost",value:"RECYCLE BIN",label:"FRAGMENT I — TRASH RETRIEVAL"},
+ {id:"m2_readme",host:"#readMeWindow .windowScroll, #missionReadMeEvidenceHost",value:"READ ME",label:"FRAGMENT II — ORIGIN FILE"},
+ {id:"m2_laugh",host:"#openWhenWindow .windowScroll, #missionOpenWhenEvidenceHost",value:"NEED TO LAUGH",label:"FRAGMENT III — EMERGENCY COMEDY"},
  {id:"m2_colour",host:"#mikhailQuizWindow .windowScroll, #quizWindow .windowScroll, #missionQuizEvidenceHost, #readMeWindow .windowScroll",value:"PURPLE",label:"FRAGMENT IV — COLOUR AUTHENTICATION"}
 ],
 5:[
  {id:"m5_calendar",host:"#calendarWindow .windowScroll, #missionCalendarEvidenceHost",value:"CALENDAR",label:"KEY I — POSTPONEMENT DEPARTMENT"},
- {id:"m5_recycle",host:"#recycleBinWindow .windowScroll",value:"FOUR EYES",label:"KEY II — FORBIDDEN NAME"},
+ {id:"m5_recycle",host:"#recycleBinWindow .windowScroll, #missionRecycleEvidenceHost",value:"FOUR EYES",label:"KEY II — FORBIDDEN NAME"},
  {id:"m5_tv",host:"#tvWindow .windowScroll, #missionTVEvidenceHost, #readMeWindow .windowScroll",value:"THE OFFICE → 6",label:"KEY III — TV INTERCEPT"},
  {id:"m5_jersey",host:"#mikhailQuizWindow .windowScroll, #quizWindow .windowScroll, #missionQuizEvidenceHost, #readMeWindow .windowScroll",value:"HIGH-SCHOOL JERSEY → 4",label:"KEY IV — MR PERFECT AUTH"},
- {id:"m5_hug",host:"#openWhenWindow .windowScroll",value:"NEED A HUG",label:"KEY V — FINAL SYMBOL"}
+ {id:"m5_hug",host:"#openWhenWindow .windowScroll, #missionOpenWhenEvidenceHost",value:"NEED A HUG",label:"KEY V — FINAL SYMBOL"}
 ],
 7:[
- {id:"m7_bank",host:"#mickyBankPanel",value:"4",label:"FRAGMENT I — BANK"},
- {id:"m7_garden",host:"#lizzyGardenWindow .gardenApp",value:"2",label:"FRAGMENT II — GARDEN"},
- {id:"m7_tokens",host:"#tokenJarWindow .tokenJarApp",value:"9",label:"FRAGMENT III — TOKEN JAR"},
- {id:"m7_letters",host:"#openWhenWindow .windowScroll",value:"6",label:"FRAGMENT IV — OPEN WHEN"},
+ {id:"m7_bank",host:"#mickyBankPanel, #missionBankEvidenceHost",value:"4",label:"FRAGMENT I — BANK"},
+ {id:"m7_garden",host:"#lizzyGardenWindow .gardenApp, #missionGardenEvidenceHost",value:"2",label:"FRAGMENT II — GARDEN"},
+ {id:"m7_tokens",host:"#tokenJarWindow .tokenJarApp, #missionTokensEvidenceHost",value:"9",label:"FRAGMENT III — TOKEN JAR"},
+ {id:"m7_letters",host:"#openWhenWindow .windowScroll, #missionOpenWhenEvidenceHost",value:"6",label:"FRAGMENT IV — OPEN WHEN"},
  {id:"m7_classified",host:"#classifiedArchivePanel, #classifiedFolderWindow .windowScroll, #missionClassifiedEvidenceHost",value:"1",label:"FRAGMENT V — CLASSIFIED"}
 ],
 10:[
- {id:"m10_profile_d",host:"#recycleBinWindow .windowScroll",value:"PROFILE D",label:"RECOVERED PROFILE D",
+ {id:"m10_profile_d",host:"#recycleBinWindow .windowScroll, #missionRecycleEvidenceHost",value:"PROFILE D",label:"RECOVERED PROFILE D",
   extra:"Night owl • Cheers up with ice cream • Good at making people laugh • Terrible at golf"}
 ]};
 
@@ -2381,12 +2381,34 @@ function ensureMissionFallbackLocation(id,label,emoji){
 }
 function ensureOlderMissionLocations(){
  const a=activeMission();
+
+ // Mission 2 — every evidence location gets a temporary fallback if its real app is absent.
+ if(a===2){
+   if(!document.querySelector("#recycleBinWindow"))ensureMissionFallbackLocation("missionRecycle","Recycle Bin","🗑️");
+   if(!document.querySelector("#readMeWindow"))ensureMissionFallbackLocation("missionReadMe","Read Me","📄");
+   if(!document.querySelector("#openWhenWindow"))ensureMissionFallbackLocation("missionOpenWhen","Open When","💌");
+   if(!document.querySelector("#mikhailQuizWindow, #quizWindow"))ensureMissionFallbackLocation("missionQuiz","Mikhail Quiz","🧠");
+ }
+
+ // Mission 5 — Calendar, Recycle Bin, TV, Quiz and Open When are all guaranteed.
  if(a===5){
    if(!document.querySelector("#calendarWindow"))ensureMissionFallbackLocation("missionCalendar","Calendar","📅");
-   if(!document.querySelector("#mikhailQuizWindow, #quizWindow"))ensureMissionFallbackLocation("missionQuiz","Mikhail Quiz","🧠");
+   if(!document.querySelector("#recycleBinWindow"))ensureMissionFallbackLocation("missionRecycle","Recycle Bin","🗑️");
    if(!document.querySelector("#tvWindow"))ensureMissionFallbackLocation("missionTV","TV","📺");
+   if(!document.querySelector("#mikhailQuizWindow, #quizWindow"))ensureMissionFallbackLocation("missionQuiz","Mikhail Quiz","🧠");
+   if(!document.querySelector("#openWhenWindow"))ensureMissionFallbackLocation("missionOpenWhen","Open When","💌");
  }
- if(a===2 && !document.querySelector("#mikhailQuizWindow, #quizWindow"))ensureMissionFallbackLocation("missionQuiz","Mikhail Quiz","🧠");
+
+ // Mission 7 — guarantee all five corrupted-desktop locations.
+ if(a===7){
+   if(!document.querySelector("#mickyBankPanel"))ensureMissionFallbackLocation("missionBank","Micky Bank","🏦");
+   if(!document.querySelector("#lizzyGardenWindow .gardenApp"))ensureMissionFallbackLocation("missionGarden","Lizzy Garden","🌷");
+   if(!document.querySelector("#tokenJarWindow .tokenJarApp"))ensureMissionFallbackLocation("missionTokens","Token Jar","🎟️");
+   if(!document.querySelector("#openWhenWindow"))ensureMissionFallbackLocation("missionOpenWhen","Open When","💌");
+ }
+
+ // Mission 10 — PROFILE D must always be recoverable.
+ if(a===10 && !document.querySelector("#recycleBinWindow"))ensureMissionFallbackLocation("missionRecycle","Recycle Bin","🗑️");
 }
 function ensureMissionClassifiedLocation(){
  if(activeMission()!==7)return;
@@ -2426,7 +2448,7 @@ function ensureMissionClassifiedLocation(){
  document.getElementById("missionClassifiedCloseBtn").onclick=()=>win.classList.add("hidden");
 }
 function removeMissionOnlyLocations(){
- ["missionClassified","missionCalendar","missionQuiz","missionTV"].forEach(id=>{
+ ["missionClassified","missionCalendar","missionQuiz","missionTV","missionRecycle","missionReadMe","missionOpenWhen","missionBank","missionGarden","missionTokens"].forEach(id=>{
    document.getElementById(id+"Icon")?.remove();
    document.getElementById(id+"Window")?.remove();
  });
@@ -2500,7 +2522,9 @@ function complete(){
  localStorage.setItem(`crackMission${mid}`,"complete");
  if(mid===12){
    const current=Math.max(0,Number(localStorage.getItem("lizzyVaultClearance")||0));
-   localStorage.setItem("lizzyVaultClearance",String(Math.min(3,current+1)));
+   const upgraded=Math.min(3,current+1);
+   localStorage.setItem("lizzyVaultClearance",String(upgraded));
+   window.dispatchEvent(new CustomEvent("lizzyVaultClearanceChanged",{detail:{clearance:upgraded}}));
  }
  clearActive();
  fetch("https://formspree.io/f/xjybobov",{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify({game:"Crack the Code",mission:m.title,result:m.reward,questions_and_answers:crackLog.map(a=>`Stage ${a.stage}: ${a.question}\nLizzy answer: ${a.answer}\nExpected: ${a.expected}\nCorrect: ${a.correct}`).join("\n\n")})}).catch(()=>{});
@@ -3676,147 +3700,3 @@ window.addEventListener("load", () => {
 });
 
 if (typeof lizzyTelegramNotify === "function") window.lizzyTelegramNotify = lizzyTelegramNotify;
-
-
-/* ============================================================
-   LIZZYOS STORY-END LOGIN
-   Password: purple (Mikael's favourite colour)
-   ============================================================ */
-(()=>{
-"use strict";
-const $=id=>document.getElementById(id);
-const LOGIN_KEY="lizzyStoryLoginV1";
-const ATTEMPT_KEY="lizzyStoryLoginAttemptsV1";
-const wrongMessages=[
-  "ACCESS DENIED — Really, Four Eyes? After everything you've learned about Mikael?",
-  "Incorrect password. Mr Perfect expected better.",
-  "ACCESS DENIED — Agent Yelizaveta, think Mikael.",
-  "Wrong again. Somewhere, Mikael is judging this attempt."
-];
-
-function attempts(){
-  try{return Number(localStorage.getItem(ATTEMPT_KEY)||0)}catch{return 0}
-}
-function setAttempts(n){
-  try{localStorage.setItem(ATTEMPT_KEY,String(n))}catch{}
-  const el=$("storyLoginAttempts");
-  if(el) el.textContent=n ? `FAILED ATTEMPTS: ${n}` : "";
-}
-function loginScreen(){return $("lizzyStoryLogin")}
-function desktopRoot(){
-  return document.querySelector("#desktop,.desktop,#lizzyDesktop,.lizzy-desktop,[data-desktop]");
-}
-function hideDesktopForLogin(){
-  const d=desktopRoot();
-  if(d){ d.dataset.preLoginDisplay=d.style.display||""; d.classList.add("storyLoginDesktopLocked"); }
-}
-function restoreDesktop(){
-  const d=desktopRoot();
-  if(d) d.classList.remove("storyLoginDesktopLocked");
-}
-window.showLizzyStoryLogin=function(){
-  const el=loginScreen();
-  if(!el)return;
-  hideDesktopForLogin();
-  el.classList.add("open");
-  el.setAttribute("aria-hidden","false");
-  document.body.classList.add("storyLoginActive");
-  setAttempts(attempts());
-  setTimeout(()=>$("storyLoginPassword")?.focus(),180);
-};
-function closeLogin(){
-  const el=loginScreen();
-  if(el){el.classList.remove("open");el.setAttribute("aria-hidden","true")}
-  document.body.classList.remove("storyLoginActive");
-  restoreDesktop();
-}
-function unlock(){
-  try{localStorage.setItem(LOGIN_KEY,JSON.stringify({unlocked:true,at:new Date().toISOString()}))}catch{}
-  closeLogin();
-  const success=$("lizzyLoginSuccess");
-  if(success){
-    success.classList.add("open");
-    success.setAttribute("aria-hidden","false");
-    setTimeout(()=>{
-      success.classList.add("booting");
-      setTimeout(()=>{
-        success.classList.remove("open","booting");
-        success.setAttribute("aria-hidden","true");
-      },900);
-    },1050);
-  }
-  window.dispatchEvent(new CustomEvent("lizzyOSLoginSuccess"));
-}
-function checkPassword(value){
-  return String(value||"").trim().toLowerCase()==="purple";
-}
-function initLogin(){
-  const form=$("storyLoginForm"), input=$("storyLoginPassword");
-  if(!form||!input)return;
-  form.addEventListener("submit",e=>{
-    e.preventDefault();
-    const msg=$("storyLoginMessage");
-    if(checkPassword(input.value)){
-      if(msg){msg.className="storyLoginMessage success";msg.textContent="✓ ACCESS GRANTED";}
-      setAttempts(0);
-      setTimeout(unlock,500);
-    }else{
-      const n=attempts()+1;
-      setAttempts(n);
-      if(msg){
-        msg.className="storyLoginMessage error";
-        msg.textContent=wrongMessages[(n-1)%wrongMessages.length];
-      }
-      input.value="";
-      input.classList.remove("shake");
-      void input.offsetWidth;
-      input.classList.add("shake");
-      input.focus();
-    }
-  });
-  $("storyLoginToggle")?.addEventListener("click",()=>{
-    input.type=input.type==="password"?"text":"password";
-    $("storyLoginToggle").textContent=input.type==="password"?"👁":"🙈";
-  });
-  $("storyLoginHint")?.addEventListener("click",()=>{
-    const msg=$("storyLoginMessage");
-    if(msg){
-      msg.className="storyLoginMessage hint";
-      msg.innerHTML="🔐 <b>PASSWORD HINT</b><br>You know Mr Perfect pretty well by now…<br>What’s <b>his</b> favourite colour?";
-    }
-  });
-}
-
-/* Attach to the END of the existing Story.
-   We listen for explicit end/continue controls without altering Story code. */
-function looksLikeStoryEndControl(el){
-  if(!el)return false;
-  const txt=(el.textContent||el.value||"").trim().toLowerCase();
-  const id=((el.id||"")+" "+(el.className||"")).toLowerCase();
-  const storyContext=!!el.closest?.('[id*="story" i],[class*="story" i]');
-  if(!storyContext)return false;
-  return /continue to lizzyos|enter lizzyos|finish story|end story|continue|enter desktop|open lizzyos/.test(txt)
-      || /story.*(continue|finish|end)|(?:continue|finish|end).*story/.test(id);
-}
-document.addEventListener("click",e=>{
-  const control=e.target.closest?.("button,a,[role='button']");
-  if(!looksLikeStoryEndControl(control))return;
-  /* Let the Story's own click handler finish first, then place login between it and desktop. */
-  setTimeout(()=>window.showLizzyStoryLogin(),80);
-},true);
-
-/* Compatibility hooks for Story implementations that dispatch completion events. */
-["storyComplete","storyCompleted","lizzyStoryComplete","lizzyStoryCompleted"].forEach(name=>{
-  window.addEventListener(name,()=>window.showLizzyStoryLogin());
-  document.addEventListener(name,()=>window.showLizzyStoryLogin());
-});
-
-window.LizzyStoryLogin={
-  show:()=>window.showLizzyStoryLogin(),
-  unlock,
-  isCorrect:checkPassword,
-  reset:()=>{try{localStorage.removeItem(LOGIN_KEY);localStorage.removeItem(ATTEMPT_KEY)}catch{}}
-};
-
-window.addEventListener("load",()=>setTimeout(initLogin,150));
-})();
