@@ -619,7 +619,7 @@
             <div class="windowScroll">
                 <div class="gamesFolderIntro"><span>🎮</span><div><small>LIZZYOS ARCADE</small><h3>Games, quizzes & unnecessary competition</h3><p>Win big, get perfect scores, and you may earn Garden seeds. 🌱</p></div></div>
                 <div class="gamesFolderGrid">
-                    <button class="gameFolderCard" data-open-game="funQuizIcon" onclick="document.getElementById('gamesFolderStaticWindow').classList.add('hidden');var w=document.getElementById('funQuizWindow');if(w){w.classList.remove('hidden');}else{var i=document.getElementById('funQuizIcon');if(i)i.click();}"><span>🧠</span><b>Lizzy Quiz</b><small>How well do you know yourself?</small></button>
+                    <button class="gameFolderCard" data-open-game="funQuizIcon" onclick="document.getElementById('gamesFolderStaticWindow').classList.add('hidden');if(window.openLizzyQuiz){window.openLizzyQuiz();}else{var i=document.getElementById('funQuizIcon');if(i)i.click();}"><span>🧠</span><b>Lizzy Quiz</b><small>How well do you know yourself?</small></button>
                     <button class="gameFolderCard" data-open-game="mikhailQuizIcon" onclick="document.getElementById('gamesFolderStaticWindow').classList.add('hidden');var w=document.getElementById('mikhailQuizWindow');if(w){w.classList.remove('hidden');}else{var i=document.getElementById('mikhailQuizIcon');if(i)i.click();}"><span>🧠</span><b>Mikhail Quiz</b><small>Prove you actually listen.</small></button>
                     <button class="gameFolderCard" data-open-game="wouldMikaelRatherIcon" onclick="document.getElementById('gamesFolderStaticWindow').classList.add('hidden');var w=document.getElementById('wouldMikaelRatherWindow');if(w){w.classList.remove('hidden');}else{var i=document.getElementById('wouldMikaelRatherIcon');if(i)i.click();}"><span>🤔</span><b>Would Mikael Rather?</b><small>Choose wisely.</small></button>
                     <button class="gameFolderCard" data-open-game="heartGameIcon" onclick="document.getElementById('gamesFolderStaticWindow').classList.add('hidden');var w=document.getElementById('heartGameWindow');if(w){w.classList.remove('hidden');}else{var i=document.getElementById('heartGameIcon');if(i)i.click();}"><span>💗</span><b>Heart Catch</b><small>Catch them before they escape.</small></button>
@@ -1553,7 +1553,7 @@ if (window.netlifyIdentity) {
   <button id="closeUnreleasedLetter" class="windowCloseButton">Close Classified File</button>
 </div>
 
-<script src="script.js?v=20260824-crack-code-fix"></script>
+<script src="script.js?v=20260825-expanded-lizzy-quiz"></script>
 <script src="living-desktop.js?v=20260823-v415-launch-hotfix"></script>
 
 <script defer src="internet.js?v=20260823-internet-hotfix"></script>
@@ -1647,6 +1647,6 @@ if (window.netlifyIdentity) {
   <p id="mikaelTakeoverPopupText"></p>
 </div>
 
-<script src="fun-apps.js?v=20260823-v416-selfcontained"></script>
+<script src="fun-apps.js?v=20260825-assistant-verified"></script>
 </body>
 </html>

@@ -1467,107 +1467,92 @@ document.addEventListener("keydown", (event) => {
 
     // ---------- Lizzy Quiz ----------
     const lizzyQuizQuestions = [
-        {
-            q: "What colour has administrator privileges in LizzyOS? 💗",
-            a: ["Blue", "Pink — obviously", "Corporate grey"],
-            correct: 1,
-            right: "Correct. Pink has full system access. 🌸",
-            wrong: "Security alert: this answer was suspiciously un-Lizzy."
-        },
-        {
-            q: "Who has the unfair advantage on the first bowling mission? 🎳",
-            a: ["Agent Mikhail", "Agent Yelizaveta", "The bowling ball"],
-            correct: 1,
-            right: "Correct 😭 Intelligence reports say Agent Yelizaveta is dangerously experienced.",
-            wrong: "Nice try. Agent Mikhail has approximately one mission of experience 😂"
-        },
-        {
-            q: "Where should banned nicknames be sent?",
-            a: ["The Recycle Bin 🗑️", "The Mission Log", "Pinned to the desktop"],
-            correct: 0,
-            right: "Correct. Delete immediately. Empty Bin optional 😂",
-            wrong: "Absolutely not. LizzyOS recommends immediate deletion."
-        },
-        {
-            q: "What food has suspiciously high priority in this system? 🍝",
-            a: ["Pasta", "Plain toast", "A single lettuce leaf"],
-            correct: 0,
-            right: "Correct. Pasta database verified. 🍝",
-            wrong: "LizzyOS refuses to accept this answer."
-        },
-        {
-            q: "What is Agent Mikhail's most important mission objective?",
-            a: ["Win every argument", "Make Agent Yelizaveta smile ❤️", "Become a professional bowler overnight"],
-            correct: 1,
-            right: "Mission intelligence confirms this answer. ❤️",
-            wrong: "Incorrect. Please review Mission Log #001."
-        }
+      {q:"What colour has administrator privileges in LizzyOS? 💗",a:["Blue","Pink — obviously","Corporate grey"],correct:1,right:"Correct. Pink has full system access. 🌸",wrong:"Security alert: this answer was suspiciously un-Lizzy."},
+      {q:"Who has the unfair advantage on the first bowling mission? 🎳",a:["Agent Mikhail","Agent Yelizaveta","The bowling ball"],correct:1,right:"Correct 😭 Intelligence reports say Agent Yelizaveta is dangerously experienced.",wrong:"Nice try. Agent Mikhail has approximately one mission of experience 😂"},
+      {q:"Where should banned nicknames be sent?",a:["The Recycle Bin 🗑️","The Mission Log","Pinned to the desktop"],correct:0,right:"Correct. Delete immediately. Empty Bin optional 😂",wrong:"Absolutely not. LizzyOS recommends immediate deletion."},
+      {q:"What food has suspiciously high priority in this system? 🍝",a:["Pasta","Plain toast","A single lettuce leaf"],correct:0,right:"Correct. Pasta database verified. 🍝",wrong:"LizzyOS refuses to accept this answer."},
+      {q:"What is Agent Mikhail's most important mission objective?",a:["Win every argument","Make Agent Yelizaveta smile ❤️","Become a professional bowler overnight"],correct:1,right:"Mission intelligence confirms this answer. ❤️",wrong:"Incorrect. Please review Mission Log #001."},
+      {q:"Where did Lizzy learn to be such a menace? 😈",a:["Mikael taught her","It's in her DNA","Agent training"],correct:1,right:"DNA analysis confirms the menace appears factory-installed. 🧬",wrong:"Nope. This behaviour appears to go much deeper 😂"},
+      {q:"How would Mikael classify Lizzy's attitude levels?",a:["Low","Moderate","A national security concern"],correct:2,right:"Threat level confirmed: attitude remains a national security concern. 🚨",wrong:"That reading is suspiciously low."},
+      {q:"What happens when Lizzy's attitude combines with Four Eyes Mode? 👓",a:["The attitude disappears","She looks more professional while maintaining the attitude","LizzyOS crashes"],correct:1,right:"Exactly. The glasses change the presentation, not the attitude 😂",wrong:"Four Eyes Mode does not neutralise the attitude."},
+      {q:"What does Lizzy apparently enjoy doing to Mikael?",a:["Agreeing with everything he says","Ragebaiting him","Protecting his peace"],correct:1,right:"Correct. Ragebait activity remains unusually high. 🎣",wrong:"Historical evidence strongly disagrees 😂"},
+      {q:"What does Lizzy claim crying is? 😭",a:["A competitive sport","Cleansing or detoxing","Classified information"],correct:1,right:"Correct — that is the official Lizzy PR explanation.",wrong:"Please consult the emotional-cleansing propaganda department."},
+      {q:"What does Mikael call Lizzy's explanation for all the crying?",a:["Medical science","Propaganda","A completely reasonable explanation"],correct:1,right:"Correct. Mikael has formally labelled it propaganda 😂",wrong:"Mikael's official position is considerably less supportive."},
+      {q:"According to Lizzy herself, what has Mikael supposedly damaged? 😂",a:["Her glasses","Her reputation","Her LizzyOS account"],correct:1,right:"Correct. The reputation damage allegation is officially on record.",wrong:"That is not the allegation Lizzy submitted."},
+      {q:"Why does Lizzy say her reputation has been tainted?",a:["Because she became Cody's lawyer","Because Mikael has her calling him perfect and randomly smiling about him","Because she lost at bowling"],correct:1,right:"Evidence archived. Future denial attempts may be unsuccessful 😂",wrong:"The written evidence points somewhere much more embarrassing."},
+      {q:"What did Lizzy admit she sometimes finds herself doing? 👀",a:["Planning Mikael's arrest","Randomly smiling about Mikael","Deleting LizzyOS"],correct:1,right:"Admission confirmed and safely archived. 📁",wrong:"Nope. The evidence specifically mentions smiling."},
+      {q:"Which unofficial parenting award does Mikael regularly give Lizzy for looking after her sisters? 🏆",a:["Guardian of the Year","Mother of the Year","Chief Babysitter"],correct:1,right:"Correct. Mother of the Year remains her unofficial title 😂",wrong:"The Mikael Awards Committee uses a much more dramatic title."},
+      {q:"What incident nearly cost Lizzy her prestigious 'Mother of the Year' title? 🍳",a:["She forgot to buy snacks","She didn't cook, leading Mikael to launch the 'starving the kids' allegations","She made her sister clean"],correct:1,right:"Correct. The Great Cooking Scandal remains on file.",wrong:"Nope. Think of the infamous cooking incident."},
+      {q:"What serious allegation did Mikael make during the Great Cooking Scandal? 🚨",a:["Lizzy had retired from motherhood","Lizzy was starving the kids","Lizzy had ordered takeaways"],correct:1,right:"Correct. A dramatic allegation, but an allegation nonetheless 😂",wrong:"Mikael's accusation was significantly more dramatic."},
+      {q:"What is Lizzy apparently creating with one of her sisters? 👯‍♀️",a:["Her replacement","A mini version of herself","A new LizzyOS administrator"],correct:1,right:"Correct. Mini Lizzy development is reportedly underway.",wrong:"Intelligence suggests something far more dangerous: another Lizzy 😂"},
+      {q:"What is the greatest concern about Lizzy creating a mini version of herself? 🚨",a:["They'll dress the same","There could soon be TWO menaces","Cody will need another lawyer"],correct:1,right:"Exactly. LizzyOS is not prepared for double-menace capacity.",wrong:"You're underestimating the menace multiplication risk."},
+      {q:"If Lizzy's sister becomes exactly like her, what has most likely been inherited? 🧬",a:["The menace gene","Mikael's propaganda","Micky Bucs"],correct:0,right:"Correct. The menace gene appears highly transferable 😂",wrong:"Genetic analysis points to the menace department."},
+      {q:"What happens when Mikael catches Lizzy being sweet? 💗",a:["She proudly accepts the allegation","She risks damaging her menace reputation","Cody objects"],correct:1,right:"Correct. Sweetness is dangerous to the established menace brand.",wrong:"Think about the reputation she is trying so hard to maintain 😂"},
+      {q:"According to Lizzy's own testimony, what has suffered because of Mikael's influence? 📄",a:["Her patience","Her reputation","Her LizzyOS clearance"],correct:1,right:"Correct. Her reputation is apparently the primary casualty.",wrong:"Her own testimony names a different victim."},
+      {q:"How does Lizzy plan to respond if anyone asks whether those admissions are true? 🕵️‍♀️",a:["Tell the truth immediately","Deny everything","Ask Mikael to confirm"],correct:1,right:"Correct. Denial protocol activated 😂",wrong:"That would be far too cooperative for the official defence strategy."},
+      {q:"What makes Lizzy's campaign against Mikael slightly difficult to believe? 🤨",a:["She secretly likes Batman","She complains about him while admitting she randomly finds herself smiling about him","She keeps spending Micky Bucs"],correct:1,right:"Exactly. Exhibit: Random Smiling has been submitted.",wrong:"The contradiction is hidden in her own Mikael admissions."},
+      {q:"What disturbing discovery has LizzyOS made about Mikael and Lizzy? 🧬",a:["They're both secretly lawyers","They may actually be more similar than either would like to admit","They have the same eyesight"],correct:1,right:"⚠️ SIMILARITY DETECTED. Neither suspect is expected to accept this finding.",wrong:"LizzyOS intelligence has found a more uncomfortable similarity."},
+      {q:"What trait might Mikael and Lizzy BOTH be guilty of? 🎣",a:["Avoiding arguments","Deliberately annoying each other for entertainment","Admitting when they're wrong immediately"],correct:1,right:"⚠️ SIMILARITY DETECTED: mutual annoyance appears recreational.",wrong:"The evidence suggests both suspects are considerably less peaceful."},
+      {q:"What happens when Mikael and Lizzy both believe they're right? ⚠️",a:["They calmly compromise","An unnecessarily long debate begins","Mikael immediately apologises"],correct:1,right:"Correct. Estimated debate duration: unnecessarily long 😂",wrong:"That outcome sounds far too peaceful."},
+      {q:"Which title could realistically apply to BOTH Mikael and Lizzy? 😂",a:["The Quiet One","Professional Menace","Conflict Avoider"],correct:1,right:"⚠️ SIMILARITY DETECTED: Professional Menace status may be shared.",wrong:"Neither suspect has demonstrated enough peace for that title."},
+      {q:"Why might Mikael have difficulty complaining about Lizzy's ragebaiting? 🎣",a:["Ragebaiting isn't real","He isn't exactly innocent of doing the same thing to her","Lizzy never does it"],correct:1,right:"Correct. Mikael's hands may not be completely clean here 😂",wrong:"The case file contains evidence against both parties."},
+      {q:"What might explain why Mikael and Lizzy can argue over complete nonsense for so long?",a:["Poor Wi-Fi","Neither particularly enjoys backing down","LizzyOS requires it"],correct:1,right:"⚠️ SIMILARITY DETECTED: stubbornness readings elevated on both sides.",wrong:"The network has been cleared of responsibility."},
+      {q:"What similarity would both Mikael AND Lizzy probably deny if questioned? 👀",a:["They can both be stubborn","They're both Batman","They both wear glasses"],correct:0,right:"Correct. Both suspects are expected to appeal this finding.",wrong:"The similarity report points to something in their personalities."},
+      {q:"If Lizzy is Little Miss Attitude, what does that potentially make Mikael? 🤔",a:["Mr No Attitude","Someone who probably has enough attitude of his own","An innocent victim"],correct:1,right:"⚠️ SIMILARITY DETECTED. Mikael's innocence remains unverified 😂",wrong:"LizzyOS refuses to certify Mikael as completely innocent."},
+      {q:"What is the strongest evidence that Mikael and Lizzy might actually enjoy annoying each other? 😂",a:["They keep doing it and still continue talking to each other","They've filed official paperwork","Cody told us"],correct:0,right:"Correct. Continued voluntary participation is highly suspicious 😂",wrong:"The strongest evidence is much simpler and happens repeatedly."},
+      {q:"What is perhaps the most dangerous thing Mikael and Lizzy have in common? 🚨",a:["Their favourite colour","Both seem capable of turning absolutely nothing into an argument","Their bowling ability"],correct:1,right:"⚠️ SIMILARITY DETECTED: argument generation capability confirmed.",wrong:"The danger is less athletic and much more argumentative."},
+      {q:"Who is actually the bigger menace? 😈",a:["Lizzy, case closed","Mikael, case closed","Investigation ongoing — both suspects blame each other"],correct:2,right:"Correct. Investigation remains open indefinitely 😂",wrong:"There is nowhere near enough cooperation for a final ruling."},
+      {q:"What is Mikael's favourite colour? 💜",a:["Pink","Purple","Black"],correct:1,right:"Correct. Purple is Mr Perfect's colour. 💜",wrong:"Mr Perfect's favourite colour is elsewhere in the palette."},
+      {q:"What is Mikael's favourite superhero? 🦇",a:["Superman","Batman","Spider-Man"],correct:1,right:"Correct. Broad-daylight Batman activity remains under investigation.",wrong:"Gotham intelligence would like you to reconsider."},
+      {q:"What number did Mikael wear when playing basketball in high school? 🏀",a:["23","4","30"],correct:1,right:"Correct. Number 4. 🏀",wrong:"Check the Mikael basketball file."},
+      {q:"What is Cody's middle name? 🐶",a:["Perfect","Aladeen","Batman"],correct:1,right:"Correct. Cody Aladeen, legally represented and dangerous 😂",wrong:"Cody's legal file lists a different middle name."},
+      {q:"Who is Cody's official legal counsel? ⚖️",a:["Mikael","Lizzy","Agent Mikhail"],correct:1,right:"Correct. Mikael should probably watch what he says around Cody.",wrong:"Cody's lawyer is much closer to the case."},
+      {q:"What does Mikael call himself with absolutely no evidence of bias? 😂",a:["Mr Average","Mr Perfect","Mr Humble"],correct:1,right:"Correct. Self-certified Mr Perfect.",wrong:"Mikael's self-appointed title is considerably less humble."},
+      {q:"What currency does LizzyOS use? 💵",a:["Lizzy Dollars","Micky Bucs","Perfect Points"],correct:1,right:"Correct. Micky Bucs accepted across suspicious parts of LizzyOS.",wrong:"Check the LizzyOS economy."},
+      {q:"What is Mikael's dream holiday/training destination? 🏔️",a:["Paris","Dagestan","New York"],correct:1,right:"Correct. Dagestan — apparently relaxation was never the plan.",wrong:"Mikael's dream destination is much more grappling-oriented."},
+      {q:"What does Mikael apparently plan to do in Dagestan? 😂",a:["Relax by the pool","Train and wrestle bears","Learn ballet"],correct:1,right:"Correct. Bear-wrestling risk assessment: questionable.",wrong:"The Dagestan file contains significantly more grappling."},
+      {q:"What is the password required to decrypt AYPP-006? 🔐",a:["Four Eyes","Micky The Greatest","Mr Perfect"],correct:1,right:"Correct. Birthday-card intelligence confirmed.",wrong:"Remember the birthday-card clue."}
     ];
 
-    let fqIndex = 0;
-    let fqScore = 0;
-
+    const LIZZY_QUIZ_ROUND_SIZE=10;
+    let activeLizzyQuizQuestions=[];
+    let fqIndex=0,fqScore=0;
+    function shuffledQuizPool(){
+      const pool=[...lizzyQuizQuestions];
+      for(let i=pool.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]]}
+      return pool.slice(0,Math.min(LIZZY_QUIZ_ROUND_SIZE,pool.length));
+    }
     function startFunQuiz(){
-        fqIndex = 0;
-        fqScore = 0;
-        $("funQuizScore").textContent = "0";
-        $("funQuizTotal").textContent = lizzyQuizQuestions.length;
-        $("restartFunQuiz").classList.add("hidden");
-        renderFunQuiz();
+      activeLizzyQuizQuestions=shuffledQuizPool();fqIndex=0;fqScore=0;
+      $("funQuizScore").textContent="0";$("funQuizTotal").textContent=activeLizzyQuizQuestions.length;
+      $("restartFunQuiz").classList.add("hidden");renderFunQuiz();
     }
-
     function renderFunQuiz(){
-        const q = lizzyQuizQuestions[fqIndex];
-        if (!q) {
-            $("funQuizQuestion").innerHTML =
-                fqScore === lizzyQuizQuestions.length
-                ? `🏆 Perfect score! ${fqScore}/${lizzyQuizQuestions.length}`
-                : `Mission complete: ${fqScore}/${lizzyQuizQuestions.length}`;
-            $("funQuizAnswers").innerHTML = "";
-            $("funQuizFeedback").innerHTML =
-                fqScore === lizzyQuizQuestions.length
-                ? "Okay... either you know LizzyOS extremely well or you have classified information. 😏❤️"
-                : fqScore >= 3
-                ? "Approved. Your Lizzy knowledge clearance remains active. 💗"
-                : "Agent Mikhail is requesting a formal investigation into this score 😂";
-            $("restartFunQuiz").classList.remove("hidden");
-            if (fqScore === lizzyQuizQuestions.length && typeof unlockAchievement === "function") {
-                unlockAchievement("Certified Lizzy Expert 💗");
-            }
-            if (fqScore === lizzyQuizQuestions.length) {
-                window.dispatchEvent(new CustomEvent("lizzyPerfectGame", {
-                    detail:{game:"Lizzy Quiz", key:"funQuiz", score:`${fqScore}/${lizzyQuizQuestions.length}`}
-                }));
-            }
-            return;
-        }
-
-        $("funQuizQuestion").textContent = q.q;
-        $("funQuizFeedback").textContent = "";
-        $("funQuizAnswers").innerHTML = q.a.map((answer, i) =>
-            `<button class="funQuizAnswer" data-fq-answer="${i}">${answer}</button>`
-        ).join("");
-
-        document.querySelectorAll("[data-fq-answer]").forEach(btn => {
-            btn.addEventListener("click", () => {
-                const chosen = Number(btn.dataset.fqAnswer);
-                const correct = chosen === q.correct;
-                if (correct) {
-                    fqScore++;
-                    $("funQuizScore").textContent = fqScore;
-                }
-                $("funQuizFeedback").textContent = correct ? q.right : q.wrong;
-                document.querySelectorAll("[data-fq-answer]").forEach(b => b.disabled = true);
-                btn.classList.add(correct ? "answerCorrect" : "answerWrong");
-                setTimeout(() => {
-                    fqIndex++;
-                    renderFunQuiz();
-                }, 1200);
-            });
-        });
+      const total=activeLizzyQuizQuestions.length,q=activeLizzyQuizQuestions[fqIndex];
+      if(!q){
+        $("funQuizQuestion").innerHTML=fqScore===total?`🏆 Perfect score! ${fqScore}/${total}`:`Mission complete: ${fqScore}/${total}`;
+        $("funQuizAnswers").innerHTML="";
+        $("funQuizFeedback").innerHTML=fqScore===total?"Certified Lizzy Expert. This level of knowledge is becoming suspicious. 😏❤️":fqScore>=7?"Certified LizzyOS Intelligence Agent. Very suspicious knowledge levels. 💗":fqScore>=4?"You know some things 👀 Further surveillance recommended.":"Suspicious... Agent Mikhail is requesting a formal investigation into this score 😂";
+        $("restartFunQuiz").classList.remove("hidden");
+        if(fqScore===total&&typeof unlockAchievement==="function")unlockAchievement("Certified Lizzy Expert 💗");
+        if(fqScore===total)window.dispatchEvent(new CustomEvent("lizzyPerfectGame",{detail:{game:"Lizzy Quiz",key:"funQuiz",score:`${fqScore}/${total}`}}));
+        window.dispatchEvent(new CustomEvent("lizzyGameCompleted",{detail:{game:"Lizzy Quiz",key:"funQuiz",score:`${fqScore}/${total}`}}));
+        return;
+      }
+      $("funQuizQuestion").textContent=q.q;$("funQuizFeedback").textContent="";
+      $("funQuizAnswers").innerHTML=q.a.map((answer,i)=>`<button class="funQuizAnswer" data-fq-answer="${i}">${answer}</button>`).join("");
+      document.querySelectorAll("[data-fq-answer]").forEach(btn=>btn.addEventListener("click",()=>{
+        const correct=Number(btn.dataset.fqAnswer)===q.correct;
+        if(correct){fqScore++;$("funQuizScore").textContent=fqScore}
+        $("funQuizFeedback").textContent=correct?q.right:q.wrong;
+        document.querySelectorAll("[data-fq-answer]").forEach(b=>b.disabled=true);
+        btn.classList.add(correct?"answerCorrect":"answerWrong");
+        setTimeout(()=>{fqIndex++;renderFunQuiz()},1200);
+      }));
     }
-
-    $("restartFunQuiz")?.addEventListener("click", startFunQuiz);
+    window.startFunQuiz=startFunQuiz;
+    window.openLizzyQuiz=function(){const w=$("funQuizWindow");if(!w)return false;openWindow("funQuizWindow");startFunQuiz();return true};
+    $("restartFunQuiz")?.addEventListener("click",startFunQuiz);
 
     // ---------- Heart Catch ----------
     let heartScore = 0;
