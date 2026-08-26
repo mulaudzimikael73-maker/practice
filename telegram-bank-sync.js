@@ -12,7 +12,7 @@ function ensureUI(){if(document.getElementById("telegramDepositTray"))return;con
 async function render(){
  ensureUI();const tray=document.getElementById("telegramDepositTray");
  try{const items=await pending();if(!items.length){tray.innerHTML="";return}
-tray.innerHTML=items.map(d=>`<div style="background:#050505;color:#b968ff;border:2px solid #8f35e8;border-radius:18px;padding:14px 16px;margin-top:10px;box-shadow:0 10px 30px rgba(143,53,232,.30),0 0 18px rgba(185,104,255,.18)"><div style="font-weight:900;font-size:16px;color:#c77dff">💰 Incoming Micky Bank Deposit</div><div style="margin:6px 0 10px;color:#b968ff">Mikael deposited <b style="color:#d7a6ff">${Math.floor(Number(d.amount)||0)} MB</b></div><button data-claim-mb="${d.id}" style="border:2px solid #9b4dff;border-radius:12px;padding:9px 14px;font-weight:900;cursor:pointer;background:#080808;color:#c77dff;box-shadow:0 0 12px rgba(155,77,255,.20)">Claim Deposit</button></div>`).join("");
+ tray.innerHTML=items.map(d=>`<div style="background:#fff7fc;border:2px solid #f2a8cf;border-radius:18px;padding:14px 16px;margin-top:10px;box-shadow:0 10px 30px rgba(0,0,0,.18)"><div style="font-weight:800;font-size:16px">💰 Incoming Micky Bank Deposit</div><div style="margin:6px 0 10px">Mikael deposited <b>${Math.floor(Number(d.amount)||0)} MB</b></div><button data-claim-mb="${d.id}" style="border:0;border-radius:12px;padding:9px 14px;font-weight:800;cursor:pointer;background:#f4b5d6">Claim Deposit</button></div>`).join("");
  tray.querySelectorAll("[data-claim-mb]").forEach(b=>b.onclick=()=>claim(b.dataset.claimMb,b));
  }catch(e){console.warn("Pending deposits failed",e)}
 }
