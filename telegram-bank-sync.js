@@ -1,69 +1,33 @@
-/* LizzyOS — Telegram Micky Bank Sync
-   Additive file: does not replace your main script.js.
-   Wallet key verified from current LizzyOS: lizzyMickyBucsV1
-*/
-(()=>{
-"use strict";
-const WALLET_KEY="lizzyMickyBucsV1";
-const APPLIED_KEY="lizzyTelegramDepositsAppliedV1";
-const WORKER=window.LIZZY_TELEGRAM_WORKER_URL || "https://lizzyos-notifications.mulaudzimikael73.workers.dev/";
-
+/* LizzyOS claimable Telegram deposits — device wallets stay separate */
+(()=>{"use strict";
+const WALLET_KEY="lizzyMickyBucsV1",APPLIED_KEY="lizzyTelegramDepositsAppliedV2";
+const WORKER=window.LIZZY_TELEGRAM_WORKER_URL||"https://lizzyos-notifications.mulaudzimikael73.workers.dev/";
 const wallet=()=>Math.max(0,Math.floor(Number(localStorage.getItem(WALLET_KEY))||0));
-const setWallet=n=>{
-  const value=Math.max(0,Math.floor(Number(n)||0));
-  localStorage.setItem(WALLET_KEY,String(value));
-  window.dispatchEvent(new CustomEvent("mickyBucsBalanceChanged",{detail:{balance:value,source:"telegram_deposit"}}));
-  window.dispatchEvent(new Event("lizzyStoreRefresh"));
-  return value;
-};
-const applied=()=>{
-  try{const x=JSON.parse(localStorage.getItem(APPLIED_KEY)||"[]");return Array.isArray(x)?x:[]}catch{return []}
-};
-const saveApplied=ids=>localStorage.setItem(APPLIED_KEY,JSON.stringify([...new Set(ids)].slice(-500)));
-
-async function post(body){
-  const r=await fetch(WORKER,{method:"POST",headers:{"Content-Type":"text/plain;charset=UTF-8"},body:JSON.stringify(body)});
-  if(!r.ok)throw new Error("Worker HTTP "+r.status);
-  return r.json();
+const setWallet=n=>{n=Math.max(0,Math.floor(Number(n)||0));localStorage.setItem(WALLET_KEY,String(n));window.dispatchEvent(new CustomEvent("mickyBucsBalanceChanged",{detail:{balance:n,source:"telegram_claim"}}));window.dispatchEvent(new Event("lizzyStoreRefresh"));return n};
+const applied=()=>{try{let x=JSON.parse(localStorage.getItem(APPLIED_KEY)||"[]");return Array.isArray(x)?x:[]}catch{return[]}};
+const saveApplied=x=>localStorage.setItem(APPLIED_KEY,JSON.stringify([...new Set(x)].slice(-500)));
+async function post(body){const r=await fetch(WORKER,{method:"POST",headers:{"Content-Type":"text/plain;charset=UTF-8"},body:JSON.stringify(body)});const d=await r.json();return d}
+async function pending(){const r=await fetch(WORKER+"?pendingMickyDeposits=1",{cache:"no-store"});const d=await r.json();return d?.success&&Array.isArray(d.deposits)?d.deposits:[]}
+function ensureUI(){if(document.getElementById("telegramDepositTray"))return;const e=document.createElement("div");e.id="telegramDepositTray";e.style.cssText="position:fixed;right:18px;bottom:78px;z-index:99999;max-width:340px;font-family:inherit";document.body.appendChild(e)}
+async function render(){
+ ensureUI();const tray=document.getElementById("telegramDepositTray");
+ try{const items=await pending();if(!items.length){tray.innerHTML="";return}
+ tray.innerHTML=items.map(d=>`<div style="background:#fff7fc;border:2px solid #f2a8cf;border-radius:18px;padding:14px 16px;margin-top:10px;box-shadow:0 10px 30px rgba(0,0,0,.18)"><div style="font-weight:800;font-size:16px">💰 Incoming Micky Bank Deposit</div><div style="margin:6px 0 10px">Mikael deposited <b>${Math.floor(Number(d.amount)||0)} MB</b></div><button data-claim-mb="${d.id}" style="border:0;border-radius:12px;padding:9px 14px;font-weight:800;cursor:pointer;background:#f4b5d6">Claim Deposit</button></div>`).join("");
+ tray.querySelectorAll("[data-claim-mb]").forEach(b=>b.onclick=()=>claim(b.dataset.claimMb,b));
+ }catch(e){console.warn("Pending deposits failed",e)}
 }
-
-async function syncWalletOnly(){
-  try{await post({type:"micky_bank_wallet_sync",wallet:wallet()})}catch(e){console.warn("Micky Bank wallet sync failed",e)}
+async function claim(id,button){
+ button.disabled=true;button.textContent="Claiming…";
+ try{
+  const seen=applied();if(seen.includes(id)){await render();return}
+  const res=await post({type:"micky_bank_claim_one",id,walletBefore:wallet()});
+  if(!res?.success){button.textContent=res?.alreadyClaimed?"Already claimed":"Try Again";setTimeout(render,1000);return}
+  saveApplied([...seen,id]);const after=setWallet(wallet()+Number(res.amount||0));
+  await post({type:"micky_bank_claim_confirm",id,walletAfter:after});
+  button.textContent=`Claimed +${res.amount} MB ✓`;setTimeout(render,1200);
+ }catch(e){console.warn(e);button.disabled=false;button.textContent="Try Claim Again"}
 }
-
-async function collectTelegramDeposits(){
-  try{
-    const r=await fetch(WORKER+(WORKER.includes("?")?"&":"?")+"pendingMickyDeposits=1",{cache:"no-store"});
-    if(!r.ok)return;
-    const data=await r.json();
-    if(!data?.success||!Array.isArray(data.deposits))return;
-
-    const seen=applied(),seenSet=new Set(seen);
-    const fresh=data.deposits.filter(d=>d?.id&&!seenSet.has(String(d.id))&&Number(d.amount)>0);
-    if(!fresh.length){await syncWalletOnly();return;}
-
-    const ids=fresh.map(d=>String(d.id));
-    const total=fresh.reduce((n,d)=>n+Math.max(0,Math.floor(Number(d.amount)||0)),0);
-
-    // Record locally first so a refresh cannot apply the same deposit twice.
-    saveApplied([...seen,...ids]);
-    const after=setWallet(wallet()+total);
-
-    try{
-      const ack=await post({type:"micky_bank_claim_deposits",ids,walletAfter:after});
-      if(!ack?.success)throw new Error("Deposit acknowledgement failed");
-    }catch(e){
-      // Keep local IDs marked as applied to protect the wallet from double-crediting.
-      console.warn("Deposit was applied locally but server acknowledgement is pending.",e);
-    }
-  }catch(e){console.warn("Telegram deposit collection failed",e)}
-}
-
-window.collectTelegramMickyBucs=collectTelegramDeposits;
-window.syncMickyBankWallet=syncWalletOnly;
-
-window.addEventListener("load",()=>setTimeout(collectTelegramDeposits,1200));
-window.addEventListener("focus",collectTelegramDeposits);
-document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")collectTelegramDeposits()});
-setInterval(collectTelegramDeposits,60000);
+window.renderPendingMickyDeposits=render;
+window.addEventListener("load",()=>setTimeout(render,1200));window.addEventListener("focus",render);
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")render()});setInterval(render,60000);
 })();
