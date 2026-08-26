@@ -2818,7 +2818,14 @@ window.LizzyDailyRewardsV4={counts:{basic:BASIC.length,reverse:REVERSE.length,no
         "Legendary Mystery Gift":{emoji:"🎁",desc:"A bigger or special surprise from Mikael."},
         "Your Choice Voucher":{emoji:"💖",desc:"Choose one reasonable cute or fun thing to do together."},
         "Agent Yelizaveta VIP Pass":{emoji:"🏆",desc:"Choose the next date activity AND claim a proper hug."},
-        "Ultimate Princess Day":{emoji:"👑",desc:"One full day of upgraded princess treatment."}
+        "Ultimate Princess Day":{emoji:"👑",desc:"One full day of upgraded princess treatment."},
+        "VIP Status — One Day":{emoji:"👑",desc:"Activates LizzyOS VIP Mode for exactly 24 hours from redemption."},
+        "VIP Status - One Day":{emoji:"👑",desc:"Activates LizzyOS VIP Mode for exactly 24 hours from redemption."},
+        "Mystery Rare Box":{emoji:"🎁",desc:"Choose Money, Secrets or Mikael — then LizzyOS reveals the mystery reward."},
+        "Song Exchange":{emoji:"🎧",desc:"Mikael and Lizzy each send one song that reminds them of the other, with a short explanation why."},
+        "Question Call":{emoji:"📞",desc:"A 10-minute call where Lizzy can ask Mikael questions and he answers honestly, with reasonable privacy vetoes."},
+        "Voice Note Request":{emoji:"🎤",desc:"Lizzy may request one voice note from Mikael on a topic of her choice."},
+        "Truth Card":{emoji:"🃏",desc:"Lizzy may ask Mikael one question and he has to answer truthfully, with reasonable privacy boundaries."}
     };
 
     function defaultGarden(){
@@ -2868,6 +2875,17 @@ window.LizzyDailyRewardsV4={counts:{basic:BASIC.length,reverse:REVERSE.length,no
         localStorage.setItem(KEYS.migration, "done");
     }
     migrateOnce();
+
+    // V4.8.1 test/restoration migration:
+    // Lizzy already earned VIP Status, and Mikael requested one Mystery Rare Box for testing.
+    const VIP_RAREBOX_TEST_MIGRATION="lizzyVipRareBoxTokenJarMigrationV1";
+    if(!localStorage.getItem(VIP_RAREBOX_TEST_MIGRATION)){
+        tokens.inventory["VIP Status — One Day"]=Math.max(1,Number(tokens.inventory["VIP Status — One Day"]||0));
+        tokens.inventory["Mystery Rare Box"]=Math.max(1,Number(tokens.inventory["Mystery Rare Box"]||0));
+        saveTokens();
+        localStorage.setItem(VIP_RAREBOX_TEST_MIGRATION,"done");
+    }
+
 
     // One-time Argument Winner Pass migration for existing Token Jars.
     // Separate key means users whose original migration already ran still receive it.
@@ -3315,6 +3333,18 @@ Status: REDEEMED${isArgument?"\n\nMikael's right to appeal: DENIED 😂":""}`;
         const name=redeeming,d=TOKEN_DEFS[name];
         tokens.inventory[name]--;
         if(name==="Second Chance Token")tokens.rerollCredits=(tokens.rerollCredits||0)+1;
+
+        // Special Token Jar actions.
+        if(name==="VIP Status — One Day" || name==="VIP Status - One Day"){
+            setTimeout(()=>{ if(window.activateLizzyVIP) window.activateLizzyVIP(); },120);
+        }
+        if(name==="Mystery Rare Box"){
+            // Hand one redeemed box to the chooser. The chooser consumes it only
+            // after Lizzy selects Money, Secrets or Mikael.
+            localStorage.setItem("lizzyMysteryRareBoxesV1","1");
+            setTimeout(()=>{ if(window.openMysteryRareBox) window.openMysteryRareBox(); },150);
+        }
+
         const payload={token:name,emoji:d.emoji,description:d.desc,redeemed_at:new Date().toLocaleString(),redeemed_at_iso:nowISO()};
         const entry={name,emoji:d.emoji,redeemedAt:payload.redeemed_at_iso,notifyStatus:"Sending..."};
         tokens.history.unshift(entry);saveTokens();renderTokens();
@@ -3397,6 +3427,11 @@ Status: REDEEMED${isArgument?"\n\nMikael's right to appeal: DENIED 😂":""}`;
         }
     }
     window.addEventListener("lizzyDailyRewardClaimed",e=>processReward(e.detail?.reward));
+    window.addEventListener("lizzyRareBoxInteractionWon",e=>{
+        const name=e.detail?.name;
+        if(name && TOKEN_DEFS[name]) addToken(name,1);
+    });
+
 
     // Migrate today's currently saved reward ONCE so this update doesn't
     // erase or ignore a reward already claimed before deployment.
@@ -3756,7 +3791,6 @@ if(a==="message")area(`<b>💌 VIP PRIORITY MESSAGE</b><br><textarea id="vipText
 }));
 window.submitVipComplaint=()=>{let t=$("vipText")?.value.trim();if(!t)return;let x=get();x.complaints++;save(x);notify("vip_complaint",{complaint:t,priority:"VIP"});area("👑 Complaint received. Position: <b>1 of 1</b>. Chance Mikael accepts responsibility: <b>2%</b> 😂")};
 window.submitVipMessage=()=>{let t=$("vipText")?.value.trim();if(!t)return;let x=get();x.messages++;save(x);notify("vip_priority_message",{message:t});area("💌 VIP priority message sent to Mr Perfect.")};
-document.addEventListener("click",e=>{let b=e.target.closest("button");if(b&&/claim/i.test(b.textContent||"")&&/VIP Status\s*[—-]\s*One Day/i.test(document.body.innerText||""))setTimeout(activate,250)},true);
 setInterval(render,30000);window.addEventListener("load",render);
 })();
 
@@ -3795,10 +3829,10 @@ setInterval(render,30000);window.addEventListener("load",render);
  const letterEyes=`<div class="letter"><h3>💌 One Thing About You…</h3><p><b>Lizzy,</b></p><p>If I had to pick one thing about you, it would probably be your eyes.</p><p>And yes, I know that saying this is dangerous because your ego really doesn't need any additional funding.</p><p>But I notice them. <b>A lot.</b></p><p>There's just something about your eyes that constantly bamboozles me. Whether you're smiling, giving me attitude, looking at me like I've said the dumbest thing imaginable, or just looking at me normally — they always get me.</p><p>I've even tried looking at your forehead instead.</p><p>Didn't work.</p><p>So unfortunately, I think I'll just continue taking the risk and looking into them.</p><p>And before you get too excited about this letter, this does <b>not</b> mean I'm becoming soft.</p><p>This message will self-destruct the moment you try using it against me.</p><p><b>Mikael<br>a.k.a Mr Perfect 💜</b></p></div>`;
  const letterHonesty=`<div class="letter"><h3>💌 Temporary Honesty</h3><p><b>Lizzy,</b></p><p>Congratulations. You have somehow unlocked a very rare event:</p><p><b>Mikael being nice without immediately ruining it.</b></p><p>So, for the next few moments, I'll admit something.</p><p>I genuinely enjoy having you around.</p><p>I've gotten used to the attitude, the ragebaiting, the random arguments, you being a menace for absolutely no reason, and somehow constantly bamboozling me with how pretty and beautiful you are <b>and stuff</b>.</p><p>And underneath all of that, you're genuinely someone I appreciate a lot.</p><p>You're funny, caring, ridiculously easy to talk to, and somehow you manage to make ordinary moments way more entertaining than they should be.</p><p>I notice more about you than I probably admit.</p><p>And I'm very glad I met you.</p><p>Okay.</p><p><b>Temporary Honesty has now expired.</b></p><p>Any attempt to question Mikael about the contents of this letter may result in immediate denial and accusations of fabricated evidence.</p><p><b>Mikael<br>a.k.a Mr Perfect 💜</b></p></div>`;
  const interactions=[
-  {name:"🎧 Song Exchange",desc:"Mikael and Lizzy each send one song that reminds them of the other, with a short explanation why."},
-  {name:"📞 Question Call",desc:"A 10-minute call where Lizzy can ask Mikael questions and he answers honestly, with reasonable privacy vetoes."},
-  {name:"🎤 Voice Note Request",desc:"Lizzy may request one voice note from Mikael on a topic of her choice."},
-  {name:"🃏 Truth Card",desc:"Lizzy may ask Mikael one question and he has to answer truthfully, with reasonable privacy boundaries."}
+  {name:"Song Exchange",desc:"Mikael and Lizzy each send one song that reminds them of the other, with a short explanation why."},
+  {name:"Question Call",desc:"A 10-minute call where Lizzy can ask Mikael questions and he answers honestly, with reasonable privacy vetoes."},
+  {name:"Voice Note Request",desc:"Lizzy may request one voice note from Mikael on a topic of her choice."},
+  {name:"Truth Card",desc:"Lizzy may ask Mikael one question and he has to answer truthfully, with reasonable privacy boundaries."}
  ];
  function saveLetter(key,title,html){let a=[];try{a=JSON.parse(localStorage.getItem("lizzyRareBoxLettersV1")||"[]")}catch(e){}a.push({key,title,html,unlockedAt:Date.now()});localStorage.setItem("lizzyRareBoxLettersV1",JSON.stringify(a));window.dispatchEvent(new CustomEvent("lizzyOpenWhenLetterUnlocked",{detail:{key,title,html}}))}
  function chooseMikael(){
@@ -3807,7 +3841,8 @@ setInterval(render,30000);window.addEventListener("load",render);
    const roll=Math.floor(Math.random()*3);
    if(roll===0){saveLetter("one-thing-eyes","One Thing About You…",letterEyes);reveal(`<div style="font-size:55px">💌</div><h2>MYSTERY LETTER</h2>${letterEyes}<p><b>Saved to Open When.</b></p>`);notifyRare("rare_box_redeemed",{category:"Mikael",type:"Mystery Letter",reward:"One Thing About You…"});return}
    if(roll===1){saveLetter("temporary-honesty","Temporary Honesty",letterHonesty);reveal(`<div style="font-size:55px">💌</div><h2>MYSTERY LETTER</h2>${letterHonesty}<p><b>Saved to Open When.</b></p>`);notifyRare("rare_box_redeemed",{category:"Mikael",type:"Mystery Letter",reward:"Temporary Honesty"});return}
-   const x=interactions[Math.floor(Math.random()*interactions.length)];addToken({name:x.name,description:x.desc,source:"Mystery Rare Box"});
+   const x=interactions[Math.floor(Math.random()*interactions.length)];
+   window.dispatchEvent(new CustomEvent("lizzyRareBoxInteractionWon",{detail:{name:x.name,description:x.desc}}));
    reveal(`<div style="font-size:55px">❤️</div><h2>MYSTERY INTERACTION</h2><h3>${x.name}</h3><p>${x.desc}</p><p><b>Saved as a redeemable token until Lizzy uses it.</b></p>`);
    notifyRare("rare_box_redeemed",{category:"Mikael",type:"Mystery Interaction",reward:x.name});
  }
