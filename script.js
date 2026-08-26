@@ -3685,3 +3685,133 @@ window.addEventListener("load", () => {
 });
 
 if (typeof lizzyTelegramNotify === "function") window.lizzyTelegramNotify = lizzyTelegramNotify;
+
+/* ===== MICKY BANK REMOTE SYNC ===== */
+(function(){
+ function endpoint(){try{if(typeof WORKER!=="undefined"&&WORKER)return WORKER}catch(e){}return window.LIZZY_WORKER_URL||window.WORKER_URL||""}
+ function apply(n){n=Math.max(0,Math.floor(Number(n)||0));localStorage.setItem("lizzyMickyBucsRemoteBalance",String(n));
+ ["mickyBucs","lizzyMickyBucs","mickyBucsBalance","lizzyBankBalance"].forEach(k=>{if(localStorage.getItem(k)!==null)localStorage.setItem(k,String(n))});
+ document.querySelectorAll("[data-micky-bucs-balance],#mickyBucsBalance,#bankBalance,#lizzyBankBalance").forEach(el=>el.textContent=String(n));
+ window.dispatchEvent(new CustomEvent("mickyBucsBalanceChanged",{detail:{balance:n,source:"cloudflare"}}))}
+ async function sync(){const e=endpoint();if(!e)return;try{const r=await fetch(e+(e.includes("?")?"&":"?")+"action=micky_bucs_balance",{cache:"no-store"}),d=await r.json();if(r.ok&&d.success)apply(d.balance)}catch(e){console.warn("Bank sync failed",e)}}
+ window.syncMickyBucsFromServer=sync;window.addEventListener("load",()=>setTimeout(sync,800));window.addEventListener("focus",sync);
+ document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")sync()});setInterval(sync,60000);
+})();
+
+/* ===== OUR DATE COUNTDOWN — FRIDAY 28 AUGUST 2026 ===== */
+(function(){
+ const TARGET=new Date(2026,7,28,0,0,0); // local time: Friday 28 August 2026
+ const END=new Date(2026,7,29,0,0,0);
+ const $d=id=>document.getElementById(id);
+ let celebrated=false, celebrationTimer=null;
+ function pad(n){return String(Math.max(0,n)).padStart(2,"0")}
+ function burst(){
+   if(typeof confetti!=="function")return;
+   const end=Date.now()+5000;
+   (function frame(){
+     confetti({particleCount:7,angle:60,spread:75,origin:{x:0,y:.72}});
+     confetti({particleCount:7,angle:120,spread:75,origin:{x:1,y:.72}});
+     if(Date.now()<end)requestAnimationFrame(frame);
+   })();
+ }
+ function dateDayMode(hero){
+   hero.classList.add("dateDay");
+   $d("ourDateCountdownTitle").textContent="IT'S DATE DAY!!! ❤️🎉";
+   $d("ourDateCountdownMessage").textContent="Agent Yelizaveta, the countdown is OVER. Operation Our Date is officially active 😭❤️";
+   if(!celebrated){celebrated=true;burst();celebrationTimer=setInterval(()=>{if(new Date()<END)burst();else clearInterval(celebrationTimer)},30000)}
+ }
+ function updateOurDateCountdown(){
+   const hero=$d("ourDateCountdownHero");if(!hero)return;
+   const now=new Date();
+   if(now>=TARGET&&now<END){dateDayMode(hero);return}
+   if(now>=END){hero.classList.remove("dateDay");$d("ourDateCountdownTitle").textContent="Mission completed ❤️";$d("ourDateCountdownMessage").textContent="Operation Our Date has entered the LizzyOS history books. 💗";["dateCdDays","dateCdHours","dateCdMinutes","dateCdSeconds"].forEach(id=>$d(id).textContent="00");return}
+   const diff=TARGET-now,days=Math.floor(diff/86400000),hours=Math.floor(diff/3600000)%24,mins=Math.floor(diff/60000)%60,secs=Math.floor(diff/1000)%60;
+   $d("dateCdDays").textContent=pad(days);$d("dateCdHours").textContent=pad(hours);$d("dateCdMinutes").textContent=pad(mins);$d("dateCdSeconds").textContent=pad(secs);
+   $d("ourDateCountdownTitle").textContent=days>0?"Friday is getting closer… 👀❤️":"OUR DATE IS TOMORROW!!! 😭❤️";
+   $d("ourDateCountdownMessage").textContent=days>0?"Preparing Agent Yelizaveta for a very important mission… ❤️":"Final preparations underway. Menace levels expected to be extremely high. 🚨💗";
+ }
+ updateOurDateCountdown();setInterval(updateOurDateCountdown,1000);
+ document.getElementById("calendarIcon")?.addEventListener("click",()=>setTimeout(updateOurDateCountdown,50));
+})();
+
+
+/* ===== LIZZY VIP MODE ===== */
+(function(){
+const K="lizzyVipStateV1",H="lizzyVipHistoryV1",$=id=>document.getElementById(id),get=()=>{try{return JSON.parse(localStorage.getItem(K)||"null")}catch(e){return null}},save=x=>localStorage.setItem(K,JSON.stringify(x));
+const active=()=>{let x=get();return !!(x&&Date.now()<x.expiresAt)},notify=(t,d)=>{try{if(typeof window.lizzyNotify==="function")return window.lizzyNotify(t,d);if(typeof window.notify==="function")return window.notify(t,d)}catch(e){}};
+function confetti(n=80){let a=["👑","✨","💜","💎","⭐"];for(let i=0;i<n;i++){let e=document.createElement("span");e.className="vipConfetti";e.textContent=a[i%a.length];e.style.left=Math.random()*100+"vw";e.style.animationDelay=Math.random()+"s";document.body.appendChild(e);setTimeout(()=>e.remove(),4200)}}
+function activate(){if(active())return render();let now=Date.now(),x={startedAt:now,expiresAt:now+86400000,peeks:2,reroll:1,override:1,discount:1,allowanceBonus:3,mysteryBoost:true,arcadeBonusCap:5,arcadeBonusEarned:0,complaints:0,messages:0};save(x);let h=JSON.parse(localStorage.getItem(H)||"[]");h.unshift({startedAt:now});localStorage.setItem(H,JSON.stringify(h));$("vipWelcome").classList.remove("hidden");confetti(120);notify("vip_status",{status:"activated",expiresAt:x.expiresAt});render()}
+function fmt(ms){let h=Math.floor(ms/36e5),m=Math.floor(ms%36e5/6e4);return h+"h "+String(m).padStart(2,"0")+"m"}
+function render(){let x=get(),on=active();$("vipBadge")?.classList.toggle("hidden",!on);if(!on){$("vipPanel")?.classList.add("hidden");return}let f=fmt(x.expiresAt-Date.now());$("vipClock").textContent=f;$("vipRemain").textContent="VIP expires in "+f}
+function area(t){$("vipAction").innerHTML=t}
+window.LizzyVIP={activate,isActive:active,state:get,render};window.activateLizzyVIP=activate;
+$("vipBadge")?.addEventListener("click",()=>{$("vipPanel").classList.remove("hidden");render()});$("vipClose")?.addEventListener("click",()=>$("vipPanel").classList.add("hidden"));
+document.querySelectorAll("[data-vip]").forEach(b=>b.addEventListener("click",()=>{let x=get();if(!active())return;let a=b.dataset.vip;
+if(a==="peek"){if(!x.peeks)return area("No Sneak Peeks remaining.");x.peeks--;save(x);area(`🔐 Sneak Peek unlocked. ${x.peeks}/2 remaining. Choose one locked Secret Shelf item to reveal only its title, category and teaser.`);notify("vip_privilege",{privilege:"sneak_peek",remaining:x.peeks})}
+if(a==="reroll"){if(!x.reroll)return area("Reroll already used.");x.reroll=0;save(x);localStorage.setItem("lizzyVipRewardReroll","1");area("🎁 One Daily Reward reroll armed. The original reward is surrendered before the replacement appears.");notify("vip_privilege",{privilege:"reward_reroll"})}
+if(a==="override"){if(!x.override)return area("Override already used.");x.override=0;save(x);area("⚖️ VIP Override used: one silly Mikael ruling may be overturned.");notify("vip_privilege",{privilege:"override"})}
+if(a==="discount"){if(!x.discount)return area("Discount already used.");x.discount=0;save(x);localStorage.setItem("lizzyVipShelfDiscount","10");area("🛍️ 10% off one Secret Shelf purchase activated.");notify("vip_privilege",{privilege:"shelf_discount",discount:10})}
+if(a==="complaint")area(`<b>👑 VIP COMPLAINT</b><br><textarea id="vipText" style="width:100%;min-height:80px"></textarea><br><button onclick="submitVipComplaint()">Submit</button><p>Estimated chance Mikael accepts responsibility: <b>2%</b></p>`);
+if(a==="message")area(`<b>💌 VIP PRIORITY MESSAGE</b><br><textarea id="vipText" style="width:100%;min-height:80px"></textarea><br><button onclick="submitVipMessage()">Send</button>`);
+}));
+window.submitVipComplaint=()=>{let t=$("vipText")?.value.trim();if(!t)return;let x=get();x.complaints++;save(x);notify("vip_complaint",{complaint:t,priority:"VIP"});area("👑 Complaint received. Position: <b>1 of 1</b>. Chance Mikael accepts responsibility: <b>2%</b> 😂")};
+window.submitVipMessage=()=>{let t=$("vipText")?.value.trim();if(!t)return;let x=get();x.messages++;save(x);notify("vip_priority_message",{message:t});area("💌 VIP priority message sent to Mr Perfect.")};
+document.addEventListener("click",e=>{let b=e.target.closest("button");if(b&&/claim/i.test(b.textContent||"")&&/VIP Status\s*[—-]\s*One Day/i.test(document.body.innerText||""))setTimeout(activate,250)},true);
+setInterval(render,30000);window.addEventListener("load",render);
+})();
+
+
+/* ===== MYSTERY RARE BOX SYSTEM ===== */
+(function(){
+ const K="lizzyMysteryRareBoxesV1",TOK="lizzyInteractionTokensV1",$r=id=>document.getElementById(id);
+ const notifyRare=(t,d)=>{try{if(typeof window.lizzyNotify==="function")return window.lizzyNotify(t,d);if(typeof window.notify==="function")return window.notify(t,d)}catch(e){}};
+ const boxes=()=>Math.max(0,Number(localStorage.getItem(K)||0));
+ const setBoxes=n=>localStorage.setItem(K,String(Math.max(0,n)));
+ function addToken(token){let a=[];try{a=JSON.parse(localStorage.getItem(TOK)||"[]")}catch(e){}a.push({...token,id:"rare-"+Date.now(),earnedAt:Date.now(),used:false});localStorage.setItem(TOK,JSON.stringify(a));window.dispatchEvent(new CustomEvent("lizzyTokenAdded",{detail:token}))}
+ function open(){ $r("rareBoxModal")?.classList.remove("hidden");$r("rareBoxChoices")?.classList.remove("hidden");$r("rareBoxReveal")?.classList.add("hidden");$r("rareBoxReveal").innerHTML=""; }
+ window.openMysteryRareBox=open;
+ window.grantMysteryRareBox=function(){setBoxes(boxes()+1);notifyRare("rare_box",{status:"received",boxes:boxes()});return boxes()};
+ $r("rareBoxClose")?.addEventListener("click",()=>$r("rareBoxModal").classList.add("hidden"));
+ function reveal(html){$r("rareBoxChoices").classList.add("hidden");$r("rareBoxReveal").classList.remove("hidden");$r("rareBoxReveal").innerHTML=html}
+ function consume(){if(boxes()>0)setBoxes(boxes()-1)}
+ function chooseMoney(){
+   const amount=20+Math.floor(Math.random()*31);consume();
+   // Remote-bank builds can sync later; keep an explicit pending deposit if direct bank helper is unavailable.
+   if(typeof window.addMickyBucs==="function")window.addMickyBucs(amount);
+   else {let p=Number(localStorage.getItem("lizzyPendingRareBoxMickyBucs")||0);localStorage.setItem("lizzyPendingRareBoxMickyBucs",String(p+amount));window.dispatchEvent(new CustomEvent("mickyBucsAwarded",{detail:{amount,source:"Mystery Rare Box"}}))}
+   reveal(`<div style="font-size:55px">💰</div><h2>${amount} MICKY BUCS</h2><p>Rare Box converted successfully. Lizzy has secured the bag.</p>`);
+   notifyRare("rare_box_redeemed",{category:"Money",reward:`${amount} Micky Bucs`});
+ }
+ const secretPool=[
+  {name:"Classified Sneak Peek",desc:"Reveal the title, category and teaser of one locked Secret Shelf item.",apply:()=>localStorage.setItem("lizzyRareBoxSecretPeek","1")},
+  {name:"Secret Shelf Discount",desc:"15% off one Secret Shelf purchase.",apply:()=>localStorage.setItem("lizzyRareBoxShelfDiscount","15")},
+  {name:"Dossier Intelligence",desc:"Unlock one extra clue about a currently locked dossier without revealing its contents.",apply:()=>localStorage.setItem("lizzyRareBoxDossierClue","1")}
+ ];
+ function chooseSecrets(){
+   consume();let x=secretPool[Math.floor(Math.random()*secretPool.length)];x.apply();
+   reveal(`<div style="font-size:55px">🔐</div><h2>${x.name}</h2><p>${x.desc}</p><p><b>Secret reward saved for use.</b></p>`);
+   notifyRare("rare_box_redeemed",{category:"Secrets",reward:x.name});
+ }
+ const letterEyes=`<div class="letter"><h3>💌 One Thing About You…</h3><p><b>Lizzy,</b></p><p>If I had to pick one thing about you, it would probably be your eyes.</p><p>And yes, I know that saying this is dangerous because your ego really doesn't need any additional funding.</p><p>But I notice them. <b>A lot.</b></p><p>There's just something about your eyes that constantly bamboozles me. Whether you're smiling, giving me attitude, looking at me like I've said the dumbest thing imaginable, or just looking at me normally — they always get me.</p><p>I've even tried looking at your forehead instead.</p><p>Didn't work.</p><p>So unfortunately, I think I'll just continue taking the risk and looking into them.</p><p>And before you get too excited about this letter, this does <b>not</b> mean I'm becoming soft.</p><p>This message will self-destruct the moment you try using it against me.</p><p><b>Mikael<br>a.k.a Mr Perfect 💜</b></p></div>`;
+ const letterHonesty=`<div class="letter"><h3>💌 Temporary Honesty</h3><p><b>Lizzy,</b></p><p>Congratulations. You have somehow unlocked a very rare event:</p><p><b>Mikael being nice without immediately ruining it.</b></p><p>So, for the next few moments, I'll admit something.</p><p>I genuinely enjoy having you around.</p><p>I've gotten used to the attitude, the ragebaiting, the random arguments, you being a menace for absolutely no reason, and somehow constantly bamboozling me with how pretty and beautiful you are <b>and stuff</b>.</p><p>And underneath all of that, you're genuinely someone I appreciate a lot.</p><p>You're funny, caring, ridiculously easy to talk to, and somehow you manage to make ordinary moments way more entertaining than they should be.</p><p>I notice more about you than I probably admit.</p><p>And I'm very glad I met you.</p><p>Okay.</p><p><b>Temporary Honesty has now expired.</b></p><p>Any attempt to question Mikael about the contents of this letter may result in immediate denial and accusations of fabricated evidence.</p><p><b>Mikael<br>a.k.a Mr Perfect 💜</b></p></div>`;
+ const interactions=[
+  {name:"🎧 Song Exchange",desc:"Mikael and Lizzy each send one song that reminds them of the other, with a short explanation why."},
+  {name:"📞 Question Call",desc:"A 10-minute call where Lizzy can ask Mikael questions and he answers honestly, with reasonable privacy vetoes."},
+  {name:"🎤 Voice Note Request",desc:"Lizzy may request one voice note from Mikael on a topic of her choice."},
+  {name:"🃏 Truth Card",desc:"Lizzy may ask Mikael one question and he has to answer truthfully, with reasonable privacy boundaries."}
+ ];
+ function saveLetter(key,title,html){let a=[];try{a=JSON.parse(localStorage.getItem("lizzyRareBoxLettersV1")||"[]")}catch(e){}a.push({key,title,html,unlockedAt:Date.now()});localStorage.setItem("lizzyRareBoxLettersV1",JSON.stringify(a));window.dispatchEvent(new CustomEvent("lizzyOpenWhenLetterUnlocked",{detail:{key,title,html}}))}
+ function chooseMikael(){
+   consume();
+   // 1/3 each letter, 1/3 interaction category; interaction then chooses one of four.
+   const roll=Math.floor(Math.random()*3);
+   if(roll===0){saveLetter("one-thing-eyes","One Thing About You…",letterEyes);reveal(`<div style="font-size:55px">💌</div><h2>MYSTERY LETTER</h2>${letterEyes}<p><b>Saved to Open When.</b></p>`);notifyRare("rare_box_redeemed",{category:"Mikael",type:"Mystery Letter",reward:"One Thing About You…"});return}
+   if(roll===1){saveLetter("temporary-honesty","Temporary Honesty",letterHonesty);reveal(`<div style="font-size:55px">💌</div><h2>MYSTERY LETTER</h2>${letterHonesty}<p><b>Saved to Open When.</b></p>`);notifyRare("rare_box_redeemed",{category:"Mikael",type:"Mystery Letter",reward:"Temporary Honesty"});return}
+   const x=interactions[Math.floor(Math.random()*interactions.length)];addToken({name:x.name,description:x.desc,source:"Mystery Rare Box"});
+   reveal(`<div style="font-size:55px">❤️</div><h2>MYSTERY INTERACTION</h2><h3>${x.name}</h3><p>${x.desc}</p><p><b>Saved as a redeemable token until Lizzy uses it.</b></p>`);
+   notifyRare("rare_box_redeemed",{category:"Mikael",type:"Mystery Interaction",reward:x.name});
+ }
+ document.querySelectorAll("[data-rare-choice]").forEach(b=>b.addEventListener("click",()=>{let c=b.dataset.rareChoice;if(boxes()<=0){/* Claimed cards from older builds may not have inventory state yet; permit one migration redemption. */if(!localStorage.getItem("lizzyRareBoxLegacyMigrated")){setBoxes(1);localStorage.setItem("lizzyRareBoxLegacyMigrated","1")}else return reveal("<h2>No Mystery Rare Box available.</h2>")} if(c==="money")chooseMoney();if(c==="secrets")chooseSecrets();if(c==="mikael")chooseMikael()}));
+ // Intercept Redeem/Open on the Mystery Rare Box card without affecting other rewards.
+ document.addEventListener("click",e=>{let b=e.target.closest("button");if(!b)return;let card=b.closest("[class*='reward'],[class*='card'],[class*='item']");let text=(card?.innerText||"")+" "+(b.innerText||"");if(/Mystery Rare Box/i.test(text)&&/(redeem|open|claim)/i.test(b.innerText||"")){e.preventDefault();e.stopImmediatePropagation();if(boxes()<=0)setBoxes(1);setTimeout(open,50)}},true);
+})();
