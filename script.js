@@ -3339,53 +3339,117 @@ Status: REDEEMED${isArgument?"\n\nMikael's right to appeal: DENIED 😂":""}`;
         if(!redeeming || !(tokens.inventory[redeeming]>0))return;
         const name=redeeming,d=TOKEN_DEFS[name];
         const confirmBtn=$("confirmTokenRedeem"), cancelBtn=$("cancelTokenRedeem");
-        if(confirmBtn){confirmBtn.disabled=true;confirmBtn.dataset.originalText=confirmBtn.dataset.originalText||confirmBtn.textContent;confirmBtn.textContent="Redeeming…";}
+
+        if(confirmBtn){
+            confirmBtn.disabled=true;
+            confirmBtn.dataset.originalText=confirmBtn.dataset.originalText||confirmBtn.textContent;
+            confirmBtn.textContent="Redeeming…";
+        }
         if(cancelBtn)cancelBtn.disabled=true;
 
-        tokens.inventory[name]--;
+        // Consume exactly one token.
+        tokens.inventory[name]=Math.max(0,Number(tokens.inventory[name]||0)-1);
         if(name==="Second Chance Token")tokens.rerollCredits=(tokens.rerollCredits||0)+1;
-        const payload={token:name,emoji:d.emoji,description:d.desc,redeemed_at:new Date().toLocaleString(),redeemed_at_iso:nowISO()};
-        const entry={name,emoji:d.emoji,redeemedAt:payload.redeemed_at_iso,notifyStatus:"Sending..."};
-        tokens.history.unshift(entry);saveTokens();renderTokens();
-        $("tokenRedeemStatus").textContent=`✅ ${name} redeemed. Opening reward…`;
 
-        // Close first. Special rewards must NEVER wait for Telegram/network.
-        await new Promise(r=>setTimeout(r,180));
+        const payload={
+            token:name,
+            emoji:d.emoji,
+            description:d.desc,
+            redeemed_at:new Date().toLocaleString(),
+            redeemed_at_iso:nowISO()
+        };
+        const entry={
+            name,
+            emoji:d.emoji,
+            redeemedAt:payload.redeemed_at_iso,
+            notifyStatus:"Sending..."
+        };
+
+        tokens.history.unshift(entry);
+        saveTokens();
+        renderTokens();
+
+        // Close the standard confirmation UI before any special feature opens.
+        $("tokenRedeemStatus").textContent=`✅ ${name} redeemed. Opening reward…`;
+        await new Promise(r=>setTimeout(r,160));
         $("tokenRedeemWindow")?.classList.add("hidden");
         redeeming=null;
-        if(confirmBtn){confirmBtn.disabled=false;confirmBtn.textContent=confirmBtn.dataset.originalText||"Redeem";}
+
+        if(confirmBtn){
+            confirmBtn.disabled=false;
+            confirmBtn.textContent=confirmBtn.dataset.originalText||"Redeem";
+        }
         if(cancelBtn)cancelBtn.disabled=false;
 
+        // SPECIAL REWARDS MUST FIRE LOCALLY AND IMMEDIATELY.
         if(name==="VIP Status — One Day" || name==="VIP Status - One Day"){
-            // Force a fresh 24h activation for a newly redeemed token.
+            // Always start a brand-new 24-hour VIP session from this redemption.
             localStorage.removeItem("lizzyVipStateV1");
-            setTimeout(()=>window.activateLizzyVIP?.(),80);
-        }else if(name==="Mystery Rare Box"){
-            localStorage.setItem("lizzyMysteryRareBoxesV1","1");
-            setTimeout(()=>window.openMysteryRareBox?.(),80);
+
+            // Run activation only after the normal redeem modal is fully hidden.
+            setTimeout(()=>{
+                if(typeof window.activateLizzyVIP==="function"){
+                    window.activateLizzyVIP();
+
+                    // Extra safety: ensure welcome + badge are visible even if prior state/UI got stuck.
+                    const welcome=document.getElementById("vipWelcome");
+                    if(welcome) welcome.classList.remove("hidden");
+
+                    const badge=document.getElementById("vipBadge");
+                    if(badge) badge.classList.remove("hidden");
+
+                    // Force a render pass if available.
+                    try{window.LizzyVIP?.render?.()}catch(e){}
+
+                    window.dispatchEvent(new CustomEvent("lizzyVipRedeemed",{detail:{expiresInHours:24}}));
+                }else{
+                    console.error("VIP activation function is missing.");
+                }
+            },120);
         }
 
-        // Telegram runs after UI activation and cannot block the reward.
-        try{entry.notifyStatus=await notifyRedemption(payload);}
-        catch(e){entry.notifyStatus="Notification failed";}
-        saveTokens();renderTokens();
+        if(name==="Mystery Rare Box"){
+            // Keep the box available for its chooser flow.
+            localStorage.setItem("lizzyMysteryRareBoxesV1","1");
+            setTimeout(()=>{
+                if(typeof window.openMysteryRareBox==="function"){
+                    window.openMysteryRareBox();
+                }else{
+                    console.error("Mystery Rare Box opener is missing.");
+                }
+            },120);
+        }
+
+        // Telegram is background-only and can NEVER block the reward feature.
+        Promise.resolve()
+            .then(()=>notifyRedemption(payload))
+            .then(status=>{
+                entry.notifyStatus=status||"Telegram sent";
+                saveTokens();
+                renderTokens();
+            })
+            .catch(()=>{
+                entry.notifyStatus="Notification failed";
+                saveTokens();
+                renderTokens();
+            });
     }
 
 
-    // Recovery for special tokens consumed by older buggy builds:
-    // clicking their Redeemed Tokens history row re-opens/activates the missing feature.
-    document.addEventListener("click",e=>{
-        const row=e.target.closest("#tokenHistory .token-history-item, #tokenHistory [class*='history'], #tokenHistory > *");
-        if(!row)return;
-        const text=row.innerText||"";
-        if(/VIP Status\s*[—-]\s*One Day/i.test(text)){
-            localStorage.removeItem("lizzyVipStateV1");
-            window.activateLizzyVIP?.();
-        }else if(/Mystery Rare Box/i.test(text)){
-            localStorage.setItem("lizzyMysteryRareBoxesV1","1");
-            window.openMysteryRareBox?.();
-        }
-    });
+    // V4.8.2 clean test reset for the two special rewards.
+    // Removes their old redeemed-history entries and restores each token to inventory ×1.
+    const SPECIAL_TOKEN_REINSTATE_MIGRATION="lizzySpecialTokenReinstateV482";
+    if(!localStorage.getItem(SPECIAL_TOKEN_REINSTATE_MIGRATION)){
+        tokens.history = (tokens.history||[]).filter(x=>{
+            const n=String(x?.name||"");
+            return !/VIP Status\s*[—-]\s*One Day/i.test(n) && !/Mystery Rare Box/i.test(n);
+        });
+        tokens.inventory["VIP Status — One Day"]=1;
+        tokens.inventory["Mystery Rare Box"]=1;
+        saveTokens();
+        renderTokens();
+        localStorage.setItem(SPECIAL_TOKEN_REINSTATE_MIGRATION,"done");
+    }
 
     // ---------------------------------------------
     // Reward integration
@@ -3882,3 +3946,16 @@ setInterval(render,30000);window.addEventListener("load",render);
  // Intercept Redeem/Open on the Mystery Rare Box card without affecting other rewards.
  document.addEventListener("click",e=>{let b=e.target.closest("button");if(!b)return;let card=b.closest("[class*='reward'],[class*='card'],[class*='item']");let text=(card?.innerText||"")+" "+(b.innerText||"");if(/Mystery Rare Box/i.test(text)&&/(redeem|open|claim)/i.test(b.innerText||"")){e.preventDefault();e.stopImmediatePropagation();if(boxes()<=0)setBoxes(1);setTimeout(open,50)}},true);
 })();
+
+
+/* VIP UI self-heal: if VIP state is active, ensure badge/render are visible after page load. */
+window.addEventListener("load",()=>{
+    setTimeout(()=>{
+        try{
+            if(window.LizzyVIP?.isActive?.()){
+                document.getElementById("vipBadge")?.classList.remove("hidden");
+                window.LizzyVIP.render?.();
+            }
+        }catch(e){}
+    },500);
+});
