@@ -3383,29 +3383,34 @@ Status: REDEEMED${isArgument?"\n\nMikael's right to appeal: DENIED 😂":""}`;
 
         // SPECIAL REWARDS MUST FIRE LOCALLY AND IMMEDIATELY.
         if(name==="VIP Status — One Day" || name==="VIP Status - One Day"){
-            // Always start a brand-new 24-hour VIP session from this redemption.
-            localStorage.removeItem("lizzyVipStateV1");
+            // SELF-CONTAINED VIP ACTIVATION. This intentionally does not depend on
+            // any later script block, so a separate runtime error cannot swallow VIP mode.
+            const now=Date.now();
+            const vipState={startedAt:now,expiresAt:now+86400000,peeks:2,reroll:1,override:1,discount:1,allowanceBonus:3,mysteryBoost:true,arcadeBonusCap:5,arcadeBonusEarned:0,complaints:0,messages:0};
+            localStorage.setItem("lizzyVipStateV1",JSON.stringify(vipState));
+            let hist=[];try{hist=JSON.parse(localStorage.getItem("lizzyVipHistoryV1")||"[]")}catch(e){}
+            hist.unshift({startedAt:now,expiresAt:vipState.expiresAt});
+            localStorage.setItem("lizzyVipHistoryV1",JSON.stringify(hist.slice(0,50)));
 
-            // Run activation only after the normal redeem modal is fully hidden.
             setTimeout(()=>{
-                if(typeof window.activateLizzyVIP==="function"){
-                    window.activateLizzyVIP();
+                const welcome=document.getElementById("vipWelcome");
+                const badge=document.getElementById("vipBadge");
+                const clock=document.getElementById("vipClock");
+                if(welcome){welcome.classList.remove("hidden");welcome.style.display="grid";welcome.style.zIndex="2147483647";}
+                if(badge){badge.classList.remove("hidden");badge.style.display="block";badge.style.zIndex="2147483646";}
+                if(clock)clock.textContent="24h 00m";
+                document.body.classList.add("vipModeActive");
 
-                    // Extra safety: ensure welcome + badge are visible even if prior state/UI got stuck.
-                    const welcome=document.getElementById("vipWelcome");
-                    if(welcome) welcome.classList.remove("hidden");
-
-                    const badge=document.getElementById("vipBadge");
-                    if(badge) badge.classList.remove("hidden");
-
-                    // Force a render pass if available.
-                    try{window.LizzyVIP?.render?.()}catch(e){}
-
-                    window.dispatchEvent(new CustomEvent("lizzyVipRedeemed",{detail:{expiresInHours:24}}));
-                }else{
-                    console.error("VIP activation function is missing.");
+                // Confetti generated here as well, independent of the VIP module.
+                const bits=["👑","✨","💜","💎","⭐"];
+                for(let i=0;i<100;i++){
+                    const c=document.createElement("span");c.className="vipConfetti";c.textContent=bits[i%bits.length];
+                    c.style.left=(Math.random()*100)+"vw";c.style.animationDelay=(Math.random()*.8)+"s";
+                    document.body.appendChild(c);setTimeout(()=>c.remove(),4200);
                 }
-            },120);
+                try{window.LizzyVIP?.render?.()}catch(e){}
+                window.dispatchEvent(new CustomEvent("lizzyVipRedeemed",{detail:{expiresAt:vipState.expiresAt}}));
+            },80);
         }
 
         if(name==="Mystery Rare Box"){
@@ -3438,7 +3443,7 @@ Status: REDEEMED${isArgument?"\n\nMikael's right to appeal: DENIED 😂":""}`;
 
     // V4.8.2 clean test reset for the two special rewards.
     // Removes their old redeemed-history entries and restores each token to inventory ×1.
-    const SPECIAL_TOKEN_REINSTATE_MIGRATION="lizzySpecialTokenReinstateV482";
+    const SPECIAL_TOKEN_REINSTATE_MIGRATION="lizzySpecialTokenReinstateV483_FINAL";
     if(!localStorage.getItem(SPECIAL_TOKEN_REINSTATE_MIGRATION)){
         tokens.history = (tokens.history||[]).filter(x=>{
             const n=String(x?.name||"");
@@ -3871,7 +3876,7 @@ if (typeof lizzyTelegramNotify === "function") window.lizzyTelegramNotify = lizz
 const K="lizzyVipStateV1",H="lizzyVipHistoryV1",$=id=>document.getElementById(id),get=()=>{try{return JSON.parse(localStorage.getItem(K)||"null")}catch(e){return null}},save=x=>localStorage.setItem(K,JSON.stringify(x));
 const active=()=>{let x=get();return !!(x&&Date.now()<x.expiresAt)},notify=(t,d)=>{try{if(typeof window.lizzyNotify==="function")return window.lizzyNotify(t,d);if(typeof window.notify==="function")return window.notify(t,d)}catch(e){}};
 function confetti(n=80){let a=["👑","✨","💜","💎","⭐"];for(let i=0;i<n;i++){let e=document.createElement("span");e.className="vipConfetti";e.textContent=a[i%a.length];e.style.left=Math.random()*100+"vw";e.style.animationDelay=Math.random()+"s";document.body.appendChild(e);setTimeout(()=>e.remove(),4200)}}
-function activate(){if(active())return render();let now=Date.now(),x={startedAt:now,expiresAt:now+86400000,peeks:2,reroll:1,override:1,discount:1,allowanceBonus:3,mysteryBoost:true,arcadeBonusCap:5,arcadeBonusEarned:0,complaints:0,messages:0};save(x);let h=JSON.parse(localStorage.getItem(H)||"[]");h.unshift({startedAt:now});localStorage.setItem(H,JSON.stringify(h));$("vipWelcome").classList.remove("hidden");confetti(120);notify("vip_status",{status:"activated",expiresAt:x.expiresAt});render()}
+function activate(){let x=get();if(!x||Date.now()>=x.expiresAt){let now=Date.now();x={startedAt:now,expiresAt:now+86400000,peeks:2,reroll:1,override:1,discount:1,allowanceBonus:3,mysteryBoost:true,arcadeBonusCap:5,arcadeBonusEarned:0,complaints:0,messages:0};save(x)}$("vipWelcome")?.classList.remove("hidden");$("vipBadge")?.classList.remove("hidden");confetti(120);notify("vip_status",{status:"activated",expiresAt:x.expiresAt});render()}
 function fmt(ms){let h=Math.floor(ms/36e5),m=Math.floor(ms%36e5/6e4);return h+"h "+String(m).padStart(2,"0")+"m"}
 function render(){let x=get(),on=active();$("vipBadge")?.classList.toggle("hidden",!on);if(!on){$("vipPanel")?.classList.add("hidden");return}let f=fmt(x.expiresAt-Date.now());$("vipClock").textContent=f;$("vipRemain").textContent="VIP expires in "+f}
 function area(t){$("vipAction").innerHTML=t}
@@ -3959,3 +3964,29 @@ window.addEventListener("load",()=>{
         }catch(e){}
     },500);
 });
+
+
+/* ===== INTERACTIVE REWARDS STANDALONE APP ===== */
+(function(){
+const K="lizzyInteractiveRewardsV2",VK="lizzyInteractiveVipV2",$=id=>document.getElementById(id),now=()=>Date.now();
+function fresh(){return{vip:{owned:1,status:"ready"},rareBox:{owned:1,status:"unopened"}}}
+function load(){try{return Object.assign(fresh(),JSON.parse(localStorage.getItem(K)||"{}"))}catch(e){return fresh()}}function save(x){localStorage.setItem(K,JSON.stringify(x))}
+function vip(){try{return JSON.parse(localStorage.getItem(VK)||"null")}catch(e){return null}}function active(){let v=vip();return!!(v&&now()<v.expiresAt)}
+function fmt(ms){ms=Math.max(0,ms);let h=Math.floor(ms/36e5),m=Math.floor(ms%36e5/6e4),q=Math.floor(ms%6e4/1000);return{short:`${h}h ${String(m).padStart(2,"0")}m`,full:`${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}:${String(q).padStart(2,"0")}`}}
+function note(t,d){try{if(typeof window.lizzyNotify==="function")window.lizzyNotify(t,d);else if(typeof window.notify==="function")window.notify(t,d)}catch(e){}}
+function confetti(){let a=["👑","✨","💜","💎","⭐"];for(let i=0;i<140;i++){let e=document.createElement("span");e.className="irConfetti";e.textContent=a[i%a.length];e.style.left=Math.random()*100+"vw";e.style.animationDelay=Math.random()+"s";document.body.appendChild(e);setTimeout(()=>e.remove(),4300)}}
+function icon(){if($("interactiveRewardsDesktopIcon"))return;let e=document.createElement("div");e.id="interactiveRewardsDesktopIcon";e.className="irDesktopIcon";e.innerHTML='<div class="irDeskEmoji">🎁</div><div class="irDeskName">Interactive<br>Rewards</div><span id="irDesktopDot" class="irDesktopDot">2</span>';document.body.appendChild(e);e.onclick=open}
+function render(){let x=load(),v=vip(),on=active();if(v&&!on&&x.vip.status==="active"){x.vip.status="expired";save(x)}$("irVipBadge")?.classList.toggle("hidden",!on);if(on){let f=fmt(v.expiresAt-now());$("irVipClock").textContent=f.short;$("irVipActivationClock").textContent=f.full}let n=(x.vip.owned>0?1:0)+(x.rareBox.owned>0?1:0);if($("irCount"))$("irCount").textContent=`${n} reward${n===1?"":"s"} available`;if($("irDesktopDot")){$("irDesktopDot").textContent=n;$("irDesktopDot").classList.toggle("hidden",n===0)}if(!$("irCards"))return;let vs=on?`ACTIVE • ${fmt(v.expiresAt-now()).short}`:(x.vip.status==="expired"?"EXPIRED":"READY TO ACTIVATE");$("irCards").innerHTML=`<div class="irCard"><div class="irCardEmoji">👑</div><h2>VIP Status — One Day</h2><div class="irStatus">${vs}</div><p>Activate 24 hours of LizzyOS VIP treatment, privileges and special access.</p><button id="irVipOpen" ${x.vip.owned<=0||on?"disabled":""}>${on?"VIP ACTIVE":x.vip.status==="expired"?"USED":"ACTIVATE VIP"}</button></div><div class="irCard"><div class="irCardEmoji">🎁</div><h2>Mystery Rare Box</h2><div class="irStatus">${x.rareBox.status==="unopened"?"UNOPENED":"OPENED"}</div><p>Choose Money, Secrets or Mikael. The final reward remains a mystery.</p><button id="irRareOpen" ${x.rareBox.owned<=0?"disabled":""}>${x.rareBox.owned>0?"OPEN RARE BOX":"OPENED"}</button></div>`;$("irVipOpen")?.addEventListener("click",vipConfirm);$("irRareOpen")?.addEventListener("click",rare)}
+function open(){$("interactiveRewardsWindow").classList.remove("hidden");$("irStage").classList.add("hidden");render()}
+function vipConfirm(){$("irStage").classList.remove("hidden");$("irStage").innerHTML='<div style="font-size:60px">👑</div><h2>Activate VIP Status?</h2><p>The 24-hour timer begins immediately.</p><button id="irConfirmVip">ACTIVATE 24-HOUR VIP</button>';$("irConfirmVip").onclick=activate}
+function activate(){let x=load();if(x.vip.owned<=0||active())return;let st=now(),ex=st+86400000;x.vip.owned=0;x.vip.status="active";save(x);let state={startedAt:st,expiresAt:ex,peeks:2,reroll:1,override:1,discount:1,allowanceBonus:3,mysteryBoost:true,arcadeBonusCap:5,arcadeBonusEarned:0};localStorage.setItem(VK,JSON.stringify(state));localStorage.setItem("lizzyVipStateV1",JSON.stringify(state));$("interactiveRewardsWindow").classList.add("hidden");$("irVipActivation").classList.remove("hidden");confetti();render();note("interactive_reward",{reward:"VIP Status — One Day",status:"activated",expiresAt:ex})}
+function rare(){$("irStage").classList.remove("hidden");$("irStage").innerHTML='<div style="font-size:60px">🎁</div><h2>CHOOSE YOUR MYSTERY</h2><p>You choose the category. LizzyOS chooses what happens next.</p><div class="irChoiceGrid"><button>💰 <b>MONEY</b><small>20–50 Micky Bucs</small></button><button>🔐 <b>SECRETS</b><small>Mystery classified reward</small></button><button>❤️ <b>MIKAEL</b><small>Mystery letter or interaction</small></button></div><p style="opacity:.65">We will finish the Rare Box outcomes after VIP is confirmed.</p>'}
+window.grantInteractiveReward=name=>{let x=load();if(/VIP Status/i.test(name)){x.vip.owned++;x.vip.status="ready"}if(/Mystery Rare Box/i.test(name)){x.rareBox.owned++;x.rareBox.status="unopened"}save(x);render();note("interactive_reward",{reward:name,status:"received"})};window.InteractiveRewards={open,render,activate,vipActive:active};$("irClose")?.addEventListener("click",()=>$("interactiveRewardsWindow").classList.add("hidden"));$("irEnterVip")?.addEventListener("click",()=>$("irVipActivation").classList.add("hidden"));$("irVipBadge")?.addEventListener("click",open);window.addEventListener("load",()=>{icon();render()});setInterval(render,1000);
+})();
+
+
+/* Route special Daily Rewards into Interactive Rewards instead of Token Jar. */
+window.addEventListener("lizzyDailyRewardClaimed",e=>{
+ const r=String(e.detail?.reward||"");
+ if(/VIP Status\s*[—-]\s*One Day/i.test(r)||/Mystery Rare Box/i.test(r))window.grantInteractiveReward?.(r);
+},true);
