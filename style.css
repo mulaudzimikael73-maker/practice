@@ -4380,3 +4380,18 @@ body.mikaelTakeoverActive #desktopArea:before{background:rgba(20,10,40,.12)!impo
 #interactiveRewardsIcon{position:relative;}
 #interactiveRewardsIcon .irDesktopDot{position:absolute;right:12px;top:0;background:#ef4444;color:#fff;border-radius:99px;min-width:22px;height:22px;display:grid;place-items:center;font-size:11px;font-weight:900;}
 #interactiveRewardsDesktopIcon{display:none!important;}
+
+
+/* ===== INTERACTIVE REWARDS PRODUCTION FINAL ===== */
+#interactiveRewardsWindow.irWindow.hidden{display:none!important}
+#interactiveRewardsWindow.irWindow:not(.hidden){display:block!important}
+#interactiveRewardsWindow.irWindow{position:fixed!important;z-index:99960!important;inset:6vh 6vw!important;overflow:auto!important}
+.irConfirmCard,.irVipControls{max-width:980px;margin:0 auto;text-align:center}
+.irVipFeatureGrid{grid-template-columns:repeat(auto-fit,minmax(210px,1fr))!important}
+.irVipAction{margin-top:20px;padding:20px;border-radius:18px;background:#0002;line-height:1.55}
+.irVipTextarea{display:block;width:100%;min-height:100px;box-sizing:border-box;margin:14px 0;padding:13px;border:0;border-radius:14px;font:inherit}
+.irMuted{opacity:.68;margin-top:16px}
+#irVipActivation.irVipActivation{overflow-y:auto!important;align-items:flex-start!important;padding:20px!important;box-sizing:border-box!important}
+#irVipActivation .irVipInner{width:min(820px,94vw)!important;margin:auto!important;padding:clamp(22px,4vh,46px) clamp(20px,4vw,42px)!important;box-sizing:border-box!important}
+#irEnterVip{display:inline-block!important;margin:12px auto 0!important;background:#fff!important;color:#4c1d95!important;min-width:230px!important}
+@media(max-height:760px){#irVipActivation .irVipCrown{font-size:58px!important}#irVipActivation h1{font-size:46px!important}#irVipActivation h2{font-size:24px!important}#irVipActivation .irVipActivationClock{font-size:26px!important;margin:8px!important}}

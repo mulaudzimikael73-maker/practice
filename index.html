@@ -8,7 +8,7 @@
 
     <title>Lizzy ❤️</title>
 
-    <link rel="stylesheet" href="style.css?v=20260827-interactive-rewards-v3-final">
+    <link rel="stylesheet" href="style.css?v=20260827-production-final">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
 
@@ -603,7 +603,7 @@
                 <span>Our Date</span>
             </div>
 
-            <div class="desktopIcon livingDesktopIcon" id="interactiveRewardsIcon" role="button" tabindex="0" aria-label="Open Interactive Rewards">
+            <div class="desktopIcon livingDesktopIcon" id="interactiveRewardsIcon" role="button" tabindex="0" aria-label="Open Interactive Rewards" onclick="window.InteractiveRewardsApp?.open()">
                 <div class="desktopEmoji">🎁</div>
                 <span>Interactive Rewards</span>
                 <span id="irDesktopDot" class="irDesktopDot">2</span>
@@ -1575,7 +1575,7 @@ if (window.netlifyIdentity) {
 <div id="interactiveRewardsWindow" class="irWindow hidden" role="dialog" aria-label="Interactive Rewards">
   <div class="irTopbar">
     <div><span class="irIcon">🎁</span><b>Interactive Rewards</b></div>
-    <button id="irClose" type="button" aria-label="Close Interactive Rewards">×</button>
+    <button id="irClose" type="button" aria-label="Close Interactive Rewards" onclick="window.InteractiveRewardsApp?.close()">×</button>
   </div>
   <div class="irHero">
     <div><div class="irKicker">LIZZYOS SPECIAL REWARDS</div><h1>Interactive Rewards</h1><p>Some rewards are too powerful to live in a jar.</p></div>
@@ -1614,7 +1614,7 @@ if (window.netlifyIdentity) {
   <div id="vipAction"></div>
 </div>
 
-<script src="script.js?v=20260827-interactive-rewards-v3-final"></script>
+<script src="script.js?v=20260827-production-clean"></script>
 <script src="living-desktop.js?v=20260823-v415-launch-hotfix"></script>
 
 <script defer src="internet.js?v=20260823-internet-hotfix"></script>
@@ -1709,5 +1709,6 @@ if (window.netlifyIdentity) {
 </div>
 
 <script src="fun-apps.js?v=20260826-vip"></script>
+<script src="interactive-rewards.js?v=20260827-production-final"></script>
 </body>
 </html>
