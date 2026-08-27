@@ -3310,6 +3310,13 @@ window.LizzyDailyRewardsV4={counts:{basic:BASIC.length,reverse:REVERSE.length,no
         $("tokenRedeemName").textContent=name;
         $("tokenRedeemDescription").textContent=d.desc;
         $("tokenRedeemStatus").textContent="";
+        const confirmBtn=$("confirmTokenRedeem");
+        const cancelBtn=$("cancelTokenRedeem");
+        if(confirmBtn){
+            confirmBtn.disabled=false;
+            confirmBtn.textContent=confirmBtn.dataset.originalText||confirmBtn.textContent||"Redeem";
+        }
+        if(cancelBtn)cancelBtn.disabled=false;
         $("tokenRedeemWindow").classList.remove("hidden");
     }
     async function notifyRedemption(payload){
@@ -3331,28 +3338,56 @@ Status: REDEEMED${isArgument?"\n\nMikael's right to appeal: DENIED 😂":""}`;
     async function confirmRedeem(){
         if(!redeeming || !(tokens.inventory[redeeming]>0))return;
         const name=redeeming,d=TOKEN_DEFS[name];
+
+        const confirmBtn=$("confirmTokenRedeem");
+        const cancelBtn=$("cancelTokenRedeem");
+        if(confirmBtn){
+            confirmBtn.disabled=true;
+            confirmBtn.dataset.originalText=confirmBtn.dataset.originalText||confirmBtn.textContent;
+            confirmBtn.textContent="Redeeming…";
+        }
+        if(cancelBtn)cancelBtn.disabled=true;
+
         tokens.inventory[name]--;
         if(name==="Second Chance Token")tokens.rerollCredits=(tokens.rerollCredits||0)+1;
 
-        // Special Token Jar actions.
-        if(name==="VIP Status — One Day" || name==="VIP Status - One Day"){
-            setTimeout(()=>{ if(window.activateLizzyVIP) window.activateLizzyVIP(); },120);
-        }
-        if(name==="Mystery Rare Box"){
-            // Hand one redeemed box to the chooser. The chooser consumes it only
-            // after Lizzy selects Money, Secrets or Mikael.
-            localStorage.setItem("lizzyMysteryRareBoxesV1","1");
-            setTimeout(()=>{ if(window.openMysteryRareBox) window.openMysteryRareBox(); },150);
-        }
-
         const payload={token:name,emoji:d.emoji,description:d.desc,redeemed_at:new Date().toLocaleString(),redeemed_at_iso:nowISO()};
         const entry={name,emoji:d.emoji,redeemedAt:payload.redeemed_at_iso,notifyStatus:"Sending..."};
-        tokens.history.unshift(entry);saveTokens();renderTokens();
+        tokens.history.unshift(entry);
+        saveTokens();
+        renderTokens();
         $("tokenRedeemStatus").textContent="Redeemed 💗";
+
         entry.notifyStatus=await notifyRedemption(payload);
-        saveTokens();renderTokens();
+        saveTokens();
+        renderTokens();
         $("tokenRedeemStatus").textContent=`✅ ${name} redeemed successfully. 💗`;
+
+        await new Promise(resolve=>setTimeout(resolve,220));
+        $("tokenRedeemWindow")?.classList.add("hidden");
+
         redeeming=null;
+
+        if(confirmBtn){
+            confirmBtn.disabled=false;
+            confirmBtn.textContent=confirmBtn.dataset.originalText||"Redeem";
+        }
+        if(cancelBtn)cancelBtn.disabled=false;
+
+        if(name==="VIP Status — One Day" || name==="VIP Status - One Day"){
+            setTimeout(()=>{
+                if(window.activateLizzyVIP) window.activateLizzyVIP();
+                else console.error("VIP activation function unavailable");
+            },180);
+        }
+
+        if(name==="Mystery Rare Box"){
+            localStorage.setItem("lizzyMysteryRareBoxesV1","1");
+            setTimeout(()=>{
+                if(window.openMysteryRareBox) window.openMysteryRareBox();
+                else console.error("Mystery Rare Box opener unavailable");
+            },180);
+        }
     }
 
     // ---------------------------------------------
