@@ -526,26 +526,96 @@ function addDossier(i,price=0){let l=read(DOSSIERS,[]);if(!Array.isArray(l))l=[]
 function migrate(){const s=shelf();if(s.owned.archive_x17){const c=ITEMS.find(x=>x.id==="archive_x17");addDossier({id:"archive_x17",title:"Cody Legal Documents",content:c.content},s.owned.archive_x17.price||0)}if(s.owned.hater_file)addDossier(ITEMS.find(x=>x.id==="hater_file"),s.owned.hater_file.price||0);if(s.owned.vault||s.owned.mrperfect_file)addDossier(ITEMS.find(x=>x.id==="mrperfect_file"),s.owned.vault?.price||s.owned.mrperfect_file?.price||0);const old=read("lizzyVaultRewardsV1",[]);if(Array.isArray(old)&&old.some(x=>x.id==="mrperfect_file"||String(x.title||"").includes("#003")))addDossier(ITEMS.find(x=>x.id==="mrperfect_file"),0);let l=read(LETTERS,[]);if(Array.isArray(l)){const f=l.filter(x=>!(x.id==="letter_002"&&String(x.content||"").includes("I like us.")));if(f.length!==l.length)write(LETTERS,f)}}
 function st(b,o){if(o)return"OWNED 🔓";if(b?.status==="pending")return`YOUR OFFER: ${b.amount} MB • WAITING FOR MIKAEL`;if(b?.status==="countered")return`MIKAEL'S COUNTER: ${b.counterOffer} MB`;if(b?.status==="rejected")return"OFFER REJECTED — NEGOTIATION REOPENED";return"NEGOTIATION OPEN"}
 function repairPurchasedDestinations(){const s=shelf();if(s.owned.archive_x17){const c=ITEMS.find(x=>x.id==="archive_x17");if(c)addDossier({id:"archive_x17",title:"Cody Legal Documents",content:c.content},s.owned.archive_x17.price||0)}for(const id of ["dossier_001","hater_file","mrperfect_file","o4e_004","mwa_005","aypp_006"]){if(s.owned[id]){const i=ITEMS.find(x=>x.id===id);if(i)addDossier(i,s.owned[id].price||0)}}}
+
+const VAULT_STATE="lizzyVaultStateV3";
+const VAULT_TOKEN="lizzyVaultTokenV1";
+const VAULT_PRIZES=[
+ {r:"common",icon:"💰",name:"+10 Micky Bucs",type:"money",value:10},
+ {r:"common",icon:"💰",name:"+15 Micky Bucs",type:"money",value:15},
+ {r:"common",icon:"🌱",name:"Seed Pack",type:"seed"},
+ {r:"common",icon:"🪙",name:"Second Chance",type:"second_chance"},
+ {r:"rare",icon:"💰",name:"+25 Micky Bucs",type:"money",value:25},
+ {r:"rare",icon:"🎧",name:"Song Exchange",type:"token",token:"Song Exchange"},
+ {r:"rare",icon:"🎤",name:"Voice Note Request",type:"token",token:"Voice Note Request"},
+ {r:"rare",icon:"🃏",name:"Truth Card",type:"token",token:"Truth Card"},
+ {r:"epic",icon:"📞",name:"Question Call",type:"token",token:"Question Call"},
+ {r:"epic",icon:"💸",name:"Bank Heist",type:"money_random",min:30,max:60},
+ {r:"legendary",icon:"💰",name:"Vault Jackpot",type:"money",value:75},
+ {r:"legendary",icon:"🃏",name:"Mikael's Wild Card",type:"token",token:"Mikael's Wild Card"},
+ {r:"legendary",icon:"👑",name:"The Queen's Cut",type:"money",value:50}
+];
+function vaultState(){return read(VAULT_STATE,{opens:0,lastPrize:null,lastRarity:null})}
+function saveVaultState(v){write(VAULT_STATE,v)}
+function vaultTokenCount(){return Number(freeVaultCredits?.()||0)+Number(localStorage.getItem(VAULT_TOKEN)||0)}
+function consumeVaultToken(){
+ const p=rewardPerks();
+ if(Number(p.vaultFree||0)>0){p.vaultFree--;saveRewardPerks(p);return true}
+ const n=Number(localStorage.getItem(VAULT_TOKEN)||0);
+ if(n>0){localStorage.setItem(VAULT_TOKEN,String(n-1));return true}
+ return false
+}
+function vaultPick(){
+ const roll=Math.random()*100;
+ const r=roll<45?"common":roll<75?"rare":roll<92?"epic":"legendary";
+ const pool=VAULT_PRIZES.filter(x=>x.r===r);
+ return pool[Math.floor(Math.random()*pool.length)];
+}
+function vaultPrizeGrant(prize,source){
+ let detail=prize.name;
+ if(prize.type==="money"||prize.type==="money_random"){
+  const amount=prize.type==="money"?prize.value:(prize.min+Math.floor(Math.random()*(prize.max-prize.min+1)));
+  setWallet(Number(wallet())+amount);detail=`${prize.name} → +${amount} MB`;
+ }else if(prize.type==="second_chance"){
+  const t=read("lizzyTokenJarV1",{inventory:{},history:[],rerollCredits:0});t.rerollCredits=Number(t.rerollCredits||0)+1;write("lizzyTokenJarV1",t);
+ }else if(prize.type==="token"){
+  const t=read("lizzyTokenJarV1",{inventory:{},history:[],rerollCredits:0});t.inventory=t.inventory||{};t.inventory[prize.token]=Number(t.inventory[prize.token]||0)+1;write("lizzyTokenJarV1",t);
+ }else if(prize.type==="seed"){
+  const g=read("lizzyGardenV1",{seeds:{},flowers:{}});g.seeds=g.seeds||{};g.seeds.vault_seed=Number(g.seeds.vault_seed||0)+1;write("lizzyGardenV1",g);
+ }
+ const v=vaultState();v.opens++;v.lastPrize=detail;v.lastRarity=prize.r;v.lastSource=source;saveVaultState(v);
+ try{fetch(WORKER,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({type:"vault_prize_won",source,rarity:prize.r,prize:detail})}).catch(()=>{})}catch(e){}
+ return detail
+}
+async function showVaultResult(prize,source,acceptedBid=0){
+ const h=$("vaultResult");
+ if(!h)return;
+ if(acceptedBid>0){
+  if(wallet()<acceptedBid){h.innerHTML=`<div class="vaultResultGlow"><h3>⚠️ Vault bid could not be charged</h3><p>Your accepted bid was ${acceptedBid} MB, but the current wallet balance is too low.</p></div>`;return}
+  setWallet(Math.max(0,wallet()-acceptedBid));
+ }
+ h.innerHTML=`<div class="vaultOpening" aria-live="polite"><div class="vaultLock">🔐</div><small>SECRET SHELF // VAULT ACCESS</small><h3>OPENING VAULT...</h3><div class="vaultSpinner"></div><p>Decrypting reward chamber…</p></div>`;
+ h.classList.remove("vaultRevealActive");h.classList.add("vaultOpeningActive");
+ await new Promise(r=>setTimeout(r,2200));
+ const detail=vaultPrizeGrant(prize,source);
+ h.classList.remove("vaultOpeningActive");h.classList.add("vaultRevealActive");
+ h.innerHTML=`<div class="vaultResultGlow vaultPrizeReveal"><div class="vaultBurst">✦</div><div class="vaultPrizeIcon">${prize.icon}</div><small>${prize.r.toUpperCase()} VAULT REWARD</small><h3>${esc(prize.name)}</h3><p>${esc(detail)}</p>${acceptedBid>0?`<p class="vaultBidCharged">💸 ${acceptedBid} MB bid charged</p>`:""}<p>🎉 The Vault has released your reward.</p></div>`;
+ renderShelf()
+}
+function openVault(source="token"){
+ if(source==="token"&&!consumeVaultToken()){alert("You don't have a Free Vault Token.");renderShelf();return}
+ showVaultResult(vaultPick(),source)
+}
+function vaultBidAccepted(acceptedBid=0){showVaultResult(vaultPick(),"accepted_bid",Number(acceptedBid)||0)}
+function vaultStatusText(){const t=vaultTokenCount(),v=vaultState();return `${t>0?`🎟️ FREE VAULT TOKEN ×${t}`:"No Free Vault Tokens"}${v.lastPrize?` · Last prize: ${v.lastPrize}`:""}`}
 function renderShelf(){
  const h=$("secretShelfPanel");if(!h)return;
- const s=shelf(),free=freeVaultCredits();
- h.innerHTML=`<div class="secretVaultHeader"><div><small>SECRET SHELF // RESTRICTED MARKET</small><h3>🔒 Mikael's Secret Shelf</h3></div><div class="vaultWallet">AVAILABLE: <b>${wallet()} MB</b>${free>0?`<br><span class="vaultFreeCredit">🎟️ FREE VAULT ITEM ×${free}</span>`:""}</div></div>
- <p class="seedStoreIntro">${free>0?`You have <b>${free} Free Vault Item credit${free===1?"":"s"}</b>. Choose any unowned item and claim it instantly for 0 MB.`:"No fixed prices. Make Mikael an offer. His counter stays visible until you make another bid."}</p>
- <div class="secretShelfGrid">${ITEMS.map(i=>{
-   const o=!!s.owned[i.id],b=s.bids[i.id],c=!o&&b?.status==="countered"&&Number(b.counterOffer)>0;let ac="";
-   if(o&&i.kind==="letter")ac='<small class="ownedDestination">💌 Saved to Open When → Purchased Letters</small>';
-   if(o&&i.kind==="mikael_token")ac='<small class="ownedDestination">🔄 Revealed as UNO Reverse → Token Jar</small>';
-   if(o&&i.kind==="dossier")ac='<small class="ownedDestination">🗃️ Saved to the CLASSIFIED desktop folder.</small>';
-   if(o&&i.kind==="document")ac=`<small class="ownedDestination">⚖️ Cody Legal Documents acquired.<br>🗃️ Transferred to the CLASSIFIED desktop folder.</small>`;
-   const nm=o&&i.id==="archive_x17"?"Cody Legal Documents":i.publicName,te=o&&i.id==="archive_x17"?"⚖️ Confidential legal documents recovered from the sealed archive.":i.teaser;
-   return `<article class="secretItem vaultItem ${c?"hasCounter":""} ${o?"ownedVaultItem":""}">
-    <div class="vaultItemIcon">${i.icon}</div><strong>${nm}</strong><p>${te}</p><small class="vaultStatus">${st(b,o)}</small>
-    ${o?"":`${free>0?`<button class="vaultFreeClaimBtn" data-free-vault="${i.id}">🎟️ CLAIM FREE — 0 MB</button><div class="vaultOr">OR NEGOTIATE</div>`:""}${c?`<div class="persistentCounter"><small>COUNTER OFFER FROM MIKAEL</small><strong>${b.counterOffer} MB</strong><span>Your last bid: ${b.amount||"—"} MB</span></div>`:""}<div class="vaultBidControls"><input type="number" min="1" data-bid-input="${i.id}" placeholder="${c?`Make a new bid against ${b.counterOffer} MB`:"Your offer in MB"}"><button data-bid="${i.id}">${c?"Make Another Bid":"Submit Offer"}</button></div>`}${ac}
-   </article>`
- }).join("")}</div><div id="vaultOwnedFileReader"></div>`;
- h.querySelectorAll("[data-bid]").forEach(x=>x.onclick=()=>submitBid(x.dataset.bid));
- h.querySelectorAll("[data-free-vault]").forEach(x=>x.onclick=()=>claimFreeVaultItem(x.dataset.freeVault));
- h.querySelectorAll("[data-open-shelf-file]").forEach(x=>x.onclick=()=>openDoc(x.dataset.openShelfFile))
+ const sh=shelf(),t=vaultTokenCount();
+ h.innerHTML=`<div class="secretVaultHeader"><div><small>SECRET SHELF // RESTRICTED MARKET</small><h3>🔒 Mikael's Secret Shelf</h3></div><div class="vaultWallet">AVAILABLE: <b>${wallet()} MB</b><br><span class="vaultFreeCredit">${vaultStatusText()}</span></div></div>
+ <section class="vaultFeature"><div class="vaultFeatureTop"><div><small>RESTRICTED FEATURE</small><h3>🎰 THE VAULT</h3></div><span class="vaultBadge">RANDOM PRIZES</span></div>
+ <p>Make a Vault bid and wait for Mikael to accept, or use a Free Vault Token for immediate access. Every opening gives <b>one random prize</b>.</p>
+ <div class="vaultPrizePreview"><span>🟢 Common</span><span>🔵 Rare</span><span>🟣 Epic</span><span>🟡 Legendary</span></div>
+ ${t>0?`<button id="openFreeVaultBtn" class="vaultOpenBtn">🎟️ OPEN VAULT WITH FREE TOKEN</button>`:`<small>No Free Vault Token available.</small>`}
+ <div id="vaultResult"></div></section>
+ <div class="vaultBidBox"><input id="vaultBidInput" type="number" min="1" placeholder="Your Vault offer in MB"><button id="vaultBidBtn">🎰 BID FOR VAULT ACCESS</button><small id="vaultBidStatus">Bid for access. Mikael's acceptance will open the Vault.</small></div>
+ <div class="secretShelfGrid">${ITEMS.map(i=>{const o=!!sh.owned[i.id],b=sh.bids[i.id],c=!o&&b?.status==="countered"&&Number(b.counterOffer)>0;return `<article class="secretItem vaultItem ${c?"hasCounter":""} ${o?"ownedVaultItem":""}"><div class="vaultItemIcon">${i.icon}</div><strong>${o&&i.id==="archive_x17"?"Cody Legal Documents":i.publicName}</strong><p>${o&&i.id==="archive_x17"?"⚖️ Confidential legal documents recovered from the sealed archive.":i.teaser}</p><small class="vaultStatus">${st(b,o)}</small>${o?"":`${c?`<div class="persistentCounter"><small>COUNTER OFFER FROM MIKAEL</small><strong>${b.counterOffer} MB</strong></div>`:""}<div class="vaultBidControls"><input type="number" min="1" data-bid-input="${i.id}" placeholder="${c?`New bid against ${b.counterOffer} MB`:"Your offer in MB"}"><button data-bid="${i.id}">${c?"Make Another Bid":"Submit Offer"}</button></div>`}</article>`}).join("")}</div>`;
+ h.querySelector("#openFreeVaultBtn")?.addEventListener("click",()=>openVault("token"));
+ h.querySelector("#vaultBidBtn")?.addEventListener("click",async()=>{
+  const n=Math.floor(Number(h.querySelector("#vaultBidInput")?.value||0)),status=h.querySelector("#vaultBidStatus");
+  if(!n||n<1){status.textContent="Enter a valid Vault bid.";return}
+  if(n>wallet()){status.textContent="You cannot bid more than your current Micky Bucs balance.";return}
+  try{const r=await fetch(WORKER,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({type:"vault_bid",offer:n})}),d=await r.json();if(!r.ok||!d.success)throw new Error(d.error||"Bid failed");status.textContent=`🎰 Vault bid of ${n} MB submitted. Waiting for Mikael's acceptance.`}catch(e){status.textContent="The Vault bid could not be sent. Please try again."}
+ });
+ h.querySelectorAll("[data-bid]").forEach(x=>x.addEventListener("click",()=>submitBid(x.dataset.bid)));
 }
 function openDoc(id){const i=ITEMS.find(x=>x.id===id),s=shelf(),h=$("vaultOwnedFileReader");if(!i||!s.owned[id]||!h)return;const safe=i.content.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));h.innerHTML=`<section class="vaultDocumentReader"><button id="closeVaultDocument">×</button><small>ACQUIRED SECRET SHELF DOCUMENT // CONFIDENTIAL</small><h3>⚖️ Cody Legal Documents</h3><pre>${safe}</pre></section>`;$("closeVaultDocument")?.addEventListener("click",()=>h.innerHTML="");h.scrollIntoView({behavior:"smooth",block:"nearest"})}
 function claimFreeVaultItem(id){
@@ -565,7 +635,17 @@ function claimFreeVaultItem(id){
 async function submitBid(id){const i=ITEMS.find(x=>x.id===id),inp=[...document.querySelectorAll("[data-bid-input]")].find(x=>x.dataset.bidInput===id),amount=Math.floor(Number(inp?.value));if(!i)return;if(!amount||amount<1)return alert("Enter an offer first.");if(amount>wallet())return alert("You cannot offer more Micky Bucs than you currently have.");try{const r=await fetch(WORKER,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({type:"secret_shelf_bid",item:id,offer:amount})}),d=await r.json();if(!r.ok||!d.success||!d.claimId)throw new Error(d.error||"Offer failed");const s=shelf();s.bids[id]={claimId:d.claimId,amount,status:"pending",counterOffer:null,createdAt:new Date().toISOString()};saveShelf(s);renderShelf()}catch(e){console.error(e);alert(String(e?.message||"").includes("Unknown Secret Shelf item")?"Deploy the included cloudflare-worker.js first, then try this new Secret Shelf item again.":"The offer could not be sent. Please try again.")}}
 function grant(i,price,serverAccepted=false){const s=shelf();if(s.owned[i.id])return true;price=Math.max(0,Math.floor(Number(price)||0));const vd=Number(localStorage.getItem("lizzyVipShelfDiscount")||0),rd=Number(localStorage.getItem("lizzyRareShelfDiscount")||0),discount=Math.max(vd,rd),originalPrice=price;if(discount>0&&price>0){price=Math.max(1,Math.ceil(price*(100-discount)/100));localStorage.removeItem("lizzyVipShelfDiscount");localStorage.removeItem("lizzyRareShelfDiscount")}if(!serverAccepted&&(price<1||wallet()<price))return false;if(price>0)setWallet(Math.max(0,wallet()-price));s.owned[i.id]={at:new Date().toISOString(),price,originalPrice,discount};saveShelf(s);if(i.kind==="letter"){let l=read(LETTERS,[]);if(!Array.isArray(l))l=[];const entry={id:i.id,title:i.publicName,content:i.content,folder:"open_when_purchased",purchasedAt:new Date().toISOString()};const at=l.findIndex(x=>x.id===i.id);if(at>=0)l[at]={...l[at],...entry};else l.push(entry);write(LETTERS,l);renderLetters();window.dispatchEvent(new Event("lizzyPurchasedLettersUpdated"))}if(i.kind==="dossier")addDossier(i,price);if(i.kind==="document"&&i.id==="archive_x17"){addDossier({id:"archive_x17",title:"Cody Legal Documents",content:i.content},price)}if(i.kind==="mikael_token"){const t=read(MTOKENS,{inventory:{},history:[]});t.inventory=t.inventory||{};t.history=t.history||[];t.inventory["UNO Reverse"]=Number(t.inventory["UNO Reverse"]||0)+1;t.history.push({type:"earned",token:"UNO Reverse",source:"Mystery Reward",at:new Date().toISOString()});write(MTOKENS,t);renderMikaelTokens()}window.dispatchEvent(new Event("lizzyStoreRefresh"));return true}
 async function sync(){const s=shelf();let dirty=false;for(const i of ITEMS){if(s.owned[i.id])continue;try{const r=await fetch(`${WORKER}?shelfItem=${encodeURIComponent(i.id)}`,{cache:"no-store"});if(!r.ok)continue;const d=await r.json(),x=d.state;if(!x?.claimId)continue;const l=s.bids[i.id],rt=Date.parse(x.updatedAt||x.createdAt||0)||0,lt=Date.parse(l?.updatedAt||l?.createdAt||0)||0;if(!l||x.claimId===l.claimId||rt>=lt){s.bids[i.id]={claimId:x.claimId,amount:Number(x.offer||l?.amount||0),status:x.status||"pending",counterOffer:x.counterOffer==null?null:Number(x.counterOffer),createdAt:x.createdAt||l?.createdAt||new Date().toISOString(),updatedAt:x.updatedAt||x.decidedAt||new Date().toISOString()};dirty=true}}catch{}}if(dirty)saveShelf(s)}
-async function poll(){await sync();let s=shelf();let dirty=false;for(const i of ITEMS){const b=s.bids[i.id];if(!b?.claimId||s.owned[i.id])continue;try{const r=await fetch(`${WORKER}?claimId=${encodeURIComponent(b.claimId)}`,{cache:"no-store"});if(!r.ok)continue;const d=await r.json(),c=d.claim||d;if(c.status==="accepted"){const price=Number(c.offer??b.amount);if(grant(i,price,true)){s=shelf();if(s.bids[i.id]){s.bids[i.id].status="accepted";s.bids[i.id].updatedAt=c.decidedAt||new Date().toISOString()}saveShelf(s);dirty=false;window.dispatchEvent(new CustomEvent("lizzySecretPurchaseGranted",{detail:{itemId:i.id,kind:i.kind}}))}}else if(c.status==="rejected"){b.status="rejected";b.updatedAt=c.decidedAt||new Date().toISOString();dirty=true}else if(c.status==="countered"){b.status="countered";b.counterOffer=Number(c.counterOffer);b.updatedAt=c.decidedAt||new Date().toISOString();dirty=true}}catch(e){console.error("Secret Shelf poll failed",e)}}if(dirty)saveShelf(s);repairPurchasedDestinations();renderShelf();renderLetters();renderMikaelTokens()}
+async function pollVault(){
+ try{
+  const r=await fetch(`${WORKER}?type=vault_claim`,{cache:"no-store"}); if(!r.ok)return;
+  const d=await r.json(),c=d.claim;
+  if(c?.status==="accepted"&&!c?.lizzyOpened){
+   await fetch(WORKER,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({type:"vault_claim_opened",claimId:c.claimId})}).catch(()=>{});
+   vaultBidAccepted(Number(c.acceptedPrice??c.offer??0));
+  }
+ }catch(e){console.warn("Vault poll failed",e)}
+}
+async function poll(){await sync();let s=shelf();let dirty=false;for(const i of ITEMS){const b=s.bids[i.id];if(!b?.claimId||s.owned[i.id])continue;try{const r=await fetch(`${WORKER}?claimId=${encodeURIComponent(b.claimId)}`,{cache:"no-store"});if(!r.ok)continue;const d=await r.json(),c=d.claim||d;if(c.status==="accepted"){const price=Number(c.offer??b.amount);if(grant(i,price,true)){s=shelf();if(s.bids[i.id]){s.bids[i.id].status="accepted";s.bids[i.id].updatedAt=c.decidedAt||new Date().toISOString()}saveShelf(s);dirty=false;window.dispatchEvent(new CustomEvent("lizzySecretPurchaseGranted",{detail:{itemId:i.id,kind:i.kind}}))}}else if(c.status==="rejected"){b.status="rejected";b.updatedAt=c.decidedAt||new Date().toISOString();dirty=true}else if(c.status==="countered"){b.status="countered";b.counterOffer=Number(c.counterOffer);b.updatedAt=c.decidedAt||new Date().toISOString();dirty=true}}catch(e){console.error("Secret Shelf poll failed",e)}}if(dirty)saveShelf(s);repairPurchasedDestinations();renderShelf();renderLetters();renderMikaelTokens();pollVault()}
 async function notifyPurchasedLetterOpened(letter){
  try{
   await fetch(WORKER,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
@@ -578,7 +658,7 @@ async function notifyPurchasedLetterOpened(letter){
 }
 function renderLetters(){const w=$("openWhenWindow")||$("openWhenFolderWindow");if(!w)return;const host=w.querySelector(".windowScroll")||w;let b=$("purchasedLettersBox");if(!b){b=document.createElement("section");b.id="purchasedLettersBox";host.appendChild(b)}const l=read(LETTERS,[]);b.innerHTML=Array.isArray(l)&&l.length?`<h3>🛍️ Purchased Letters</h3>${l.map((x,i)=>`<article class="purchasedLetter"><div class="purchasedLetterHead"><strong>💌 ${x.title}</strong><button type="button" data-purchased-letter-open="${i}">OPEN LETTER</button></div><div class="purchasedLetterBody hidden" data-purchased-letter-body="${i}"><pre>${x.content}</pre></div></article>`).join("")}`:"";b.querySelectorAll("[data-purchased-letter-open]").forEach(btn=>btn.addEventListener("click",()=>{const i=Number(btn.dataset.purchasedLetterOpen),letter=l[i],body=b.querySelector(`[data-purchased-letter-body="${i}"]`);if(!letter||!body)return;const opening=body.classList.contains("hidden");body.classList.toggle("hidden");btn.textContent=opening?"CLOSE LETTER":"OPEN LETTER";if(opening)notifyPurchasedLetterOpened(letter)}))}
 function renderMikaelTokens(){const w=$("tokenJarWindow");if(!w)return;const host=w.querySelector(".windowScroll")||w;let b=$("mikaelTokensBox");if(!b){b=document.createElement("section");b.id="mikaelTokensBox";host.appendChild(b)}const t=read(MTOKENS,{inventory:{}}),n=Number(t.inventory?.["UNO Reverse"]||0);b.innerHTML=n?`<h3>🕴️ Mikael's Tokens</h3><div class="tokenCard"><div class="tokenCardEmoji">🔄</div><div><strong>UNO Reverse</strong><p>Mikael has the power: one playful, reasonable request for Lizzy.</p></div><div class="tokenCount">×${n}</div></div>`:""}
-migrate();repairPurchasedDestinations();$("seedStoreIcon")?.addEventListener("click",()=>setTimeout(()=>{renderShelf();poll()},60));document.querySelector('[data-store-tab="secret"]')?.addEventListener("click",()=>setTimeout(poll,30));$("openWhenIcon")?.addEventListener("click",()=>setTimeout(renderLetters,60));window.addEventListener("lizzyPurchasedLettersUpdated",renderLetters);window.addEventListener("lizzySecretPurchaseGranted",e=>{if(e.detail?.kind==="letter")renderLetters()});$("tokenJarIcon")?.addEventListener("click",()=>setTimeout(renderMikaelTokens,60));window.addEventListener("focus",()=>{if(!$("secretShelfPanel")?.classList.contains("hidden"))poll()});setInterval(()=>{if(!document.hidden)poll()},30000);renderShelf();renderLetters();renderMikaelTokens();setTimeout(poll,500);
+migrate();repairPurchasedDestinations();$("seedStoreIcon")?.addEventListener("click",()=>setTimeout(()=>{renderShelf();poll()},60));document.querySelector('[data-store-tab="secret"]')?.addEventListener("click",()=>setTimeout(poll,30));$("openWhenIcon")?.addEventListener("click",()=>setTimeout(renderLetters,60));window.addEventListener("lizzyPurchasedLettersUpdated",renderLetters);window.addEventListener("lizzySecretPurchaseGranted",e=>{if(e.detail?.kind==="letter")renderLetters()});$("tokenJarIcon")?.addEventListener("click",()=>setTimeout(renderMikaelTokens,60));window.addEventListener("focus",()=>{if(!$("secretShelfPanel")?.classList.contains("hidden"))poll()});setInterval(()=>{if(!document.hidden){poll();pollVault()}},30000);renderShelf();pollVault();renderLetters();renderMikaelTokens();setTimeout(poll,500);
 })();
 
 
