@@ -3589,6 +3589,45 @@ Status: REDEEMED${isArgument?"\n\nMikael's right to appeal: DENIED 😂":""}`;
     // localStorage.setItem("lizzyTelegramWorkerURL","https://YOUR-WORKER.workers.dev")
     window.LizzyGarden = {render:renderGarden,addSeed,addFlower,addToken};
 
+    /* ---------------------------------------------------------------
+       EXTERNAL REWARD SYNC (Vault / Secret Shelf / Daily Rewards)
+       Other modules write straight to localStorage. Without this the
+       in-memory garden/tokens objects would overwrite those grants on
+       the next save, so purchased/won rewards must be re-read here.
+       --------------------------------------------------------------- */
+    function reloadRewardState(){
+        const g=safeRead(KEYS.garden,null);
+        if(g&&typeof g==="object"){
+            garden=Object.assign(defaultGarden(),g);
+            garden.seeds=garden.seeds||{};
+            garden.flowers=garden.flowers||{};
+            garden.plants=Array.isArray(garden.plants)?garden.plants:[];
+        }
+        const t=safeRead(KEYS.tokens,null);
+        if(t&&typeof t==="object"){
+            tokens=Object.assign(defaultTokens(),t);
+            tokens.inventory=tokens.inventory||{};
+            tokens.history=Array.isArray(tokens.history)?tokens.history:[];
+        }
+        try{renderTokens()}catch(e){}
+        try{if(!$("lizzyGardenWindow")?.classList.contains("hidden"))renderGarden()}catch(e){}
+    }
+    ["lizzyTokenJarUpdated","lizzyGardenUpdated","lizzyExternalRewardGranted","lizzyStoreRefresh"]
+        .forEach(ev=>window.addEventListener(ev,reloadRewardState));
+    window.addEventListener("storage",e=>{
+        if(e.key===KEYS.tokens||e.key===KEYS.garden)reloadRewardState();
+    });
+    window.addEventListener("focus",reloadRewardState);
+
+    // Single safe entry point for every other module that grants rewards.
+    window.LizzyRewards={
+        addToken(name,count=1){reloadRewardState();if(!TOKEN_DEFS[name])return false;addToken(name,count);return true},
+        addSeed(id,count=1){reloadRewardState();if(!SEEDS[id])return false;addSeed(id,count);return true},
+        addRerollCredit(count=1){reloadRewardState();tokens.rerollCredits=Number(tokens.rerollCredits||0)+count;saveTokens();renderTokens();return true},
+        tokenNames(){return Object.keys(TOKEN_DEFS)},
+        seedIds(){return Object.keys(SEEDS)}
+    };
+
     renderTokens();
 })();
 
