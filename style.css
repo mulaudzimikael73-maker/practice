@@ -4373,3 +4373,10 @@ body.mikaelTakeoverActive #desktopArea:before{background:rgba(20,10,40,.12)!impo
  .irVipActivation h2{font-size:23px !important;}
  .irVipActivationClock{margin:8px !important;font-size:26px !important;}
 }
+
+#vipBadge,#vipWelcome{display:none!important;}
+
+/* Presentation-safe static Interactive Rewards integration */
+#interactiveRewardsIcon{position:relative;}
+#interactiveRewardsIcon .irDesktopDot{position:absolute;right:12px;top:0;background:#ef4444;color:#fff;border-radius:99px;min-width:22px;height:22px;display:grid;place-items:center;font-size:11px;font-weight:900;}
+#interactiveRewardsDesktopIcon{display:none!important;}

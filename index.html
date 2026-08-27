@@ -8,7 +8,7 @@
 
     <title>Lizzy ❤️</title>
 
-    <link rel="stylesheet" href="style.css?v=20260827-ir-vip-screen-fix">
+    <link rel="stylesheet" href="style.css?v=20260827-interactive-rewards-v3-final">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
 
@@ -601,6 +601,12 @@
             <div class="desktopIcon calendarFolderIcon" id="calendarIcon">
                 <div class="desktopEmoji calendarFolderEmoji"><span class="folderCalendarBadge">📅</span></div>
                 <span>Our Date</span>
+            </div>
+
+            <div class="desktopIcon livingDesktopIcon" id="interactiveRewardsIcon" role="button" tabindex="0" aria-label="Open Interactive Rewards">
+                <div class="desktopEmoji">🎁</div>
+                <span>Interactive Rewards</span>
+                <span id="irDesktopDot" class="irDesktopDot">2</span>
             </div>
 
         </div>
@@ -1564,7 +1570,51 @@ if (window.netlifyIdentity) {
   <button id="closeUnreleasedLetter" class="windowCloseButton">Close Classified File</button>
 </div>
 
-<script src="script.js?v=20260827-ir-vip-screen-fix"></script>
+
+<!-- ===== INTERACTIVE REWARDS: STATIC APP MARKUP ===== -->
+<div id="interactiveRewardsWindow" class="irWindow hidden" role="dialog" aria-label="Interactive Rewards">
+  <div class="irTopbar">
+    <div><span class="irIcon">🎁</span><b>Interactive Rewards</b></div>
+    <button id="irClose" type="button" aria-label="Close Interactive Rewards">×</button>
+  </div>
+  <div class="irHero">
+    <div><div class="irKicker">LIZZYOS SPECIAL REWARDS</div><h1>Interactive Rewards</h1><p>Some rewards are too powerful to live in a jar.</p></div>
+    <div id="irCount" class="irCount">2 rewards available</div>
+  </div>
+  <div id="irCards" class="irCards"></div>
+  <div id="irStage" class="irStage hidden"></div>
+</div>
+
+<div id="irVipActivation" class="irVipActivation hidden">
+  <div class="irVipInner">
+    <div class="irVipCrown">👑</div>
+    <div class="irKicker">LIZZYOS SPECIAL ACCESS</div>
+    <h1>VIP STATUS ACTIVATED</h1>
+    <h2>WELCOME, LIZZY.</h2>
+    <p>For the next 24 hours, LizzyOS has unfortunately been instructed to treat you like you're important.</p>
+    <div id="irVipActivationClock" class="irVipActivationClock">24:00:00</div>
+    <button id="irEnterVip" type="button">ENTER VIP MODE ✨</button>
+  </div>
+</div>
+<div id="irVipBadge" class="irVipBadge hidden" role="button" tabindex="0">👑 VIP MODE • <span id="irVipClock">24h 00m</span></div>
+
+<!-- Existing VIP feature control panel, now present BEFORE script.js so listeners bind correctly. -->
+<div id="vipPanel" class="vipPanel hidden">
+  <button id="vipClose" type="button">×</button>
+  <h2>👑 VIP CONTROL PANEL</h2>
+  <p id="vipRemain"></p>
+  <div class="vipGrid">
+    <button data-vip="peek">🔐 Classified Sneak Peek<br><small>2 available</small></button>
+    <button data-vip="reroll">🎁 Daily Reward Reroll<br><small>1 available</small></button>
+    <button data-vip="override">⚖️ VIP Override<br><small>1 available</small></button>
+    <button data-vip="discount">🛍️ Secret Shelf Discount<br><small>10% off one purchase</small></button>
+    <button data-vip="complaint">📣 Complaint Against Mikael<br><small>VIP priority</small></button>
+    <button data-vip="message">💌 Message Mr Perfect<br><small>VIP priority</small></button>
+  </div>
+  <div id="vipAction"></div>
+</div>
+
+<script src="script.js?v=20260827-interactive-rewards-v3-final"></script>
 <script src="living-desktop.js?v=20260823-v415-launch-hotfix"></script>
 
 <script defer src="internet.js?v=20260823-internet-hotfix"></script>
@@ -1659,12 +1709,5 @@ if (window.netlifyIdentity) {
 </div>
 
 <script src="fun-apps.js?v=20260826-vip"></script>
-<div id="vipBadge" class="vipBadge hidden">👑 VIP • <span id="vipClock">24h 00m</span></div>
-<div id="vipWelcome" class="vipWelcome hidden"><div><div class="vipCrown">👑</div><h1>VIP STATUS ACTIVATED</h1><h2>WELCOME, LIZZY.</h2><p>For the next 24 hours, LizzyOS has unfortunately been instructed to treat you like you're important.</p><button onclick="document.getElementById('vipWelcome').classList.add('hidden')">ENTER VIP MODE ✨</button></div></div>
-<div id="vipPanel" class="vipPanel hidden"><button id="vipClose">×</button><h2>👑 VIP CONTROL PANEL</h2><p id="vipRemain"></p><div class="vipGrid">
-<button data-vip="peek">🔐 Classified Sneak Peek<br><small>2 available</small></button><button data-vip="reroll">🎁 Daily Reward Reroll<br><small>1 available</small></button>
-<button data-vip="override">⚖️ VIP Override<br><small>1 available</small></button><button data-vip="discount">🛍️ Secret Shelf Discount<br><small>10% off one purchase</small></button>
-<button data-vip="complaint">📣 Complaint Against Mikael<br><small>VIP priority</small></button><button data-vip="message">💌 Message Mr Perfect<br><small>VIP priority</small></button>
-</div><div id="vipAction"></div></div><div id="interactiveRewardsWindow" class="irWindow hidden"><div class="irTopbar"><b>🎁 Interactive Rewards</b><button id="irClose">×</button></div><div class="irHero"><div><div class="irKicker">LIZZYOS SPECIAL REWARDS</div><h1>Interactive Rewards</h1><p>Some rewards are too powerful to live in a jar.</p></div><div id="irCount" class="irCount"></div></div><div id="irCards" class="irCards"></div><div id="irStage" class="irStage hidden"></div></div>
-<div id="irVipActivation" class="irVipActivation hidden"><div class="irVipInner"><div class="irVipCrown">👑</div><div class="irKicker">LIZZYOS SPECIAL ACCESS</div><h1>VIP STATUS ACTIVATED</h1><h2>WELCOME, LIZZY.</h2><p>For the next 24 hours, LizzyOS has unfortunately been instructed to treat you like you're important.</p><div id="irVipActivationClock" class="irVipActivationClock">24:00:00</div><button id="irEnterVip">ENTER VIP MODE ✨</button></div></div><div id="irVipBadge" class="irVipBadge hidden">👑 VIP MODE • <span id="irVipClock">24h 00m</span></div></body>
+</body>
 </html>
