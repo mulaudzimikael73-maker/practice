@@ -2563,14 +2563,13 @@ function pick(pool,seed){
  if(!filtered.length)filtered=pool;
  return filtered[ix(seed,filtered.length)];
 }
+function vipRewardBoostActive(){try{const v=JSON.parse(localStorage.getItem("lizzyVipStateV1")||"null");return !!(v&&Date.now()<Number(v.expiresAt||0)&&v.mysteryBoost)}catch(e){return false}}
 function ordinaryBucket(today,n){
  const roll=ix(today+"ordinary-bucket-v4",10000)/100;
- if(roll<55)return ["BASIC",BASIC];
- if(roll<68)return ["REVERSE",REVERSE];
- if(roll<85)return ["NORMAL",NORMAL];
- if(roll<94)return ["RARE",RARE];
- if(roll<99)return ["EPIC",EPIC];
- return ["LEGENDARY",LEGENDARY];
+ if(vipRewardBoostActive()){
+  if(roll<35)return ["BASIC",BASIC];if(roll<43)return ["REVERSE",REVERSE];if(roll<70)return ["NORMAL",NORMAL];if(roll<89)return ["RARE",RARE];if(roll<99)return ["EPIC",EPIC];return ["LEGENDARY",LEGENDARY];
+ }
+ if(roll<55)return ["BASIC",BASIC];if(roll<68)return ["REVERSE",REVERSE];if(roll<85)return ["NORMAL",NORMAL];if(roll<94)return ["RARE",RARE];if(roll<99)return ["EPIC",EPIC];return ["LEGENDARY",LEGENDARY];
 }
 function daySevenBucket(today,n){
  const roll=ix(today+"day7-bucket-v4",10000)/100;
@@ -2603,6 +2602,8 @@ function refresh(){
  $("mysteryStreak").textContent=`🔥 ${n} Day${n===1?"":"s"} Streak`;
  let left=n?7-(n%7||7):7;
  $("mysteryStreakSub").textContent=(n>0&&n%7===0)?"Day 7 reached — today's milestone roll had a 40% Legendary chance.":`${left} consecutive day${left===1?"":"s"} until the 40% Legendary milestone roll.`;
+ let vr=$("vipDailyRerollButton");
+ if(opened&&localStorage.getItem("lizzyVipRewardReroll")==="1"){if(!vr){vr=document.createElement("button");vr.id="vipDailyRerollButton";vr.textContent="👑 VIP REROLL TODAY'S REWARD";$("mysteryReward")?.insertAdjacentElement("afterend",vr);vr.onclick=vipRerollCurrent}vr.classList.remove("hidden")}else if(vr)vr.classList.add("hidden");
  track(n);renderHistory();
 }
 function rewardOverlay(r,n,isDay7){
@@ -2621,6 +2622,12 @@ function rewardOverlay(r,n,isDay7){
  o.classList.remove("hidden");
  $("closeDailyRewardReveal").onclick=()=>o.classList.add("hidden");
  if(type==="LEGENDARY"&&typeof confetti==="function")confetti({particleCount:220,spread:130,origin:{y:.62}});
+}
+function vipRerollCurrent(){
+ if(localStorage.getItem("lizzyVipRewardReroll")!=="1")return;
+ const today=key(),current=reward();if(!current)return;const n=st(),day7=n%7===0,[bucket,pool]=day7?daySevenBucket(today,n):ordinaryBucket(today,n),candidates=pool.filter(r=>r[2]!==current[2]);if(!candidates.length)return;
+ const replacement=candidates[ix(`${today}-${Date.now()}-vip-reroll`,candidates.length)];localStorage.setItem("lizzyMysteryReward",JSON.stringify(replacement));localStorage.removeItem("lizzyVipRewardReroll");
+ const h=history();h.push({date:today,streak:n,reward:replacement,rerolled:true,replaced:current[2]});saveHistory(h);window.dispatchEvent(new CustomEvent("lizzyDailyRewardClaimed",{detail:{reward:replacement,date:today,streak:n,day7,rerolled:true}}));refresh();rewardOverlay(replacement,n,day7);
 }
 function claim(){
  let today=key();if(localStorage.getItem("lizzyMysteryOpened")===today)return;
@@ -3411,6 +3418,10 @@ Status: REDEEMED${isArgument?"\n\nMikael's right to appeal: DENIED 😂":""}`;
     function processReward(r){
         if(!Array.isArray(r))return;
         const [,icon,name,,meta={}] = r;
+        if(name==="VIP Status — One Day" || name==="VIP Status - One Day" || name==="Mystery Rare Box"){
+            window.InteractiveRewardsApp?.grant?.(name);
+            return;
+        }
 
         // Special rewards are interactive apps, not Token Jar items.
         if(name==="VIP Status — One Day" || name==="VIP Status - One Day" || name==="Mystery Rare Box"){

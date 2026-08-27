@@ -1,493 +1,79 @@
-
 "use strict";
+(function(){
+const APP="lizzyInteractiveRewardsProductionV3",VIP="lizzyInteractiveVipProductionV3",LEGACYVIP="lizzyVipStateV1",TOKENS="lizzyTokenJarV1",WALLET="lizzyMickyBucsV1",SHELF="lizzySecretShelfV1",LETTERS="lizzyPurchasedLettersV1",PREP="lizzyInteractiveRewardsPreparedV3",DAY=86400000;
+const $=id=>document.getElementById(id),now=()=>Date.now(),read=(k,f)=>{try{const v=localStorage.getItem(k);return v===null?f:JSON.parse(v)}catch{return f}},write=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch{}},esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const ITEMS=[{id:"letter_002",icon:"💌",name:"Unreleased Letter #002",kind:"letter",teaser:"An unreleased letter. Contents unavailable before purchase."},{id:"mystery_reward",icon:"🎁",name:"Mystery Reward",kind:"token",teaser:"Contents remain classified until the deal is complete."},{id:"archive_x17",icon:"🗃️",name:"Sealed Archive X-17",kind:"document",teaser:"Origin: REDACTED • Contents: SEALED • Clearance: UNKNOWN"},{id:"dossier_001",icon:"📁",name:"Classified File #001",kind:"dossier",teaser:"SUBJECT DATA: REDACTED • CASE: #001"},{id:"hater_file",icon:"📁",name:"Classified File #002",kind:"dossier",teaser:"CASE: #002-H8R • CONTENTS: CLASSIFIED"},{id:"mrperfect_file",icon:"📁",name:"Classified File #003",kind:"dossier",teaser:"CASE: #003-MP • ULTRA SECRET"},{id:"letter_003",icon:"💌",name:"Unreleased Letter #003",kind:"letter",teaser:"An unreleased letter. Contents unavailable before purchase."},{id:"letter_004",icon:"💌",name:"Unreleased Letter #004",kind:"letter",teaser:"An unreleased letter. Contents unavailable before purchase."},{id:"o4e_004",icon:"👓",name:"Classified File #004",kind:"dossier",teaser:"CASE: O4E-004 • SUBJECT DATA: REDACTED"},{id:"mwa_005",icon:"🎯",name:"Classified File #005",kind:"dossier",teaser:"FILE: MWA-005 • VULNERABILITIES: CLASSIFIED"},{id:"aypp_006",icon:"🔐",name:"Classified File #006",kind:"dossier",teaser:"FILE: AYPP-006 • ENCRYPTED • CLEARANCE REQUIRED"}];
+const EYES=`Lizzy,
 
-(function () {
-  const APP_KEY = "lizzyInteractiveRewardsProductionV2";
-  const VIP_KEY = "lizzyInteractiveVipProductionV2";
-  const TOKEN_KEY = "lizzyTokenJarV1";
-  const PREP_KEY = "lizzyInteractiveRewardsProductionPreparedV2";
-  const DAY = 86400000;
-  const el = (id) => document.getElementById(id);
-  const now = () => Date.now();
+If I had to pick one thing about you, it would probably be your eyes.
 
-  // Robust storage: normal localStorage in production, memory fallback for
-  // restricted/private contexts. A storage error can never stop the app UI.
-  const storage = (() => {
-    try {
-      const ls = window.localStorage;
-      const testKey = "__lizzy_ir_storage_test__";
-      ls.setItem(testKey, "1");
-      ls.removeItem(testKey);
-      return ls;
-    } catch (_) {
-      const memory = Object.create(null);
-      return {
-        getItem(key) { return Object.prototype.hasOwnProperty.call(memory,key) ? memory[key] : null; },
-        setItem(key,value) { memory[key]=String(value); },
-        removeItem(key) { delete memory[key]; }
-      };
-    }
-  })();
+And yes, I know that saying this is dangerous because your ego really doesn't need any additional funding.
 
-  function defaultState() {
-    return {
-      version:2,
-      vip:{owned:1,status:"ready",earnedAt:now(),activatedAt:null,expiresAt:null},
-      rareBox:{owned:1,status:"unopened",earnedAt:now()}
-    };
-  }
+But I notice them. A lot.
 
-  function readState() {
-    let saved={};
-    try { saved=JSON.parse(storage.getItem(APP_KEY)||"{}")||{}; } catch (_) {}
-    const base=defaultState();
-    return {
-      ...base,
-      ...saved,
-      vip:{...base.vip,...(saved.vip||{})},
-      rareBox:{...base.rareBox,...(saved.rareBox||{})}
-    };
-  }
+There's just something about your eyes that constantly bamboozles me. Whether you're smiling, giving me attitude, looking at me like I've said the dumbest thing imaginable, or just looking at me normally — they always get me.
 
-  function writeState(state) {
-    try { storage.setItem(APP_KEY,JSON.stringify(state)); } catch (_) {}
-  }
+I've even tried looking at your forehead instead.
 
-  function readVip() {
-    try { return JSON.parse(storage.getItem(VIP_KEY)||"null"); } catch (_) { return null; }
-  }
+Didn't work.
 
-  function writeVip(vip) {
-    try {
-      storage.setItem(VIP_KEY,JSON.stringify(vip));
-      storage.setItem("lizzyVipStateV1",JSON.stringify(vip));
-    } catch (_) {}
-  }
+So unfortunately, I think I'll just continue taking the risk and looking into them.
 
-  function vipIsActive() {
-    const vip=readVip();
-    return Boolean(vip && Number(vip.expiresAt)>now());
-  }
+And before you get too excited about this letter, this does not mean I'm becoming soft.
 
-  function formatRemaining(ms) {
-    ms=Math.max(0,Number(ms)||0);
-    const h=Math.floor(ms/3600000);
-    const m=Math.floor((ms%3600000)/60000);
-    const s=Math.floor((ms%60000)/1000);
-    return {
-      short:`${h}h ${String(m).padStart(2,"0")}m`,
-      full:`${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`
-    };
-  }
+This message will self-destruct the moment you try using it against me.
 
-  function notify(type,data) {
-    // Network notifications never control local reward behavior.
-    setTimeout(() => {
-      try {
-        if (typeof window.lizzyNotify==="function") {
-          Promise.resolve(window.lizzyNotify(type,data)).catch(()=>{});
-        } else if (typeof window.notify==="function") {
-          Promise.resolve(window.notify(type,data)).catch(()=>{});
-        }
-      } catch (_) {}
-    },0);
-  }
+Mikael
+a.k.a Mr Perfect 💜`;
+const HONEST=`Lizzy,
 
-  function prepareOnce() {
-    if (storage.getItem(PREP_KEY)) return;
+Congratulations. You have somehow unlocked a very rare event:
 
-    // Remove legacy VIP/Rare Box Token Jar entries and redemption history.
-    try {
-      const jar=JSON.parse(storage.getItem(TOKEN_KEY)||"null");
-      if (jar && typeof jar==="object") {
-        jar.inventory=jar.inventory||{};
-        delete jar.inventory["VIP Status — One Day"];
-        delete jar.inventory["VIP Status - One Day"];
-        delete jar.inventory["Mystery Rare Box"];
-        if (Array.isArray(jar.history)) {
-          jar.history=jar.history.filter(item => {
-            const name=String(item?.name||"");
-            return !/VIP Status\s*[—-]\s*One Day/i.test(name) && !/Mystery Rare Box/i.test(name);
-          });
-        }
-        storage.setItem(TOKEN_KEY,JSON.stringify(jar));
-      }
-    } catch (_) {}
+Mikael being nice without immediately ruining it.
 
-    // Guaranteed presentation/test inventory.
-    const state=readState();
-    if (!vipIsActive()) {
-      state.vip.owned=Math.max(1,Number(state.vip.owned)||0);
-      state.vip.status="ready";
-    }
-    state.rareBox.owned=Math.max(1,Number(state.rareBox.owned)||0);
-    state.rareBox.status="unopened";
-    writeState(state);
-    storage.setItem(PREP_KEY,"done");
-  }
+So, for the next few moments, I'll admit something.
 
-  function requiredElementsPresent() {
-    const required=["interactiveRewardsIcon","interactiveRewardsWindow","irClose","irCards","irStage","irVipActivation","irEnterVip","irVipBadge","irVipClock"];
-    const missing=required.filter(id=>!el(id));
-    if (missing.length) {
-      console.error("Interactive Rewards missing DOM:",missing);
-      return false;
-    }
-    return true;
-  }
+I genuinely enjoy having you around.
 
-  function open() {
-    const win=el("interactiveRewardsWindow");
-    if (!win) return false;
-    win.classList.remove("hidden");
-    win.style.display="block";
-    win.setAttribute("aria-hidden","false");
-    const stage=el("irStage");
-    if (stage) {
-      stage.classList.add("hidden");
-      stage.innerHTML="";
-    }
-    render();
-    return true;
-  }
+I've gotten used to the attitude, the ragebaiting, the random arguments, you being a menace for absolutely no reason, and somehow constantly bamboozling me with how pretty and beautiful you are and stuff.
 
-  function close() {
-    const win=el("interactiveRewardsWindow");
-    if (win) {
-      win.classList.add("hidden");
-      win.style.removeProperty("display");
-      win.setAttribute("aria-hidden","true");
-    }
-    return true;
-  }
+And underneath all of that, you're genuinely someone I appreciate a lot.
 
-  function render() {
-    if (!requiredElementsPresent()) return false;
+You're funny, caring, ridiculously easy to talk to, and somehow you manage to make ordinary moments way more entertaining than they should be.
 
-    const state=readState();
-    const vip=readVip();
-    const active=vipIsActive();
+I notice more about you than I probably admit.
 
-    if (state.vip.status==="active" && !active) {
-      state.vip.status="expired";
-      state.vip.owned=0;
-      writeState(state);
-    }
+And I'm very glad I met you.
 
-    document.body.classList.toggle("irVipActive",active);
-    el("irVipBadge").classList.toggle("hidden",!active);
+Okay.
 
-    if (active && vip) {
-      const f=formatRemaining(vip.expiresAt-now());
-      el("irVipClock").textContent=f.short;
-      if (el("irVipActivationClock")) el("irVipActivationClock").textContent=f.full;
-    }
+Temporary Honesty has now expired.
 
-    const count=(Number(state.vip.owned)>0?1:0)+(Number(state.rareBox.owned)>0?1:0);
-    if (el("irCount")) el("irCount").textContent=`${count} reward${count===1?"":"s"} available`;
-    if (el("irDesktopDot")) {
-      el("irDesktopDot").textContent=String(count);
-      el("irDesktopDot").classList.toggle("hidden",count===0);
-    }
+Any attempt to question Mikael about the contents of this letter may result in immediate denial and accusations of fabricated evidence.
 
-    let vipStatus="READY TO ACTIVATE";
-    if (active && vip) vipStatus=`ACTIVE • ${formatRemaining(vip.expiresAt-now()).short}`;
-    else if (state.vip.status==="expired") vipStatus="EXPIRED";
-
-    el("irCards").innerHTML=`
-      <article class="irCard">
-        <div class="irCardEmoji">👑</div>
-        <h2>VIP Status — One Day</h2>
-        <div class="irStatus">${vipStatus}</div>
-        <p>Activate a full 24 hours of LizzyOS VIP treatment, privileges and special access.</p>
-        <button id="irVipOpen" type="button" ${Number(state.vip.owned)<=0||active?"disabled":""}>
-          ${active?"VIP ACTIVE":state.vip.status==="expired"?"USED":"ACTIVATE VIP"}
-        </button>
-      </article>
-      <article class="irCard">
-        <div class="irCardEmoji">🎁</div>
-        <h2>Mystery Rare Box</h2>
-        <div class="irStatus">${state.rareBox.status==="unopened"?"UNOPENED":"OPENED"}</div>
-        <p>Choose Money, Secrets or Mikael. The final reward remains a mystery.</p>
-        <button id="irRareOpen" type="button" ${Number(state.rareBox.owned)<=0?"disabled":""}>
-          ${Number(state.rareBox.owned)>0?"OPEN RARE BOX":"OPENED"}
-        </button>
-      </article>`;
-
-    el("irVipOpen")?.addEventListener("click",showVipConfirm);
-    el("irRareOpen")?.addEventListener("click",showRareBox);
-    return true;
-  }
-
-  function showVipConfirm() {
-    if (vipIsActive()) return openVipControls();
-    const state=readState();
-    if (Number(state.vip.owned)<=0) return;
-
-    const stage=el("irStage");
-    stage.classList.remove("hidden");
-    stage.innerHTML=`
-      <div class="irConfirmCard">
-        <div style="font-size:64px">👑</div>
-        <div class="irKicker">VIP STATUS — ONE DAY</div>
-        <h2>Activate VIP Status?</h2>
-        <p>The 24-hour timer starts only when you press the button below.</p>
-        <button id="irConfirmVip" type="button">ACTIVATE 24-HOUR VIP ✨</button>
-      </div>`;
-    el("irConfirmVip")?.addEventListener("click",activateVip,{once:true});
-  }
-
-  function confetti(count=140) {
-    const symbols=["👑","✨","💜","💎","⭐"];
-    for (let i=0;i<count;i++) {
-      const p=document.createElement("span");
-      p.className="irConfetti";
-      p.textContent=symbols[i%symbols.length];
-      p.style.left=`${Math.random()*100}vw`;
-      p.style.animationDelay=`${Math.random()*.8}s`;
-      document.body.appendChild(p);
-      setTimeout(()=>p.remove(),4400);
-    }
-  }
-
-  function activateVip() {
-    if (vipIsActive()) return openVipControls();
-
-    const state=readState();
-    if (Number(state.vip.owned)<=0) return;
-
-    const startedAt=now();
-    const expiresAt=startedAt+DAY;
-    const vip={
-      version:2,startedAt,expiresAt,
-      peeks:2,reroll:1,override:1,discount:1,
-      allowanceBonus:3,mysteryBoost:true,
-      arcadeBonusCap:5,arcadeBonusEarned:0,
-      complaints:0,messages:0
-    };
-
-    // State commit first.
-    writeVip(vip);
-    state.vip.owned=Math.max(0,Number(state.vip.owned)-1);
-    state.vip.status="active";
-    state.vip.activatedAt=startedAt;
-    state.vip.expiresAt=expiresAt;
-    writeState(state);
-
-    close();
-
-    const overlay=el("irVipActivation");
-    overlay.classList.remove("hidden");
-    overlay.style.display="grid";
-    overlay.scrollTop=0;
-
-    confetti();
-    render();
-
-    notify("interactive_reward",{reward:"VIP Status — One Day",status:"activated",expiresAt});
-    window.dispatchEvent(new CustomEvent("lizzyVipRedeemed",{detail:{startedAt,expiresAt}}));
-  }
-
-  function enterVip() {
-    const overlay=el("irVipActivation");
-    overlay.classList.add("hidden");
-    overlay.style.removeProperty("display");
-    openVipControls();
-  }
-
-  function saveVip(mutator) {
-    const vip=readVip();
-    if (!vip || !vipIsActive()) return null;
-    mutator(vip);
-    writeVip(vip);
-    return vip;
-  }
-
-  function openVipControls() {
-    if (!vipIsActive()) return open();
-
-    const vip=readVip();
-    el("irVipActivation").classList.add("hidden");
-    const win=el("interactiveRewardsWindow");
-    win.classList.remove("hidden");
-    win.style.display="block";
-
-    const stage=el("irStage");
-    stage.classList.remove("hidden");
-    stage.innerHTML=`
-      <div class="irVipControls">
-        <div style="font-size:60px">👑</div>
-        <div class="irKicker">VIP MODE ACTIVE</div>
-        <h2>VIP Control Panel</h2>
-        <p><b>${formatRemaining(vip.expiresAt-now()).short}</b> remaining</p>
-        <div class="irChoiceGrid irVipFeatureGrid">
-          <button data-irvip="peek" ${Number(vip.peeks)<=0?"disabled":""}>🔐 <b>Classified Sneak Peek</b><small>${Number(vip.peeks)} of 2 remaining</small></button>
-          <button data-irvip="reroll" ${Number(vip.reroll)<=0?"disabled":""}>🎁 <b>Daily Reward Reroll</b><small>${Number(vip.reroll)} remaining</small></button>
-          <button data-irvip="override" ${Number(vip.override)<=0?"disabled":""}>⚖️ <b>VIP Override</b><small>${Number(vip.override)} remaining</small></button>
-          <button data-irvip="discount" ${Number(vip.discount)<=0?"disabled":""}>🛍️ <b>Secret Shelf Discount</b><small>${Number(vip.discount)>0?"10% off one purchase":"Used"}</small></button>
-          <button data-irvip="complaint">📣 <b>Complaint Against Mikael</b><small>VIP priority</small></button>
-          <button data-irvip="message">💌 <b>Message Mr Perfect</b><small>VIP priority</small></button>
-        </div>
-        <div id="irVipAction" class="irVipAction">VIP privileges are ready.</div>
-      </div>`;
-
-    stage.querySelectorAll("[data-irvip]").forEach(btn=>{
-      btn.addEventListener("click",()=>handleFeature(btn.dataset.irvip));
-    });
-    return true;
-  }
-
-  function action(html) {
-    if (el("irVipAction")) el("irVipAction").innerHTML=html;
-  }
-
-  function handleFeature(feature) {
-    if (!vipIsActive()) return;
-
-    if (feature==="peek") {
-      const current=readVip();
-      if (Number(current?.peeks)<=0) return;
-      const vip=saveVip(v=>v.peeks-=1);
-      action(`🔐 <b>Sneak Peek activated.</b><br>${vip.peeks}/2 remaining. Choose one locked Secret Shelf item to preview.`);
-      notify("vip_privilege",{privilege:"classified_sneak_peek",remaining:vip.peeks});
-      openVipControls();
-    }
-
-    if (feature==="reroll") {
-      const current=readVip(); if (Number(current?.reroll)<=0) return;
-      saveVip(v=>v.reroll=0);
-      storage.setItem("lizzyVipRewardReroll","1");
-      action("🎁 <b>Daily Reward Reroll armed.</b><br>The original reward must be surrendered before the replacement.");
-      notify("vip_privilege",{privilege:"daily_reward_reroll"});
-    }
-
-    if (feature==="override") {
-      const current=readVip(); if (Number(current?.override)<=0) return;
-      saveVip(v=>v.override=0);
-      storage.setItem("lizzyVipOverrideAvailable","1");
-      action("⚖️ <b>VIP Override armed.</b><br>One silly Mikael ruling may be overturned.");
-      notify("vip_privilege",{privilege:"override"});
-    }
-
-    if (feature==="discount") {
-      const current=readVip(); if (Number(current?.discount)<=0) return;
-      saveVip(v=>v.discount=0);
-      storage.setItem("lizzyVipShelfDiscount","10");
-      action("🛍️ <b>10% Secret Shelf discount activated.</b><br>Applies to one purchase.");
-      notify("vip_privilege",{privilege:"secret_shelf_discount",discount:10});
-    }
-
-    if (feature==="complaint") {
-      action(`<b>👑 VIP COMPLAINT PRIORITY</b><textarea id="irVipText" class="irVipTextarea" placeholder="State your complaint against Mikael..."></textarea><button id="irSubmitComplaint">SUBMIT VIP COMPLAINT</button><p>Estimated chance Mikael accepts responsibility: <b>2%</b></p>`);
-      el("irSubmitComplaint")?.addEventListener("click",submitComplaint);
-    }
-
-    if (feature==="message") {
-      action(`<b>💌 VIP PRIORITY MESSAGE</b><textarea id="irVipText" class="irVipTextarea" placeholder="Message Mr Perfect..."></textarea><button id="irSubmitMessage">SEND PRIORITY MESSAGE</button>`);
-      el("irSubmitMessage")?.addEventListener("click",submitMessage);
-    }
-  }
-
-  function submitComplaint() {
-    const text=String(el("irVipText")?.value||"").trim();
-    if (!text) return;
-    saveVip(v=>v.complaints=Number(v.complaints||0)+1);
-    action("👑 <b>VIP COMPLAINT RECEIVED.</b><br>Position: <b>1 of 1</b>.<br>Estimated Mikael accountability: <b>2%</b> 😂");
-    notify("vip_complaint",{complaint:text,priority:"VIP"});
-  }
-
-  function submitMessage() {
-    const text=String(el("irVipText")?.value||"").trim();
-    if (!text) return;
-    saveVip(v=>v.messages=Number(v.messages||0)+1);
-    action("💌 <b>VIP PRIORITY MESSAGE SENT.</b><br>Mr Perfect has been dramatically notified.");
-    notify("vip_priority_message",{message:text});
-  }
-
-  function showRareBox() {
-    const state=readState();
-    if (Number(state.rareBox.owned)<=0) return;
-    const stage=el("irStage");
-    stage.classList.remove("hidden");
-    stage.innerHTML=`
-      <div style="font-size:64px">🎁</div>
-      <div class="irKicker">MYSTERY RARE BOX</div>
-      <h2>Choose Your Mystery</h2>
-      <p>You choose the category. LizzyOS chooses what happens next.</p>
-      <div class="irChoiceGrid">
-        <button data-irrare="money">💰 <b>MONEY</b><small>20–50 Micky Bucs</small></button>
-        <button data-irrare="secrets">🔐 <b>SECRETS</b><small>Mystery classified reward</small></button>
-        <button data-irrare="mikael">❤️ <b>MIKAEL</b><small>Mystery letter or interaction</small></button>
-      </div>
-      <p class="irMuted">Chooser verified. Final Rare Box outcomes are the next step after VIP testing.</p>`;
-  }
-
-  function grant(name) {
-    const state=readState();
-    const n=String(name||"");
-    if (/VIP Status\s*[—-]\s*One Day/i.test(n)) {
-      state.vip.owned+=1;
-      state.vip.status=vipIsActive()?"active":"ready";
-    }
-    if (/Mystery Rare Box/i.test(n)) {
-      state.rareBox.owned+=1;
-      state.rareBox.status="unopened";
-    }
-    writeState(state);
-    render();
-    notify("interactive_reward",{reward:n,status:"received"});
-  }
-
-  function specialRewardCapture(event) {
-    const reward=event?.detail?.reward;
-    let name="";
-    if (Array.isArray(reward)) name=String(reward[2]||"");
-    else if (reward && typeof reward==="object") name=String(reward.name||reward.reward||"");
-    else name=String(reward||"");
-
-    if (!/VIP Status\s*[—-]\s*One Day/i.test(name) && !/Mystery Rare Box/i.test(name)) return;
-    event.stopImmediatePropagation();
-    grant(name);
-  }
-
-  function bind() {
-    if (!requiredElementsPresent()) return false;
-
-    // Direct onclick exists too; duplicate calls are harmless because open() is idempotent.
-    el("interactiveRewardsIcon").addEventListener("click",open);
-    el("interactiveRewardsIcon").addEventListener("keydown",event=>{
-      if (event.key==="Enter"||event.key===" ") { event.preventDefault(); open(); }
-    });
-    el("irClose").addEventListener("click",close);
-    el("irEnterVip").addEventListener("click",enterVip);
-    el("irVipBadge").addEventListener("click",openVipControls);
-    document.addEventListener("keydown",event=>{
-      if (event.key!=="Escape") return;
-      if (!el("irVipActivation").classList.contains("hidden")) {
-        el("irVipActivation").classList.add("hidden");
-      } else close();
-    });
-    window.addEventListener("lizzyDailyRewardClaimed",specialRewardCapture,true);
-    return true;
-  }
-
-  function init() {
-    prepareOnce();
-    if (!bind()) return false;
-    render();
-    window.setInterval(render,1000);
-    console.info("LizzyOS Interactive Rewards: READY");
-    return true;
-  }
-
-  window.InteractiveRewardsApp={
-    init,open,close,render,activateVip,openVipControls,grant,
-    vipIsActive,state:readState
-  };
-
-  if (document.readyState==="loading") {
-    document.addEventListener("DOMContentLoaded",init,{once:true});
-  } else {
-    init();
-  }
+Mikael
+a.k.a Mr Perfect 💜`;
+const INTERACTIONS=[{name:"Song Exchange",emoji:"🎧",desc:"Mikael and Lizzy each send one song that reminds them of the other, with a short explanation why."},{name:"Question Call",emoji:"📞",desc:"A 10-minute call where Lizzy can ask Mikael questions and he answers honestly, with reasonable privacy vetoes."},{name:"Voice Note Request",emoji:"🎤",desc:"Lizzy may request one voice note from Mikael on a topic of her choice."},{name:"Truth Card",emoji:"🃏",desc:"Lizzy may ask Mikael one question and he has to answer truthfully, with reasonable privacy boundaries."}];
+function base(){return{vip:{owned:1,status:"ready"},rareBox:{owned:1,status:"unopened"}}}function state(){const b=base(),x=read(APP,{});return{...b,...x,vip:{...b.vip,...(x.vip||{})},rareBox:{...b.rareBox,...(x.rareBox||{})}}}function save(s){write(APP,s)}function vip(){return read(VIP,null)}function active(){const v=vip();return!!(v&&Number(v.expiresAt)>now())}function saveVip(v){write(VIP,v);write(LEGACYVIP,v)}function wallet(){return Math.max(0,Number(localStorage.getItem(WALLET)||0))}function setWallet(n){localStorage.setItem(WALLET,String(Math.max(0,Math.floor(Number(n)||0))));window.dispatchEvent(new Event("lizzyStoreRefresh"))}function fmt(ms){ms=Math.max(0,ms);const h=Math.floor(ms/36e5),m=Math.floor(ms%36e5/6e4),s=Math.floor(ms%6e4/1000);return{short:`${h}h ${String(m).padStart(2,"0")}m`,full:`${String(h).padStart(2,"0")}:${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`}}function day(){const d=new Date();return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`}
+function notify(type,data){setTimeout(()=>{try{const u=window.LIZZY_TELEGRAM_WORKER_URL||"https://lizzyos-notifications.mulaudzimikael73.workers.dev/";fetch(u,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({type,...data,createdAt:new Date().toISOString()})}).catch(()=>{})}catch{}},0)}
+function prepare(){if(localStorage.getItem(PREP))return;const t=read(TOKENS,null);if(t){t.inventory=t.inventory||{};delete t.inventory["VIP Status — One Day"];delete t.inventory["VIP Status - One Day"];delete t.inventory["Mystery Rare Box"];if(Array.isArray(t.history))t.history=t.history.filter(x=>!/VIP Status|Mystery Rare Box/i.test(String(x?.name||"")));write(TOKENS,t)}const s=state();if(!active()){s.vip.owned=Math.max(1,Number(s.vip.owned)||0);s.vip.status="ready"}s.rareBox.owned=Math.max(1,Number(s.rareBox.owned)||0);s.rareBox.status="unopened";save(s);localStorage.setItem(PREP,"done")}
+function open(){const w=$("interactiveRewardsWindow");if(!w)return false;w.classList.remove("hidden");w.style.display="block";$("irStage")?.classList.add("hidden");render();return true}function close(){const w=$("interactiveRewardsWindow");if(w){w.classList.add("hidden");w.style.removeProperty("display")}return true}function stage(h){const x=$("irStage");x.classList.remove("hidden");x.innerHTML=h;return x}function action(h){if($("irVipAction"))$("irVipAction").innerHTML=h}
+function allowance(){if(!active())return;const v=vip(),d=day();if(v.lastAllowanceDay===d)return;v.lastAllowanceDay=d;v.allowanceEarned=Number(v.allowanceEarned||0)+3;saveVip(v);setWallet(wallet()+3);notify("vip_privilege",{privilege:"daily_allowance",amount:3,balance:wallet()})}
+function render(){const s=state(),v=vip(),on=active();if(s.vip.status==="active"&&!on){s.vip.status="expired";s.vip.owned=0;save(s)}$("irVipBadge")?.classList.toggle("hidden",!on);if(on&&v){const f=fmt(v.expiresAt-now());$("irVipClock").textContent=f.short;if($("irVipActivationClock"))$("irVipActivationClock").textContent=f.full}const n=(Number(s.vip.owned)>0?1:0)+(Number(s.rareBox.owned)>0?1:0);if($("irCount"))$("irCount").textContent=`${n} reward${n===1?"":"s"} available`;if($("irDesktopDot")){$("irDesktopDot").textContent=n;$("irDesktopDot").classList.toggle("hidden",n===0)}const vs=on?`ACTIVE • ${fmt(v.expiresAt-now()).short}`:s.vip.status==="expired"?"EXPIRED":"READY TO ACTIVATE";$("irCards").innerHTML=`<article class="irCard"><div class="irCardEmoji">👑</div><h2>VIP Status — One Day</h2><div class="irStatus">${vs}</div><p>24 hours of VIP privileges, better reward odds and bonuses.</p><button id="irVipOpen" ${Number(s.vip.owned)<=0||on?"disabled":""}>${on?"VIP ACTIVE":"ACTIVATE VIP"}</button>${on?'<button id="irVipControlsBtn" class="irSecondaryBtn">OPEN VIP CONTROLS</button>':""}</article><article class="irCard"><div class="irCardEmoji">🎁</div><h2>Mystery Rare Box</h2><div class="irStatus">${s.rareBox.status==="unopened"?"UNOPENED":"OPENED"}</div><p>Money, Secrets or Mikael.</p><button id="irRareOpen" ${Number(s.rareBox.owned)<=0?"disabled":""}>${Number(s.rareBox.owned)>0?"OPEN RARE BOX":"OPENED"}</button></article>`;$("irVipOpen")?.addEventListener("click",confirmVip);$("irVipControlsBtn")?.addEventListener("click",controls);$("irRareOpen")?.addEventListener("click",rare);allowance()}
+function confirmVip(){if(active())return controls();const s=state();if(Number(s.vip.owned)<=0)return;const x=stage(`<div class="irConfirmCard"><div class="irBigEmoji">👑</div><h2>Activate VIP Status?</h2><p>The 24-hour timer starts immediately.</p><button id="irConfirmVip">ACTIVATE 24-HOUR VIP ✨</button></div>`);x.querySelector("#irConfirmVip").onclick=activate}
+function confetti(){for(let i=0;i<100;i++){const p=document.createElement("span");p.className="irConfetti";p.textContent=["👑","✨","💜","💎","⭐"][i%5];p.style.left=Math.random()*100+"vw";document.body.appendChild(p);setTimeout(()=>p.remove(),3500)}}
+function activate(){const s=state();if(active()||Number(s.vip.owned)<=0)return;const st=now(),ex=st+DAY,v={startedAt:st,expiresAt:ex,peeks:2,reroll:1,override:1,discount:1,mysteryBoost:true,arcadeBonusCap:5,arcadeBonusEarned:0,allowanceEarned:0,lastAllowanceDay:null,complaints:0,messages:0};saveVip(v);s.vip.owned--;s.vip.status="active";save(s);close();$("irVipActivation").classList.remove("hidden");$("irVipActivation").style.display="grid";confetti();allowance();render();notify("interactive_reward",{reward:"VIP Status — One Day",status:"activated",expiresAt:ex})}
+function enter(){const o=$("irVipActivation");o.classList.add("hidden");o.style.removeProperty("display");controls()}function saveV(fn){const v=vip();if(!v||!active())return null;fn(v);saveVip(v);return v}
+function controls(){if(!active())return open();const v=vip();$("irVipActivation")?.classList.add("hidden");const w=$("interactiveRewardsWindow");w.classList.remove("hidden");w.style.display="block";const x=stage(`<div class="irVipControls"><div class="irBigEmoji">👑</div><h2>VIP Control Panel</h2><p><b>${fmt(v.expiresAt-now()).short}</b> remaining • Arcade ${v.arcadeBonusEarned||0}/${v.arcadeBonusCap||5} MB • Allowance ${v.allowanceEarned||0} MB</p><div class="irChoiceGrid"><button data-v="peek" ${v.peeks<=0?"disabled":""}>🔐 <b>Classified Sneak Peek</b><small>${v.peeks}/2 remaining</small></button><button data-v="reroll" ${v.reroll<=0?"disabled":""}>🎁 <b>Daily Reward Reroll</b><small>${v.reroll} remaining</small></button><button data-v="override" ${v.override<=0?"disabled":""}>⚖️ <b>VIP Override</b><small>${v.override} remaining</small></button><button data-v="discount" ${v.discount<=0?"disabled":""}>🛍️ <b>Secret Shelf Discount</b><small>${v.discount?"10% off one purchase":"Used"}</small></button><button data-v="complaint">📣 <b>Complaint Against Mikael</b></button><button data-v="message">💌 <b>Message Mr Perfect</b></button></div><div id="irVipAction" class="irVipAction">Choose a VIP privilege.</div></div>`);x.querySelectorAll("[data-v]").forEach(b=>b.onclick=()=>feature(b.dataset.v))}
+function locked(kind){const sh=read(SHELF,{owned:{}});return ITEMS.filter(i=>!sh?.owned?.[i.id]&&(!kind||i.kind===kind))}function peekSelector(src){const list=locked();if(!list.length)return action("Everything on the Secret Shelf is already owned.");action(`<b>🔐 SELECT A LOCKED ITEM</b><div class="irPeekGrid">${list.map(i=>`<button data-p="${i.id}">${i.icon} <b>${esc(i.name)}</b><small>${i.kind}</small></button>`).join("")}</div>`);$("irVipAction").querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>usePeek(b.dataset.p,src))}function usePeek(id,src){const i=ITEMS.find(x=>x.id===id);if(!i)return;if(src==="vip"){if(vip().peeks<=0)return;saveV(v=>v.peeks--);notify("vip_privilege",{privilege:"classified_sneak_peek",item:i.name,remaining:vip().peeks})}else{const c=Number(localStorage.getItem("lizzyRareSecretPeekCredits")||0);if(c<=0)return;localStorage.setItem("lizzyRareSecretPeekCredits",String(c-1))}action(`<div class="irBigEmoji">${i.icon}</div><h3>${esc(i.name)}</h3><p>${esc(i.teaser)}</p><small>Full contents remain locked.</small>`)}
+function feature(f){if(f==="peek")return vip().peeks>0&&peekSelector("vip");if(f==="reroll"){if(vip().reroll<=0)return;localStorage.setItem("lizzyVipRewardReroll","1");saveV(v=>v.reroll=0);action("🎁 <b>VIP REROLL ARMED.</b><br>Open Daily Rewards and use the VIP REROLL button.");notify("vip_privilege",{privilege:"daily_reward_reroll"});return}if(f==="discount"){if(vip().discount<=0)return;localStorage.setItem("lizzyVipShelfDiscount","10");saveV(v=>v.discount=0);action("🛍️ <b>10% DISCOUNT ACTIVE.</b><br>Your next accepted Secret Shelf purchase costs 10% less.");notify("vip_privilege",{privilege:"secret_shelf_discount",discount:10});return}if(f==="override"){if(vip().override<=0)return;action(`<b>⚖️ VIP OVERRIDE</b><textarea id="irVipText" class="irVipTextarea"></textarea><button id="irUseOverride">USE OVERRIDE</button>`);$("irUseOverride").onclick=()=>{const t=$("irVipText").value.trim();if(!t)return;saveV(v=>v.override=0);action(`⚖️ <b>OVERRIDDEN:</b> ${esc(t)}`);notify("vip_privilege",{privilege:"override",ruling:t})};return}if(f==="complaint"){action(`<b>📣 VIP COMPLAINT</b><textarea id="irVipText" class="irVipTextarea"></textarea><button id="irSubmitComplaint">SUBMIT</button>`);$("irSubmitComplaint").onclick=()=>{const t=$("irVipText").value.trim();if(!t)return;action("Complaint received. Position 1 of 1. Mikael accountability: 2% 😂");notify("vip_complaint",{complaint:t,accountabilityChance:"2%"})};return}if(f==="message"){action(`<b>💌 VIP MESSAGE</b><textarea id="irVipText" class="irVipTextarea"></textarea><button id="irSubmitMessage">SEND</button>`);$("irSubmitMessage").onclick=()=>{const t=$("irVipText").value.trim();if(!t)return;action("Priority message sent 💌");notify("vip_priority_message",{message:t})}}}
+function arcade(){if(!active())return;const v=vip();if((v.arcadeBonusEarned||0)>=(v.arcadeBonusCap||5))return;v.arcadeBonusEarned=(v.arcadeBonusEarned||0)+1;saveVip(v);setWallet(wallet()+1);notify("vip_privilege",{privilege:"arcade_bonus",amount:1,earned:v.arcadeBonusEarned,balance:wallet()})}
+function consume(){const s=state();if(s.rareBox.owned<=0)return false;s.rareBox.owned--;s.rareBox.status=s.rareBox.owned>0?"unopened":"opened";save(s);return true}function rare(){if(state().rareBox.owned<=0)return;const x=stage(`<div class="irBigEmoji">🎁</div><h2>Choose Your Mystery</h2><div class="irChoiceGrid"><button data-r="money">💰 <b>MONEY</b><small>20–50 Micky Bucs</small></button><button data-r="secrets">🔐 <b>SECRETS</b><small>Classified advantage</small></button><button data-r="mikael">❤️ <b>MIKAEL</b><small>Letter or interaction</small></button></div>`);x.querySelectorAll("[data-r]").forEach(b=>b.onclick=()=>resolve(b.dataset.r))}
+function reveal(h){const x=stage(`<div class="irRareReveal">${h}<button id="irDone" class="irSecondaryBtn">DONE</button></div>`);x.querySelector("#irDone").onclick=()=>{$("irStage").classList.add("hidden");render()}}
+function resolve(cat){document.querySelectorAll("[data-r]").forEach(b=>b.disabled=true);if(!consume())return;if(cat==="money"){const n=20+Math.floor(Math.random()*31);setWallet(wallet()+n);reveal(`<div class="irBigEmoji">💰</div><h2>+${n} MICKY BUCS</h2><p>New balance: <b>${wallet()} MB</b></p>`);notify("rare_box_redeemed",{category:"Money",reward:`${n} Micky Bucs`,balance:wallet()});return}if(cat==="secrets"){const p=["peek","discount","intel"][Math.floor(Math.random()*3)];if(p==="peek"){localStorage.setItem("lizzyRareSecretPeekCredits","1");reveal(`<h2>🔐 CLASSIFIED SNEAK PEEK</h2><button id="irUseRarePeek">USE NOW</button>`);$("irUseRarePeek").onclick=rarePeek;notify("rare_box_redeemed",{category:"Secrets",reward:"Classified Sneak Peek"});return}if(p==="discount"){localStorage.setItem("lizzyRareShelfDiscount","15");reveal(`<h2>🛍️ 15% SECRET SHELF DISCOUNT</h2><p>Applied to your next accepted purchase.</p>`);notify("rare_box_redeemed",{category:"Secrets",reward:"15% Secret Shelf Discount"});return}const ds=locked("dossier"),i=ds.length?ds[Math.floor(Math.random()*ds.length)]:locked()[0];reveal(`<h2>${i?.icon||"🗂️"} ${esc(i?.name||"NO LOCKED DOSSIER")}</h2><p>${esc(i?.teaser||"Everything is owned.")}</p>`);notify("rare_box_redeemed",{category:"Secrets",reward:"Dossier Intelligence",item:i?.name||"none"});return}const pool=["eyes","honesty","song","call","voice","truth"],p=pool[Math.floor(Math.random()*pool.length)];if(p==="eyes"||p==="honesty"){const e=p==="eyes",id=e?"rare_letter_eyes":"rare_letter_honesty",title=e?"One Thing About You…":"Temporary Honesty",content=e?EYES:HONEST;let l=read(LETTERS,[]);if(!Array.isArray(l))l=[];if(!l.some(x=>x.id===id))l.push({id,title,content,folder:"open_when_purchased",source:"Mystery Rare Box",purchasedAt:new Date().toISOString()});write(LETTERS,l);window.dispatchEvent(new Event("lizzyPurchasedLettersUpdated"));reveal(`<h2>💌 ${esc(title)}</h2><p>Saved to Open When → Purchased Letters.</p><details class="irLetterPreview"><summary>Read now</summary><pre>${esc(content)}</pre></details>`);notify("rare_box_redeemed",{category:"Mikael",reward:title,type:"Mystery Letter"});return}const nm={song:"Song Exchange",call:"Question Call",voice:"Voice Note Request",truth:"Truth Card"}[p],r=INTERACTIONS.find(x=>x.name===nm),t=read(TOKENS,{version:1,inventory:{},history:[]});t.inventory=t.inventory||{};t.inventory[r.name]=(t.inventory[r.name]||0)+1;write(TOKENS,t);reveal(`<h2>${r.emoji} ${r.name}</h2><p>${r.desc}</p><p>Saved to Token Jar.</p>`);notify("rare_box_redeemed",{category:"Mikael",reward:r.name,type:"Mystery Interaction"})}
+function rarePeek(){stage(`<div class="irBigEmoji">🔐</div><h2>Rare Box Sneak Peek</h2><div id="irVipAction" class="irVipAction"></div>`);peekSelector("rare")}
+function grant(n){const s=state();if(/VIP Status/i.test(n)){s.vip.owned++;s.vip.status=active()?"active":"ready"}if(/Mystery Rare Box/i.test(n)){s.rareBox.owned++;s.rareBox.status="unopened"}save(s);render()}function capture(e){const r=e?.detail?.reward,n=Array.isArray(r)?String(r[2]||""):String(r?.name||r||"");if(!/VIP Status|Mystery Rare Box/i.test(n))return;e.stopImmediatePropagation();grant(n)}
+function init(){prepare();$("interactiveRewardsIcon")?.addEventListener("click",open);$("irClose")?.addEventListener("click",close);$("irEnterVip")?.addEventListener("click",enter);$("irVipBadge")?.addEventListener("click",controls);window.addEventListener("lizzyDailyRewardClaimed",capture,true);window.addEventListener("lizzyGameCompleted",arcade);render();setInterval(render,1000)}
+window.InteractiveRewardsApp={open,close,render,activateVip:activate,openVipControls:controls,showRareBox:rare,resolveRareBox:resolve,grant,state,vipIsActive:active};
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init,{once:true});else init();
 })();

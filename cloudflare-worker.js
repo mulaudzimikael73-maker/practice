@@ -117,6 +117,11 @@ ${details}`;
  const sent=await tg(env,"sendMessage",{chat_id:env.TELEGRAM_CHAT_ID,text});
  return json({success:true,type:"game_result",telegram:!!sent?.ok});
 }
+if(b?.type==="interactive_reward"){const sent=await tg(env,"sendMessage",{chat_id:env.TELEGRAM_CHAT_ID,text:`🎁 INTERACTIVE REWARD\n\nReward: ${b.reward||"Unknown"}\nStatus: ${String(b.status||"updated").toUpperCase()}`});return json({success:true,telegram:!!sent?.ok});}
+if(b?.type==="vip_privilege"){const sent=await tg(env,"sendMessage",{chat_id:env.TELEGRAM_CHAT_ID,text:`👑 VIP PRIVILEGE\n\n${Object.entries(b).filter(([k])=>k!=="type").map(([k,v])=>`${k}: ${v}`).join("\n")}`});return json({success:true,telegram:!!sent?.ok});}
+if(b?.type==="vip_complaint"){const sent=await tg(env,"sendMessage",{chat_id:env.TELEGRAM_CHAT_ID,text:`📣 VIP COMPLAINT AGAINST MIKAEL\n\n${String(b.complaint||"").slice(0,2500)}\n\nEstimated accountability: ${b.accountabilityChance||"2%"}`});return json({success:true,telegram:!!sent?.ok});}
+if(b?.type==="vip_priority_message"){const sent=await tg(env,"sendMessage",{chat_id:env.TELEGRAM_CHAT_ID,text:`💌 VIP PRIORITY MESSAGE FROM LIZZY\n\n${String(b.message||"").slice(0,2500)}`});return json({success:true,telegram:!!sent?.ok});}
+if(b?.type==="rare_box_redeemed"){const sent=await tg(env,"sendMessage",{chat_id:env.TELEGRAM_CHAT_ID,text:`🎁 MYSTERY RARE BOX REDEEMED\n\nCategory: ${b.category||"Unknown"}\nReward: ${b.reward||"Mystery reward"}${b.balance!=null?`\nBalance: ${b.balance} MB`:""}\nBox: CONSUMED`});return json({success:true,telegram:!!sent?.ok});}
 if(b?.type==="assistant_activity"){
    const question=String(b.question||"").slice(0,500),answer=String(b.answer||"").slice(0,1500);
    if(!question||!answer)return json({success:false,error:"Missing assistant activity"},400);
