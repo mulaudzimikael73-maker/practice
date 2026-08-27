@@ -188,11 +188,13 @@ const S=(v,max=1800)=>String(v??"").trim().slice(0,max);
 const N=(v,d=0)=>Number.isFinite(Number(v))?Math.floor(Number(v)):d;
 const eventType=String(b?.type||"").trim();
 
-async function notifyTelegram(text,type=eventType){
-  const sent=await tg(env,"sendMessage",{
+async function notifyTelegram(text,type=eventType,reply_markup=null){
+  const payload={
     chat_id:env.TELEGRAM_CHAT_ID,
     text:String(text).slice(0,3900)
-  });
+  };
+  if(reply_markup)payload.reply_markup=reply_markup;
+  const sent=await tg(env,"sendMessage",payload);
 
   return json({
     success:true,
@@ -487,10 +489,27 @@ if(
     0
   );
 
+  const isVault=eventType==="vault_bid";
+
   const type=
-    eventType==="vault_bid"
+    isVault
       ? "🎰 VAULT BID"
       : "💌 NEW OFFER / BID";
+
+  // Persist the bid as a claim so the Telegram buttons can act on it
+  const c={
+    claimId:id(),
+    type:isVault?"vault_bid":"secret_shelf_bid",
+    item,
+    itemId:S(b.itemId||b.item_id||b.id||(isVault?"vault":""),200)||null,
+    offer:amount,
+    status:"pending",
+    counterOffer:null,
+    lizzyOpened:false,
+    createdAt:new Date().toISOString()
+  };
+  await putClaim(env,c);
+  await putShelfState(env,c);
 
   return notifyTelegram(
 `${type}
@@ -502,8 +521,20 @@ ${item}
 ${amount} MB
 
 ⏳ Status:
-PENDING`,
-    "bid_or_offer"
+PENDING
+
+Claim ID:
+${c.claimId}`,
+    "bid_or_offer",
+    {inline_keyboard:[
+      [
+        {text:isVault?"🎰 ACCEPT VAULT":"✅ ACCEPT",callback_data:`accept:${c.claimId}`},
+        {text:"❌ REJECT",callback_data:`reject:${c.claimId}`}
+      ],
+      [
+        {text:"💬 COUNTER",callback_data:`counter:${c.claimId}`}
+      ]
+    ]}
   );
 }
 
