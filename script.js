@@ -3338,57 +3338,54 @@ Status: REDEEMED${isArgument?"\n\nMikael's right to appeal: DENIED 😂":""}`;
     async function confirmRedeem(){
         if(!redeeming || !(tokens.inventory[redeeming]>0))return;
         const name=redeeming,d=TOKEN_DEFS[name];
-
-        const confirmBtn=$("confirmTokenRedeem");
-        const cancelBtn=$("cancelTokenRedeem");
-        if(confirmBtn){
-            confirmBtn.disabled=true;
-            confirmBtn.dataset.originalText=confirmBtn.dataset.originalText||confirmBtn.textContent;
-            confirmBtn.textContent="Redeeming…";
-        }
+        const confirmBtn=$("confirmTokenRedeem"), cancelBtn=$("cancelTokenRedeem");
+        if(confirmBtn){confirmBtn.disabled=true;confirmBtn.dataset.originalText=confirmBtn.dataset.originalText||confirmBtn.textContent;confirmBtn.textContent="Redeeming…";}
         if(cancelBtn)cancelBtn.disabled=true;
 
         tokens.inventory[name]--;
         if(name==="Second Chance Token")tokens.rerollCredits=(tokens.rerollCredits||0)+1;
-
         const payload={token:name,emoji:d.emoji,description:d.desc,redeemed_at:new Date().toLocaleString(),redeemed_at_iso:nowISO()};
         const entry={name,emoji:d.emoji,redeemedAt:payload.redeemed_at_iso,notifyStatus:"Sending..."};
-        tokens.history.unshift(entry);
-        saveTokens();
-        renderTokens();
-        $("tokenRedeemStatus").textContent="Redeemed 💗";
+        tokens.history.unshift(entry);saveTokens();renderTokens();
+        $("tokenRedeemStatus").textContent=`✅ ${name} redeemed. Opening reward…`;
 
-        entry.notifyStatus=await notifyRedemption(payload);
-        saveTokens();
-        renderTokens();
-        $("tokenRedeemStatus").textContent=`✅ ${name} redeemed successfully. 💗`;
-
-        await new Promise(resolve=>setTimeout(resolve,220));
+        // Close first. Special rewards must NEVER wait for Telegram/network.
+        await new Promise(r=>setTimeout(r,180));
         $("tokenRedeemWindow")?.classList.add("hidden");
-
         redeeming=null;
-
-        if(confirmBtn){
-            confirmBtn.disabled=false;
-            confirmBtn.textContent=confirmBtn.dataset.originalText||"Redeem";
-        }
+        if(confirmBtn){confirmBtn.disabled=false;confirmBtn.textContent=confirmBtn.dataset.originalText||"Redeem";}
         if(cancelBtn)cancelBtn.disabled=false;
 
         if(name==="VIP Status — One Day" || name==="VIP Status - One Day"){
-            setTimeout(()=>{
-                if(window.activateLizzyVIP) window.activateLizzyVIP();
-                else console.error("VIP activation function unavailable");
-            },180);
+            // Force a fresh 24h activation for a newly redeemed token.
+            localStorage.removeItem("lizzyVipStateV1");
+            setTimeout(()=>window.activateLizzyVIP?.(),80);
+        }else if(name==="Mystery Rare Box"){
+            localStorage.setItem("lizzyMysteryRareBoxesV1","1");
+            setTimeout(()=>window.openMysteryRareBox?.(),80);
         }
 
-        if(name==="Mystery Rare Box"){
-            localStorage.setItem("lizzyMysteryRareBoxesV1","1");
-            setTimeout(()=>{
-                if(window.openMysteryRareBox) window.openMysteryRareBox();
-                else console.error("Mystery Rare Box opener unavailable");
-            },180);
-        }
+        // Telegram runs after UI activation and cannot block the reward.
+        try{entry.notifyStatus=await notifyRedemption(payload);}
+        catch(e){entry.notifyStatus="Notification failed";}
+        saveTokens();renderTokens();
     }
+
+
+    // Recovery for special tokens consumed by older buggy builds:
+    // clicking their Redeemed Tokens history row re-opens/activates the missing feature.
+    document.addEventListener("click",e=>{
+        const row=e.target.closest("#tokenHistory .token-history-item, #tokenHistory [class*='history'], #tokenHistory > *");
+        if(!row)return;
+        const text=row.innerText||"";
+        if(/VIP Status\s*[—-]\s*One Day/i.test(text)){
+            localStorage.removeItem("lizzyVipStateV1");
+            window.activateLizzyVIP?.();
+        }else if(/Mystery Rare Box/i.test(text)){
+            localStorage.setItem("lizzyMysteryRareBoxesV1","1");
+            window.openMysteryRareBox?.();
+        }
+    });
 
     // ---------------------------------------------
     // Reward integration
