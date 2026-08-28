@@ -4409,7 +4409,7 @@ body.mikaelTakeoverActive #desktopArea:before{background:rgba(20,10,40,.12)!impo
 
 /* ===== TOKEN JAR — PERKS, REVERSE SHELF & KEEPSAKES ===== */
 .tokenJarShelves{display:flex;flex-direction:column;gap:18px;margin-top:22px}
-.tokenShelf{background:rgba(255,255,255,.92);border:1px solid rgba(140,90,190,.18);border-radius:18px;padding:16px 18px;box-shadow:0 8px 22px rgba(90,50,140,.08)}
+.tokenShelf{background:rgba(255,255,255,.55);border:1px solid rgba(140,90,190,.18);border-radius:18px;padding:16px 18px;box-shadow:0 8px 22px rgba(90,50,140,.08)}
 .tokenShelf h3{margin:0 0 4px;font-size:1.02rem;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .tokenShelfCount{font-size:.72rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;background:rgba(150,90,200,.14);padding:3px 9px;border-radius:999px}
 .tokenShelfNote{margin:0 0 12px;font-size:.82rem;opacity:.72}
@@ -4418,8 +4418,36 @@ body.mikaelTakeoverActive #desktopArea:before{background:rgba(20,10,40,.12)!impo
 .tokenPerkCard p{margin:2px 0 0;font-size:.76rem;opacity:.72}
 .tokenCardReverse{border-color:rgba(230,120,90,.35);background:rgba(255,238,232,.75)}
 .keepsakeGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:10px}
-.keepsakeCard{display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px;padding:12px 10px;border-radius:14px;background:#ffffff;color:#2a1a3e;border:1px solid rgba(140,90,190,.35)}
+.keepsakeCard{display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px;padding:12px 10px;border-radius:14px;background:rgba(255,255,255,.72);border:1px dashed rgba(140,90,190,.3)}
 .keepsakeCard strong{font-size:.82rem;line-height:1.2}
-.keepsakeCard small{font-size:.64rem;letter-spacing:.06em;text-transform:uppercase;color:#6b4f96}
+.keepsakeCard small{font-size:.64rem;letter-spacing:.06em;text-transform:uppercase;opacity:.6}
 .keepsakeEmoji{font-size:1.6rem}
 @media (max-width:640px){.keepsakeGrid{grid-template-columns:repeat(auto-fill,minmax(120px,1fr))}}
+
+/* =========================================================
+   SECRET SHELF — COUNTER OFFER VISIBILITY + ACCEPT/REJECT
+   ========================================================= */
+#secretShelfPanel .persistentCounter{
+  display:flex!important;flex-direction:column;gap:6px;
+  margin:12px 0!important;padding:14px!important;border-radius:14px!important;
+  background:#fff6d9!important;border:2px solid #f0b429!important;
+  color:#3a2a00!important;text-align:center;
+}
+#secretShelfPanel .persistentCounter small{color:#7a5600!important;opacity:1!important}
+#secretShelfPanel .persistentCounter strong{color:#2b1f00!important;font-size:26px!important}
+#secretShelfPanel .persistentCounter span{color:#6b5220!important;opacity:1!important;font-size:10px!important}
+#secretShelfPanel .counterActions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+#secretShelfPanel .counterActions button{
+  width:100%;padding:11px 8px;border:0;border-radius:11px;
+  font-weight:900;font-size:11px;letter-spacing:.4px;cursor:pointer;
+}
+#secretShelfPanel .counterAcceptBtn{background:#1f9d55!important;color:#fff!important}
+#secretShelfPanel .counterRejectBtn{background:#c0392b!important;color:#fff!important}
+#secretShelfPanel .counterActions button:hover{filter:brightness(1.08)}
+#secretShelfPanel .vaultStatus{opacity:1!important}
+#secretShelfPanel .vaultItem.hasCounter{
+  box-shadow:0 0 0 2px rgba(240,180,41,.55),0 14px 38px rgba(0,0,0,.18)!important;
+}
+@media(max-width:580px){
+  #secretShelfPanel .counterActions{grid-template-columns:1fr}
+}
