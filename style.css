@@ -4405,3 +4405,21 @@ body.mikaelTakeoverActive #desktopArea:before{background:rgba(20,10,40,.12)!impo
 .vaultFeature{margin:16px 0;padding:18px;border:1px solid #ffffff25;border-radius:18px;background:#ffffff0d}.vaultFeatureTop{display:flex;justify-content:space-between;gap:12px;align-items:center}.vaultBadge{padding:5px 9px;border-radius:999px;background:#ffffff18;font-size:10px;font-weight:900}.vaultPrizePreview{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}.vaultPrizePreview span{padding:5px 8px;border-radius:999px;background:#ffffff12;font-size:11px}.vaultOpenBtn,.vaultBidBox button{width:100%;padding:12px;border:0;border-radius:12px;font-weight:900;cursor:pointer}.vaultOpenBtn{background:var(--viz-accent);color:var(--viz-accent-text)}.vaultBidBox{display:grid;gap:8px;margin:12px 0}.vaultBidBox input{padding:11px;border-radius:12px;border:1px solid #ffffff30;background:transparent;color:inherit}.vaultResultGlow{margin-top:15px;padding:18px;text-align:center;border:1px solid #ffffff35;border-radius:18px;background:#ffffff12}.vaultPrizeIcon{font-size:42px}.vaultFreeCredit{font-weight:900}
 
 .vaultOpening{padding:22px;text-align:center;border:1px solid #ffffff30;border-radius:18px;background:#ffffff0d}.vaultOpeningActive .vaultLock{animation:vaultShake .45s infinite}.vaultLock{font-size:44px;margin-bottom:6px}.vaultSpinner{width:34px;height:34px;margin:14px auto;border:3px solid #ffffff30;border-top-color:currentColor;border-radius:50%;animation:vaultSpin .8s linear infinite}.vaultRevealActive .vaultPrizeReveal{animation:vaultReveal .7s ease-out both}.vaultBurst{font-size:28px;animation:vaultBurst .8s ease-out both}.vaultBidCharged{font-weight:900}.vaultResultGlow{position:relative;overflow:hidden}@keyframes vaultSpin{to{transform:rotate(360deg)}}@keyframes vaultShake{0%,100%{transform:rotate(0)}25%{transform:rotate(-5deg)}75%{transform:rotate(5deg)}}@keyframes vaultReveal{0%{opacity:0;transform:scale(.72) rotate(-3deg)}60%{opacity:1;transform:scale(1.06) rotate(1deg)}100%{opacity:1;transform:scale(1) rotate(0)}}@keyframes vaultBurst{0%{opacity:0;transform:scale(.2)}60%{opacity:1;transform:scale(1.35)}100%{opacity:1;transform:scale(1)}}
+
+
+/* ===== TOKEN JAR — PERKS, REVERSE SHELF & KEEPSAKES ===== */
+.tokenJarShelves{display:flex;flex-direction:column;gap:18px;margin-top:22px}
+.tokenShelf{background:rgba(255,255,255,.55);border:1px solid rgba(140,90,190,.18);border-radius:18px;padding:16px 18px;box-shadow:0 8px 22px rgba(90,50,140,.08)}
+.tokenShelf h3{margin:0 0 4px;font-size:1.02rem;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.tokenShelfCount{font-size:.72rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;background:rgba(150,90,200,.14);padding:3px 9px;border-radius:999px}
+.tokenShelfNote{margin:0 0 12px;font-size:.82rem;opacity:.72}
+.tokenPerkGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
+.tokenPerkCard{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;background:rgba(255,255,255,.72);border:1px solid rgba(140,90,190,.16);border-radius:14px;padding:10px 12px}
+.tokenPerkCard p{margin:2px 0 0;font-size:.76rem;opacity:.72}
+.tokenCardReverse{border-color:rgba(230,120,90,.35);background:rgba(255,238,232,.75)}
+.keepsakeGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:10px}
+.keepsakeCard{display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px;padding:12px 10px;border-radius:14px;background:rgba(255,255,255,.72);border:1px dashed rgba(140,90,190,.3)}
+.keepsakeCard strong{font-size:.82rem;line-height:1.2}
+.keepsakeCard small{font-size:.64rem;letter-spacing:.06em;text-transform:uppercase;opacity:.6}
+.keepsakeEmoji{font-size:1.6rem}
+@media (max-width:640px){.keepsakeGrid{grid-template-columns:repeat(auto-fill,minmax(120px,1fr))}}
