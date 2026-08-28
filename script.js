@@ -5,12 +5,15 @@
 // =====================================================
 const LIZZY_TELEGRAM_WORKER_URL = "https://lizzyos-notifications.mulaudzimikael73.workers.dev/";
 
-async function lizzyTelegramNotify(type, title, details) {
+async function lizzyTelegramNotify(type, title, details, extra) {
   try {
+    const walletBalance = Number(localStorage.getItem("lizzyMickyBucsV1") || 0);
     const payload = JSON.stringify({
       type: type || "LizzyOS Activity",
       title: title || "New Activity",
-      details: details || "No additional details."
+      details: details || "No additional details.",
+      balance: walletBalance,
+      ...(extra && typeof extra === "object" ? extra : {})
     });
 
     const response = await fetch(LIZZY_TELEGRAM_WORKER_URL, {

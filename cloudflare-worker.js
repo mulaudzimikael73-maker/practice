@@ -188,6 +188,25 @@ const S=(v,max=1800)=>String(v??"").trim().slice(0,max);
 const N=(v,d=0)=>Number.isFinite(Number(v))?Math.floor(Number(v)):d;
 const eventType=String(b?.type||"").trim();
 
+/* --- MONEY + BALANCE ENRICHMENT ---------------------------------
+   Older parts of the website only send a human-readable "details"
+   string. Pull the amount and the wallet balance out of that text so
+   every notification below can always show the money involved and the
+   balance remaining. Explicit fields always win. */
+{
+  const blob=`${b?.details??""}\n${b?.message??""}`;
+  const grab=re=>{const m=blob.match(re);return m?Math.floor(Number(m[1])):null};
+  if(b.balance==null){
+    const v=grab(/(?:new\s+|remaining\s+|current\s+)?balance[^0-9+-]{0,20}([+-]?\d+)/i);
+    if(v!=null)b.balance=v;
+  }
+  if(b.amount==null&&b.reward==null&&b.earned==null&&b.price==null&&b.cost==null&&b.paid==null){
+    const v=grab(/(?:earned|received|paid|cost|price|amount|claimed)[^0-9+-]{0,20}([+-]?\d+)/i);
+    if(v!=null)b.amount=v;
+  }
+}
+
+
 async function notifyTelegram(text,type=eventType,reply_markup=null){
   const payload={
     chat_id:env.TELEGRAM_CHAT_ID,

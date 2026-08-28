@@ -26,7 +26,7 @@ const read=(k,f)=>{try{let v=localStorage.getItem(k);return v===null?f:JSON.pars
 const write=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
 const balance=()=>Number(localStorage.getItem(KEYS.wallet)||0);
 const setBalance=n=>localStorage.setItem(KEYS.wallet,String(Math.max(0,n)));
-function notify(type,title,details){if(typeof window.lizzyTelegramNotify==="function")return window.lizzyTelegramNotify(type,title,details);if(typeof lizzyTelegramNotify==="function")return lizzyTelegramNotify(type,title,details);return Promise.resolve(false)}
+function notify(type,title,details,extra){if(typeof window.lizzyTelegramNotify==="function")return window.lizzyTelegramNotify(type,title,details,extra);if(typeof lizzyTelegramNotify==="function")return lizzyTelegramNotify(type,title,details,extra);return Promise.resolve(false)}
 function hash(s){let h=2166136261;for(const c of s){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return h>>>0}
 function dailyJobs(){
  let state=read(KEYS.jobs,{date:"",selected:[],completed:{}});
@@ -58,14 +58,14 @@ function completeJob(id){
  state.completed[id]={at:new Date().toISOString(),reward:j.reward};
  write(KEYS.jobs,state);setBalance(balance()+j.reward);
  if($("seedStoreStatus"))$("seedStoreStatus").textContent=`✅ Job complete! +${j.reward} MB`;
- notify("💼 MICKY BUCS JOB COMPLETED",j.title,`Status: COMPLETED\nEarned: +${j.reward} MB\nNew Balance: ${balance()} MB\nDate: ${today()}`);
+ notify("💼 MICKY BUCS JOB COMPLETED",j.title,`Status: COMPLETED\nEarned: +${j.reward} MB\nNew Balance: ${balance()} MB\nDate: ${today()}`,{task:j.title,reward:j.reward,amount:j.reward,balance:balance()});
  render();
 }
 function claimAllowance(){
  if(localStorage.getItem(KEYS.allowance)===today())return;
  localStorage.setItem(KEYS.allowance,today());setBalance(balance()+2);
  if($("mickyAllowanceStatus"))$("mickyAllowanceStatus").textContent="💵 Daily allowance claimed: +2 MB";
- notify("💵 DAILY MICKY BUCS","Daily Allowance Claimed",`Lizzy claimed +2 MB\nNew balance: ${balance()} MB\nDate: ${today()}`);
+ notify("💵 DAILY MICKY BUCS","Daily Allowance Claimed",`Lizzy claimed +2 MB\nNew balance: ${balance()} MB\nDate: ${today()}`,{amount:2,reward:2,balance:balance()});
  render();
 }
 function buySeed(id){
@@ -78,7 +78,7 @@ function buySeed(id){
  garden.seeds[id]=Number(garden.seeds[id]||0)+1;
  write("lizzyGardenV1",garden);setBalance(balance()-s.price);
  if($("seedStoreStatus"))$("seedStoreStatus").textContent=`🌱 Purchased ${s.name}! Check Lizzy's Garden.`;
- notify("🛍️ SEED STORE PURCHASE",`${s.emoji} ${s.name}`,`Quantity: 1\nPaid: ${s.price} MB\nRemaining balance: ${balance()} MB\nGarden inventory updated successfully.`);
+ notify("🛍️ SEED STORE PURCHASE",`${s.emoji} ${s.name}`,`Quantity: 1\nPaid: ${s.price} MB\nRemaining balance: ${balance()} MB\nGarden inventory updated successfully.`,{item:`${s.emoji} ${s.name}`,cost:s.price,price:s.price,balance:balance()});
  window.dispatchEvent(new CustomEvent("lizzySeedStorePurchase",{detail:{seed:s.id,name:s.name,price:s.price}}));
  render();
 }
@@ -515,6 +515,9 @@ const ITEMS=[
 {id:"mwa_005",icon:"🎯",publicName:"Classified File #005",kind:"dossier",title:"MWA-005 — Mikael Weakness Assessment",content:MWA005,teaser:"FILE: MWA-005 • VULNERABILITIES: CLASSIFIED"},
 {id:"aypp_006",icon:"🔐",publicName:"Classified File #006",kind:"dossier",title:"AYPP-006 — Agent Yelizaveta Psychological Profile",content:AYPP006,encrypted:true,teaser:"FILE: AYPP-006 • ENCRYPTED • CLEARANCE REQUIRED"}
 ];
+const SHELF_PRICES=[32,23];
+const VAULT_PRICE=32;
+function priceOf(i){const n=ITEMS.findIndex(x=>x.id===(i&&i.id?i.id:i));return SHELF_PRICES[(n<0?0:n)%SHELF_PRICES.length]}
 const wallet=()=>Number(localStorage.getItem(WALLET)||0),setWallet=n=>localStorage.setItem(WALLET,String(Math.max(0,Math.floor(Number(n)||0))));
 const REWARD_PERKS="lizzyRewardPerksV1";
 function rewardPerks(){const p=read(REWARD_PERKS,{vaultFree:0,vaultDiscount:0});p.vaultFree=Math.max(0,Number(p.vaultFree||0));return p}
@@ -524,7 +527,7 @@ function freeVaultCredits(){return rewardPerks().vaultFree}
 const shelf=()=>{const s=read(SHELF,{owned:{},bids:{}});s.owned=s.owned||{};s.bids=s.bids||{};return s},saveShelf=s=>write(SHELF,s);
 function addDossier(i,price=0){let l=read(DOSSIERS,[]);if(!Array.isArray(l))l=[];if(!l.some(x=>x.id===i.id)){l.push({id:i.id,title:i.title,content:i.content,encrypted:!!i.encrypted,price,acquiredAt:new Date().toISOString()});write(DOSSIERS,l)}window.dispatchEvent(new Event("lizzyClassifiedUpdated"))}
 function migrate(){const s=shelf();if(s.owned.archive_x17){const c=ITEMS.find(x=>x.id==="archive_x17");addDossier({id:"archive_x17",title:"Cody Legal Documents",content:c.content},s.owned.archive_x17.price||0)}if(s.owned.hater_file)addDossier(ITEMS.find(x=>x.id==="hater_file"),s.owned.hater_file.price||0);if(s.owned.vault||s.owned.mrperfect_file)addDossier(ITEMS.find(x=>x.id==="mrperfect_file"),s.owned.vault?.price||s.owned.mrperfect_file?.price||0);const old=read("lizzyVaultRewardsV1",[]);if(Array.isArray(old)&&old.some(x=>x.id==="mrperfect_file"||String(x.title||"").includes("#003")))addDossier(ITEMS.find(x=>x.id==="mrperfect_file"),0);let l=read(LETTERS,[]);if(Array.isArray(l)){const f=l.filter(x=>!(x.id==="letter_002"&&String(x.content||"").includes("I like us.")));if(f.length!==l.length)write(LETTERS,f)}}
-function st(b,o){if(o)return"OWNED 🔓";if(b?.status==="pending")return`YOUR OFFER: ${b.amount} MB • WAITING FOR MIKAEL`;if(b?.status==="countered")return`MIKAEL'S COUNTER: ${b.counterOffer} MB`;if(b?.status==="rejected")return"OFFER REJECTED — NEGOTIATION REOPENED";return"NEGOTIATION OPEN"}
+function st(b,o){return o?"OWNED 🔓":"AVAILABLE"}
 function repairPurchasedDestinations(){const s=shelf();if(s.owned.archive_x17){const c=ITEMS.find(x=>x.id==="archive_x17");if(c)addDossier({id:"archive_x17",title:"Cody Legal Documents",content:c.content},s.owned.archive_x17.price||0)}for(const id of ["dossier_001","hater_file","mrperfect_file","o4e_004","mwa_005","aypp_006"]){if(s.owned[id]){const i=ITEMS.find(x=>x.id===id);if(i)addDossier(i,s.owned[id].price||0)}}}
 
 const VAULT_STATE="lizzyVaultStateV3";
@@ -602,22 +605,16 @@ function renderShelf(){
  const sh=shelf(),t=vaultTokenCount();
  h.innerHTML=`<div class="secretVaultHeader"><div><small>SECRET SHELF // RESTRICTED MARKET</small><h3>🔒 Mikael's Secret Shelf</h3></div><div class="vaultWallet">AVAILABLE: <b>${wallet()} MB</b><br><span class="vaultFreeCredit">${vaultStatusText()}</span></div></div>
  <section class="vaultFeature"><div class="vaultFeatureTop"><div><small>RESTRICTED FEATURE</small><h3>🎰 THE VAULT</h3></div><span class="vaultBadge">RANDOM PRIZES</span></div>
- <p>Make a Vault bid and wait for Mikael to accept, or use a Free Vault Token for immediate access. Every opening gives <b>one random prize</b>.</p>
+ <p>Vault access is now a fixed price of <b>${VAULT_PRICE} MB</b>, or free with a Free Vault Token. Every opening gives <b>one random prize</b>.</p>
  <div class="vaultPrizePreview"><span>🟢 Common</span><span>🔵 Rare</span><span>🟣 Epic</span><span>🟡 Legendary</span></div>
  ${t>0?`<button id="openFreeVaultBtn" class="vaultOpenBtn">🎟️ OPEN VAULT WITH FREE TOKEN</button>`:`<small>No Free Vault Token available.</small>`}
  <div id="vaultResult"></div></section>
- <div class="vaultBidBox"><input id="vaultBidInput" type="number" min="1" placeholder="Your Vault offer in MB"><button id="vaultBidBtn">🎰 BID FOR VAULT ACCESS</button><small id="vaultBidStatus">Bid for access. Mikael's acceptance will open the Vault.</small></div>
- <div class="secretShelfGrid">${(()=>{const avail=ITEMS.filter(x=>!sh.owned[x.id]);if(!avail.length)return `<p class="seedStoreIntro">🗃️ Every Secret Shelf item has been purchased. Purchased items now live in Open When → Purchased Letters, Classified Dossiers and the Token Jar.</p>`;return avail.map(i=>{const b=sh.bids[i.id],c=b?.status==="countered"&&Number(b.counterOffer)>0;return `<article class="secretItem vaultItem ${c?"hasCounter":""}"><div class="vaultItemIcon">${i.icon}</div><strong>${i.publicName}</strong><p>${i.teaser}</p><small class="vaultStatus">${st(b,false)}</small>${c?`<div class="persistentCounter"><small>COUNTER OFFER FROM MIKAEL</small><strong>${b.counterOffer} MB</strong><span>Your last offer: ${b.amount||0} MB</span><div class="counterActions"><button type="button" class="counterAcceptBtn" data-counter-accept="${i.id}">✅ ACCEPT ${b.counterOffer} MB</button><button type="button" class="counterRejectBtn" data-counter-reject="${i.id}">❌ REJECT</button></div></div>`:""}<div class="vaultBidControls"><input type="number" min="1" data-bid-input="${i.id}" placeholder="${c?`New bid against ${b.counterOffer} MB`:"Your offer in MB"}"><button data-bid="${i.id}">${c?"Make Another Bid":"Submit Offer"}</button></div></article>`}).join("")})()}</div>`;
+ <div class="vaultBidBox"><button id="vaultBuyBtn">🎰 OPEN THE VAULT — ${VAULT_PRICE} MB</button><small id="vaultBidStatus">Fixed price: ${VAULT_PRICE} MB. No bidding, no waiting.</small></div>
+ <div class="secretShelfGrid">${(()=>{const avail=ITEMS.filter(x=>!sh.owned[x.id]);if(!avail.length)return `<p class="seedStoreIntro">🗃️ Every Secret Shelf item has been purchased. Purchased items now live in Open When → Purchased Letters, Classified Dossiers and the Token Jar.</p>`;return avail.map(i=>{const p=priceOf(i),afford=wallet()>=p,free=freeVaultCredits()>0;return `<article class="secretItem vaultItem"><div class="vaultItemIcon">${i.icon}</div><strong>${i.publicName}</strong><p>${i.teaser}</p><small class="vaultStatus">PRICE: ${p} MB</small><div class="vaultBidControls"><button data-buy-shelf="${i.id}" ${afford?"":"disabled"}>${afford?`BUY FOR ${p} MB`:`NEED ${p} MB`}</button>${free?`<button data-free-claim="${i.id}">🎟️ USE FREE CREDIT</button>`:""}</div></article>`}).join("")})()}</div>`;
  h.querySelector("#openFreeVaultBtn")?.addEventListener("click",()=>openVault("token"));
- h.querySelector("#vaultBidBtn")?.addEventListener("click",async()=>{
-  const n=Math.floor(Number(h.querySelector("#vaultBidInput")?.value||0)),status=h.querySelector("#vaultBidStatus");
-  if(!n||n<1){status.textContent="Enter a valid Vault bid.";return}
-  if(n>wallet()){status.textContent="You cannot bid more than your current Micky Bucs balance.";return}
-  try{const r=await fetch(WORKER,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({type:"vault_bid",offer:n})}),d=await r.json();if(!r.ok||!d.success)throw new Error(d.error||"Bid failed");status.textContent=`🎰 Vault bid of ${n} MB submitted. Waiting for Mikael's acceptance.`}catch(e){status.textContent="The Vault bid could not be sent. Please try again."}
- });
- h.querySelectorAll("[data-bid]").forEach(x=>x.addEventListener("click",()=>submitBid(x.dataset.bid)));
- h.querySelectorAll("[data-counter-accept]").forEach(x=>x.addEventListener("click",()=>acceptCounter(x.dataset.counterAccept)));
- h.querySelectorAll("[data-counter-reject]").forEach(x=>x.addEventListener("click",()=>rejectCounter(x.dataset.counterReject)));
+ h.querySelector("#vaultBuyBtn")?.addEventListener("click",buyVaultOpen);
+ h.querySelectorAll("[data-buy-shelf]").forEach(x=>x.addEventListener("click",()=>buyShelfItem(x.dataset.buyShelf)));
+ h.querySelectorAll("[data-free-claim]").forEach(x=>x.addEventListener("click",()=>claimFreeVaultItem(x.dataset.freeClaim)));
 }
 function openDoc(id){const i=ITEMS.find(x=>x.id===id),s=shelf(),h=$("vaultOwnedFileReader");if(!i||!s.owned[id]||!h)return;const safe=i.content.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));h.innerHTML=`<section class="vaultDocumentReader"><button id="closeVaultDocument">×</button><small>ACQUIRED SECRET SHELF DOCUMENT // CONFIDENTIAL</small><h3>⚖️ Cody Legal Documents</h3><pre>${safe}</pre></section>`;$("closeVaultDocument")?.addEventListener("click",()=>h.innerHTML="");h.scrollIntoView({behavior:"smooth",block:"nearest"})}
 function claimFreeVaultItem(id){
@@ -634,45 +631,33 @@ function claimFreeVaultItem(id){
  alert(`🔓 ${i.publicName} claimed for FREE.\n\nRemaining Free Vault Item credits: ${perks.vaultFree}`);
 }
 
-async function acceptCounter(id){
- const i=ITEMS.find(x=>x.id===id),s0=shelf(),b=s0.bids[id];
- if(!i||!b||b.status!=="countered")return;
- const amount=Math.floor(Number(b.counterOffer)||0);
- if(amount<1)return;
- if(amount>wallet())return alert(`Mikael's counter is ${amount} MB but you only have ${wallet()} MB.`);
- if(!confirm(`Accept Mikael's counter offer of ${amount} MB for ${i.publicName}?`))return;
- try{
-  const r=await fetch(WORKER,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({type:"secret_shelf_bid",item:id,offer:amount})}),d=await r.json();
-  if(!r.ok||!d.success||!d.claimId)throw new Error(d.error||"Counter acceptance failed");
-  const s=shelf();
-  s.bids[id]={claimId:d.claimId,amount,status:"pending",counterOffer:null,acceptedCounter:amount,createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()};
-  saveShelf(s);renderShelf();
-  alert(`✅ Counter offer of ${amount} MB accepted.\n\nMikael just needs to confirm and the item unlocks automatically.`);
-  setTimeout(poll,800);
- }catch(e){console.error(e);alert("The counter acceptance could not be sent. Please try again.")}
+function shelfNotifyPurchase(i,paid,balanceAfter){
+ try{fetch(WORKER,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({type:"secret_shelf_purchase",item:i.publicName,itemId:i.id,kind:i.kind||"item",paid,price:paid,cost:paid,balance:balanceAfter,details:`Paid: ${paid} MB\nRemaining balance: ${balanceAfter} MB`})}).catch(()=>{})}catch(e){}
 }
-function rejectCounter(id){
- const i=ITEMS.find(x=>x.id===id),s=shelf(),b=s.bids[id];
- if(!i||!b||b.status!=="countered")return;
- if(!confirm(`Reject Mikael's counter of ${b.counterOffer} MB for ${i.publicName}?\n\nYou can then send a new offer.`))return;
- s.bids[id]={...b,status:"rejected",counterOffer:null,updatedAt:new Date().toISOString()};
- saveShelf(s);renderShelf();
- try{fetch(WORKER,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({type:"secret_shelf_counter_rejected",item:id,itemName:i.publicName,counterOffer:Number(b.counterOffer)||0})}).catch(()=>{})}catch(e){}
+function buyShelfItem(id){
+ const i=ITEMS.find(x=>x.id===id);if(!i)return;
+ const s=shelf();if(s.owned[id]){renderShelf();return}
+ const price=priceOf(i),before=wallet();
+ if(before<price)return alert(`${i.publicName} costs ${price} MB.\n\nYour balance: ${before} MB.`);
+ if(!confirm(`Buy ${i.publicName} for ${price} MB?\n\nBalance after purchase: ${before-price} MB`))return;
+ if(!grant(i,price))return alert("The purchase could not be completed.");
+ const after=wallet(),paid=Math.max(0,before-after);
+ shelfNotifyPurchase(i,paid,after);
+ window.dispatchEvent(new CustomEvent("lizzySecretPurchaseGranted",{detail:{itemId:i.id,kind:i.kind}}));
+ repairPurchasedDestinations();renderShelf();renderLetters();renderMikaelTokens();
+ alert(`✅ ${i.publicName} purchased.\n\nPaid: ${paid} MB\nRemaining balance: ${after} MB`);
 }
-async function submitBid(id){const i=ITEMS.find(x=>x.id===id),inp=[...document.querySelectorAll("[data-bid-input]")].find(x=>x.dataset.bidInput===id),amount=Math.floor(Number(inp?.value));if(!i)return;if(!amount||amount<1)return alert("Enter an offer first.");if(amount>wallet())return alert("You cannot offer more Micky Bucs than you currently have.");try{const r=await fetch(WORKER,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({type:"secret_shelf_bid",item:id,offer:amount})}),d=await r.json();if(!r.ok||!d.success||!d.claimId)throw new Error(d.error||"Offer failed");const s=shelf();s.bids[id]={claimId:d.claimId,amount,status:"pending",counterOffer:null,createdAt:new Date().toISOString()};saveShelf(s);renderShelf()}catch(e){console.error(e);alert(String(e?.message||"").includes("Unknown Secret Shelf item")?"Deploy the included cloudflare-worker.js first, then try this new Secret Shelf item again.":"The offer could not be sent. Please try again.")}}
+function buyVaultOpen(){
+ const before=wallet();
+ if(before<VAULT_PRICE)return alert(`Opening the Vault costs ${VAULT_PRICE} MB.\n\nYour balance: ${before} MB.`);
+ if(!confirm(`Open the Vault for ${VAULT_PRICE} MB?\n\nBalance after: ${before-VAULT_PRICE} MB`))return;
+ try{fetch(WORKER,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({type:"secret_shelf_purchase",item:"The Vault — one opening",itemId:"vault",kind:"vault",paid:VAULT_PRICE,price:VAULT_PRICE,cost:VAULT_PRICE,balance:before-VAULT_PRICE,details:`Paid: ${VAULT_PRICE} MB\nRemaining balance: ${before-VAULT_PRICE} MB`})}).catch(()=>{})}catch(e){}
+ showVaultResult(vaultPick(),"purchase",VAULT_PRICE);
+}
 function grant(i,price,serverAccepted=false){const s=shelf();if(s.owned[i.id])return true;price=Math.max(0,Math.floor(Number(price)||0));const vd=Number(localStorage.getItem("lizzyVipShelfDiscount")||0),rd=Number(localStorage.getItem("lizzyRareShelfDiscount")||0),discount=Math.max(vd,rd),originalPrice=price;if(discount>0&&price>0){price=Math.max(1,Math.ceil(price*(100-discount)/100));localStorage.removeItem("lizzyVipShelfDiscount");localStorage.removeItem("lizzyRareShelfDiscount")}if(!serverAccepted&&(price<1||wallet()<price))return false;if(price>0)setWallet(Math.max(0,wallet()-price));s.owned[i.id]={at:new Date().toISOString(),price,originalPrice,discount};saveShelf(s);if(i.kind==="letter"){let l=read(LETTERS,[]);if(!Array.isArray(l))l=[];const entry={id:i.id,title:i.publicName,content:i.content,folder:"open_when_purchased",purchasedAt:new Date().toISOString()};const at=l.findIndex(x=>x.id===i.id);if(at>=0)l[at]={...l[at],...entry};else l.push(entry);write(LETTERS,l);renderLetters();window.dispatchEvent(new Event("lizzyPurchasedLettersUpdated"))}if(i.kind==="dossier")addDossier(i,price);if(i.kind==="document"&&i.id==="archive_x17"){addDossier({id:"archive_x17",title:"Cody Legal Documents",content:i.content},price)}if(i.kind==="mikael_token"){const t=read(MTOKENS,{inventory:{},history:[]});t.inventory=t.inventory||{};t.history=t.history||[];t.inventory["UNO Reverse"]=Number(t.inventory["UNO Reverse"]||0)+1;t.history.push({type:"earned",token:"UNO Reverse",source:"Mystery Reward",at:new Date().toISOString()});write(MTOKENS,t);renderMikaelTokens()}window.dispatchEvent(new Event("lizzyStoreRefresh"));return true}
-async function sync(){const s=shelf();let dirty=false;for(const i of ITEMS){if(s.owned[i.id])continue;try{const r=await fetch(`${WORKER}?shelfItem=${encodeURIComponent(i.id)}`,{cache:"no-store"});if(!r.ok)continue;const d=await r.json(),x=d.state;if(!x?.claimId)continue;const l=s.bids[i.id],rt=Date.parse(x.updatedAt||x.createdAt||0)||0,lt=Date.parse(l?.updatedAt||l?.createdAt||0)||0;if(!l||x.claimId===l.claimId||rt>=lt){s.bids[i.id]={claimId:x.claimId,amount:Number(x.offer||l?.amount||0),status:x.status||"pending",counterOffer:x.counterOffer==null?null:Number(x.counterOffer),acceptedPrice:x.acceptedPrice==null?null:Number(x.acceptedPrice),createdAt:x.createdAt||l?.createdAt||new Date().toISOString(),updatedAt:x.updatedAt||x.decidedAt||new Date().toISOString()};dirty=true}}catch{}}if(dirty)saveShelf(s)}
-async function pollVault(){
- try{
-  const r=await fetch(`${WORKER}?type=vault_claim`,{cache:"no-store"}); if(!r.ok)return;
-  const d=await r.json(),c=d.claim;
-  if(c?.status==="accepted"&&!c?.lizzyOpened){
-   await fetch(WORKER,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({type:"vault_claim_opened",claimId:c.claimId})}).catch(()=>{});
-   vaultBidAccepted(Number(c.acceptedPrice??c.offer??0));
-  }
- }catch(e){console.warn("Vault poll failed",e)}
-}
-async function poll(){await sync();let s=shelf();let dirty=false;for(const i of ITEMS){const b=s.bids[i.id];if(!b?.claimId||s.owned[i.id])continue;try{const r=await fetch(`${WORKER}?claimId=${encodeURIComponent(b.claimId)}`,{cache:"no-store"});if(!r.ok)continue;const d=await r.json(),c=d.claim||d;if(c.status==="accepted"){const price=Number(c.acceptedPrice??c.finalPrice??(Number(c.counterOffer)>0?c.counterOffer:c.offer)??b.amount);if(grant(i,price,true)){s=shelf();if(s.bids[i.id]){s.bids[i.id].status="accepted";s.bids[i.id].updatedAt=c.decidedAt||new Date().toISOString()}saveShelf(s);dirty=false;window.dispatchEvent(new CustomEvent("lizzySecretPurchaseGranted",{detail:{itemId:i.id,kind:i.kind}}))}}else if(c.status==="rejected"){b.status="rejected";b.updatedAt=c.decidedAt||new Date().toISOString();dirty=true}else if(c.status==="countered"){b.status="countered";b.counterOffer=Number(c.counterOffer);b.updatedAt=c.decidedAt||new Date().toISOString();dirty=true}}catch(e){console.error("Secret Shelf poll failed",e)}}if(dirty)saveShelf(s);repairPurchasedDestinations();renderShelf();renderLetters();renderMikaelTokens();pollVault()}
+async function sync(){return}
+async function pollVault(){return}
+async function poll(){repairPurchasedDestinations();renderShelf();renderLetters();renderMikaelTokens()}
 async function notifyPurchasedLetterOpened(letter){
  try{
   await fetch(WORKER,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
@@ -685,7 +670,7 @@ async function notifyPurchasedLetterOpened(letter){
 }
 function renderLetters(){const w=$("openWhenWindow")||$("openWhenFolderWindow");if(!w)return;const host=w.querySelector(".windowScroll")||w;let b=$("purchasedLettersBox");if(!b){b=document.createElement("section");b.id="purchasedLettersBox";host.appendChild(b)}const l=read(LETTERS,[]);b.innerHTML=Array.isArray(l)&&l.length?`<h3>🛍️ Purchased Letters</h3>${l.map((x,i)=>`<article class="purchasedLetter"><div class="purchasedLetterHead"><strong>💌 ${x.title}</strong><button type="button" data-purchased-letter-open="${i}">OPEN LETTER</button></div><div class="purchasedLetterBody hidden" data-purchased-letter-body="${i}"><pre>${x.content}</pre></div></article>`).join("")}`:"";b.querySelectorAll("[data-purchased-letter-open]").forEach(btn=>btn.addEventListener("click",()=>{const i=Number(btn.dataset.purchasedLetterOpen),letter=l[i],body=b.querySelector(`[data-purchased-letter-body="${i}"]`);if(!letter||!body)return;const opening=body.classList.contains("hidden");body.classList.toggle("hidden");btn.textContent=opening?"CLOSE LETTER":"OPEN LETTER";if(opening)notifyPurchasedLetterOpened(letter)}))}
 function renderMikaelTokens(){const w=$("tokenJarWindow");if(!w)return;const host=w.querySelector(".windowScroll")||w;let b=$("mikaelTokensBox");if(!b){b=document.createElement("section");b.id="mikaelTokensBox";host.appendChild(b)}const t=read(MTOKENS,{inventory:{}}),n=Number(t.inventory?.["UNO Reverse"]||0);b.innerHTML=n?`<h3>🕴️ Mikael's Tokens</h3><div class="tokenCard"><div class="tokenCardEmoji">🔄</div><div><strong>UNO Reverse</strong><p>Mikael has the power: one playful, reasonable request for Lizzy.</p></div><div class="tokenCount">×${n}</div></div>`:""}
-migrate();repairPurchasedDestinations();$("seedStoreIcon")?.addEventListener("click",()=>setTimeout(()=>{renderShelf();poll()},60));document.querySelector('[data-store-tab="secret"]')?.addEventListener("click",()=>setTimeout(poll,30));$("openWhenIcon")?.addEventListener("click",()=>setTimeout(renderLetters,60));window.addEventListener("lizzyPurchasedLettersUpdated",renderLetters);window.addEventListener("lizzySecretPurchaseGranted",e=>{if(e.detail?.kind==="letter")renderLetters()});$("tokenJarIcon")?.addEventListener("click",()=>setTimeout(renderMikaelTokens,60));window.addEventListener("focus",()=>{if(!$("secretShelfPanel")?.classList.contains("hidden"))poll()});setInterval(()=>{if(!document.hidden){poll();pollVault()}},10000);document.addEventListener("visibilitychange",()=>{if(!document.hidden)poll()});window.addEventListener("focus",()=>poll());renderShelf();pollVault();renderLetters();renderMikaelTokens();setTimeout(poll,500);
+migrate();repairPurchasedDestinations();$("seedStoreIcon")?.addEventListener("click",()=>setTimeout(()=>{renderShelf();poll()},60));document.querySelector('[data-store-tab="secret"]')?.addEventListener("click",()=>setTimeout(poll,30));$("openWhenIcon")?.addEventListener("click",()=>setTimeout(renderLetters,60));window.addEventListener("lizzyPurchasedLettersUpdated",renderLetters);window.addEventListener("lizzySecretPurchaseGranted",e=>{if(e.detail?.kind==="letter")renderLetters()});$("tokenJarIcon")?.addEventListener("click",()=>setTimeout(renderMikaelTokens,60));window.addEventListener("focus",()=>{if(!$("secretShelfPanel")?.classList.contains("hidden"))poll()});document.addEventListener("visibilitychange",()=>{if(!document.hidden)poll()});window.addEventListener("focus",()=>poll());renderShelf();pollVault();renderLetters();renderMikaelTokens();setTimeout(poll,500);
 })();
 
 
