@@ -3467,29 +3467,6 @@ window.LizzyDailyRewardsV4={counts:{basic:BASIC.length,reverse:REVERSE.length,no
             list.insertAdjacentElement("afterend",host);
         }
 
-        const perks=perkSummary();
-        const perkHTML=`<section class="tokenShelf tokenShelfPerks">
-            <h3>⚡ Perks &amp; Credits</h3>
-            <p class="tokenShelfNote">Won from Daily Rewards. These are used inside the app they belong to.</p>
-            ${perks.length?`<div class="tokenPerkGrid">${perks.map(([e,n,c,d])=>`
-                <div class="tokenPerkCard"><div class="tokenCardEmoji">${e}</div><div><strong>${esc(n)}</strong><p>${esc(d)}</p></div><div class="tokenCount">×${c}</div></div>
-            `).join("")}</div>`:`<div class="memoryMessage">No active perks right now.</div>`}
-        </section>`;
-
-        const rev=Object.entries(tokens.reverse).filter(([,v])=>Number(v.count||0)>0);
-        const revHTML=`<section class="tokenShelf tokenShelfReverse">
-            <h3>🔄 Reverse Tokens — Owed to Mikael</h3>
-            <p class="tokenShelfNote">UNO Reverse results. Lizzy can't redeem these, only settle them.</p>
-            ${rev.length?`<div class="tokenJarList">${rev.map(([name,v])=>`
-                <div class="tokenCard tokenCardReverse">
-                    <div class="tokenCardEmoji">${v.emoji||"🔄"}</div>
-                    <div><strong>${esc(name)}</strong><p>${esc(v.desc||"Owed to Mikael.")}</p></div>
-                    <div class="tokenCount">×${Number(v.count||0)}</div>
-                    <button data-settle-token="${encodeURIComponent(name)}">Mark settled ✓</button>
-                </div>
-            `).join("")}</div>`:`<div class="memoryMessage">Lizzy currently owes Mikael absolutely nothing. Enjoy it. 😌</div>`}
-        </section>`;
-
         const keeps=Object.entries(tokens.keepsakes).filter(([,v])=>Number(v.count||0)>0)
             .sort((a,b)=>String(a[0]).localeCompare(String(b[0])));
         const keepHTML=`<section class="tokenShelf tokenShelfKeepsakes">
@@ -3504,7 +3481,7 @@ window.LizzyDailyRewardsV4={counts:{basic:BASIC.length,reverse:REVERSE.length,no
             `).join("")}</div>`:`<div class="memoryMessage">No keepsakes yet. Daily Rewards will fix that.</div>`}
         </section>`;
 
-        host.innerHTML=perkHTML+revHTML+keepHTML;
+        host.innerHTML=keepHTML;
         host.querySelectorAll("[data-settle-token]").forEach(b=>b.onclick=()=>{
             const n=decodeURIComponent(b.dataset.settleToken);
             if(confirm(`Mark "${n}" as settled?\n\nThis removes it from what Lizzy owes Mikael.`))settleReverse(n);
