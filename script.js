@@ -2714,35 +2714,35 @@ window.LizzyDailyRewardsV4={counts:{basic:BASIC.length,reverse:REVERSE.length,no
 
     // A broad Garden catalogue: standard, rare and secret plants.
     const FLOWERS = {
-        tulip:       {name:"Tulip",emoji:"🌷",type:"flower",rarity:"Common"},
-        redRose:     {name:"Red Rose",emoji:"🌹",type:"flower",rarity:"Common"},
-        pinkRose:    {name:"Pink Rose",emoji:"🌹",type:"flower",rarity:"Uncommon"},
-        whiteRose:   {name:"White Rose",emoji:"🤍",type:"flower",rarity:"Uncommon"},
-        lilyValley:  {name:"Lily of the Valley",emoji:"🤍",type:"flower",rarity:"Rare"},
-        cryingLily:  {name:"Crying Lily",emoji:"🥀",type:"flower",rarity:"Rare"},
-        snapdragon:  {name:"Snapdragon",emoji:"🌺",type:"flower",rarity:"Uncommon"},
-        sunflower:   {name:"Sunflower",emoji:"🌻",type:"flower",rarity:"Common"},
-        daisy:       {name:"Daisy",emoji:"🌼",type:"flower",rarity:"Common"},
-        lavender:    {name:"Lavender",emoji:"🪻",type:"flower",rarity:"Uncommon"},
-        orchid:      {name:"Orchid",emoji:"🌸",type:"flower",rarity:"Rare"},
-        peony:       {name:"Peony",emoji:"🌺",type:"flower",rarity:"Rare"},
-        hydrangea:   {name:"Hydrangea",emoji:"🪻",type:"flower",rarity:"Uncommon"},
-        carnation:   {name:"Carnation",emoji:"🌸",type:"flower",rarity:"Common"},
-        daffodil:    {name:"Daffodil",emoji:"🌼",type:"flower",rarity:"Common"},
-        iris:        {name:"Iris",emoji:"🪻",type:"flower",rarity:"Rare"},
-        chrysanthemum:{name:"Chrysanthemum",emoji:"🌼",type:"flower",rarity:"Uncommon"},
-        poppy:       {name:"Poppy",emoji:"🌺",type:"flower",rarity:"Common"},
-        forgetMeNot: {name:"Forget-Me-Not",emoji:"💠",type:"flower",rarity:"Rare"},
-        hibiscus:    {name:"Hibiscus",emoji:"🌺",type:"flower",rarity:"Uncommon"},
-        mysteryBloom:{name:"Mystery Blossom",emoji:"🌸",type:"flower",rarity:"Secret"},
-        moonflower:  {name:"Moonflower",emoji:"🌙",type:"flower",rarity:"Legendary"},
-        starBloom:   {name:"Star Bloom",emoji:"✨",type:"flower",rarity:"Legendary"},
-        gardenCrown: {name:"Garden Crown",emoji:"👑",type:"flower",rarity:"Legendary"},
-        bananaTree:  {name:"Suspicious Banana Tree",emoji:"🍌",type:"tree",rarity:"Secret"},
-        jacaranda:    {name:"Jacaranda Tree",emoji:"🌳",type:"tree",rarity:"Uncommon"},
-        willow:       {name:"Willow Tree",emoji:"🌳",type:"tree",rarity:"Rare"},
-        cherryTree:   {name:"Cherry Blossom Tree",emoji:"🌸",type:"tree",rarity:"Rare"},
-        lemonTree:    {name:"Lemon Tree",emoji:"🍋",type:"tree",rarity:"Uncommon"}
+        tulip:       {name:"Tulip",emoji:"🌷",img:"assets/flowers/tulip.png",type:"flower",rarity:"Common"},
+        redRose:     {name:"Red Rose",emoji:"🌹",img:"assets/flowers/redRose.png",type:"flower",rarity:"Common"},
+        pinkRose:    {name:"Pink Rose",emoji:"🌹",img:"assets/flowers/pinkRose.png",type:"flower",rarity:"Uncommon"},
+        whiteRose:   {name:"White Rose",emoji:"🤍",img:"assets/flowers/whiteRose.png",type:"flower",rarity:"Uncommon"},
+        lilyValley:  {name:"Lily of the Valley",emoji:"🤍",img:"assets/flowers/lilyValley.png",type:"flower",rarity:"Rare"},
+        cryingLily:  {name:"Crying Lily",emoji:"🥀",img:"assets/flowers/cryingLily.png",type:"flower",rarity:"Rare"},
+        snapdragon:  {name:"Snapdragon",emoji:"🌺",img:"assets/flowers/snapdragon.png",type:"flower",rarity:"Uncommon"},
+        sunflower:   {name:"Sunflower",emoji:"🌻",img:"assets/flowers/sunflower.png",type:"flower",rarity:"Common"},
+        daisy:       {name:"Daisy",emoji:"🌼",img:"assets/flowers/daisy.png",type:"flower",rarity:"Common"},
+        lavender:    {name:"Lavender",emoji:"🪻",img:"assets/flowers/lavender.png",type:"flower",rarity:"Uncommon"},
+        orchid:      {name:"Orchid",emoji:"🌸",img:"assets/flowers/orchid.png",type:"flower",rarity:"Rare"},
+        peony:       {name:"Peony",emoji:"🌺",img:"assets/flowers/peony.png",type:"flower",rarity:"Rare"},
+        hydrangea:   {name:"Hydrangea",emoji:"🪻",img:"assets/flowers/hydrangea.png",type:"flower",rarity:"Uncommon"},
+        carnation:   {name:"Carnation",emoji:"🌸",img:"assets/flowers/carnation.png",type:"flower",rarity:"Common"},
+        daffodil:    {name:"Daffodil",emoji:"🌼",img:"assets/flowers/daffodil.png",type:"flower",rarity:"Common"},
+        iris:        {name:"Iris",emoji:"🪻",img:"assets/flowers/iris.png",type:"flower",rarity:"Rare"},
+        chrysanthemum:{name:"Chrysanthemum",emoji:"🌼",img:"assets/flowers/chrysanthemum.png",type:"flower",rarity:"Uncommon"},
+        poppy:       {name:"Poppy",emoji:"🌺",img:"assets/flowers/poppy.png",type:"flower",rarity:"Common"},
+        forgetMeNot: {name:"Forget-Me-Not",emoji:"💠",img:"assets/flowers/forgetMeNot.png",type:"flower",rarity:"Rare"},
+        hibiscus:    {name:"Hibiscus",emoji:"🌺",img:"assets/flowers/hibiscus.png",type:"flower",rarity:"Uncommon"},
+        mysteryBloom:{name:"Mystery Blossom",emoji:"🌸",img:"assets/flowers/mysteryBloom.png",type:"flower",rarity:"Secret"},
+        moonflower:  {name:"Moonflower",emoji:"🌙",img:"assets/flowers/moonflower.png",type:"flower",rarity:"Legendary"},
+        starBloom:   {name:"Star Bloom",emoji:"✨",img:"assets/flowers/starBloom.png",type:"flower",rarity:"Legendary"},
+        gardenCrown: {name:"Garden Crown",emoji:"👑",img:"assets/flowers/gardenCrown.png",type:"flower",rarity:"Legendary"},
+        bananaTree:  {name:"Suspicious Banana Tree",emoji:"🍌",img:"assets/flowers/bananaTree.png",type:"tree",rarity:"Secret"},
+        jacaranda:    {name:"Jacaranda Tree",emoji:"🌳",img:"assets/flowers/jacaranda.png",type:"tree",rarity:"Uncommon"},
+        willow:       {name:"Willow Tree",emoji:"🌳",img:"assets/flowers/willow.png",type:"tree",rarity:"Rare"},
+        cherryTree:   {name:"Cherry Blossom Tree",emoji:"🌸",img:"assets/flowers/cherryTree.png",type:"tree",rarity:"Rare"},
+        lemonTree:    {name:"Lemon Tree",emoji:"🍋",img:"assets/flowers/lemonTree.png",type:"tree",rarity:"Uncommon"}
     };
 
     const STANDARD_FLOWERS = [
@@ -3008,13 +3008,17 @@ window.LizzyDailyRewardsV4={counts:{basic:BASIC.length,reverse:REVERSE.length,no
         if(watered>=1)return 1;
         return 0;
     }
+    function flowerIcon(f,size=48){
+        if(f&&f.img) return `<img class="flowerImg" src="${f.img}" alt="${f.name}" style="width:${size}px;height:${size}px;object-fit:contain;vertical-align:middle">`;
+        return f?f.emoji:"🌸";
+    }
     function stageVisual(plant){
         const f=FLOWERS[plant.flowerId]||FLOWERS.tulip;
         const stage=growthStage(plant);
-        if(plant.flowerId==="bananaTree") return ["🫘","🌱","🌿","🌴","🍌"][stage];
+        if(plant.flowerId==="bananaTree") return ["🫘","🌱","🌿","🌴",flowerIcon(f,64)][stage];
         if(["jacaranda","willow","cherryTree","lemonTree"].includes(plant.flowerId))
-            return ["🫘","🌱","🌿","🌳",f.emoji][stage];
-        return ["🫘","🌱","🌿","🪴",f.emoji][stage];
+            return ["🫘","🌱","🌿","🌳",flowerIcon(f,64)][stage];
+        return ["🫘","🌱","🌿","🪴",flowerIcon(f,64)][stage];
     }
 
     function randomFrom(arr, salt=""){
@@ -3031,7 +3035,7 @@ window.LizzyDailyRewardsV4={counts:{basic:BASIC.length,reverse:REVERSE.length,no
         if(!FLOWERS[flowerId]) return;
         garden.flowers[flowerId]=(garden.flowers[flowerId]||0)+count;
         saveGarden();
-        gardenComment(`${FLOWERS[flowerId].emoji} ${FLOWERS[flowerId].name} added to the collection${reason?` — ${reason}`:""}.`);
+        gardenComment(`${FLOWERS[flowerId].img?"🌸":FLOWERS[flowerId].emoji} ${FLOWERS[flowerId].name} added to the collection${reason?` — ${reason}`:""}.`);
         renderGarden();
     }
     function randomStandardFlower(){
@@ -3162,7 +3166,7 @@ window.LizzyDailyRewardsV4={counts:{basic:BASIC.length,reverse:REVERSE.length,no
         const entries=Object.entries(garden.flowers).filter(([,n])=>n>0);
         host.innerHTML=entries.length?entries.map(([id,n])=>`
             <div class="flowerCollectionChip">
-                <b>${FLOWERS[id].emoji} ${FLOWERS[id].name} ×${n}</b>
+                <b>${flowerIcon(FLOWERS[id],28)} ${FLOWERS[id].name} ×${n}</b>
                 <small>${FLOWERS[id].rarity}</small>
             </div>`).join(""):`<div class="memoryMessage">Your collection will grow as flowers bloom and rewards drop. 🌷</div>`;
     }
