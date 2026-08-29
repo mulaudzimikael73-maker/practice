@@ -8,7 +8,7 @@
 
     <title>Lizzy ❤️</title>
 
-    <link rel="stylesheet" href="style.css?v=20260829-pot-color-fix">
+    <link rel="stylesheet" href="style.css?v=20260829-personality-lab">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
 
@@ -545,6 +545,11 @@
             <div class="desktopIcon" id="recycleBinIcon">
                 <div class="desktopEmoji">🗑️</div>
                 <span>Recycle Bin</span>
+            </div>
+
+            <div class="desktopIcon" id="personalityIcon">
+                <div class="desktopEmoji">🧠</div>
+                <span>Personality Lab</span>
             </div>
 
             <div class="desktopIcon" id="gamesFolderStaticIcon"
@@ -1417,6 +1422,55 @@
             <button id="closeRecycleBin" class="windowCloseButton">Close</button>
         </div>
 
+        <!-- LizzyOS Personality Lab -->
+        <div id="personalityWindow" class="desktopWindow hidden">
+            <div class="windowTop">
+                <div class="windowDots">
+                    <span class="windowCloseDot" id="personalityRedClose"></span>
+                    <span class="windowMinDot"></span>
+                    <span class="windowMaxDot"></span>
+                </div>
+                <h2>🧠 LizzyOS Personality Lab</h2>
+            </div>
+
+            <div class="windowScroll personalityLab">
+                <p class="eyebrow">SYSTEM PERSONALITY</p>
+                <h3>Who are we dealing with today? 😭</h3>
+                <p class="memoryMessage">This changes how LizzyOS talks, reacts and comments — not just the wallpaper.</p>
+
+                <div class="personalityCards">
+                    <button data-v5-persona="Lizzy">
+                        <span>💗</span>
+                        <strong>Lizzy</strong>
+                        <small>Sweet, warm, flower-powered and suspiciously adorable.</small>
+                    </button>
+                    <button data-v5-persona="Little Miss Attitude">
+                        <span>😏</span>
+                        <strong>Little Miss Attitude</strong>
+                        <small>Sassy, cheeky and mildly judgemental of Agent Mikhail.</small>
+                    </button>
+                    <button data-v5-persona="Agent Yelizaveta">
+                        <span>🕵️</span>
+                        <strong>Agent Yelizaveta</strong>
+                        <small>Classified, mission-focused and permanently suspicious.</small>
+                    </button>
+                </div>
+
+                <div class="personalityConsole">
+                    <span>LIVE SYSTEM PREVIEW</span>
+                    <p id="personalitySample"></p>
+                </div>
+
+                <div class="personalityEffects">
+                    <div>🎮 <strong>Games</strong><span>Different commentary</span></div>
+                    <div>🗑️ <strong>Recycle Bin</strong><span>Different sass</span></div>
+                </div>
+            </div>
+
+            <button id="closePersonality" class="windowCloseButton">Close</button>
+        </div>
+
+
         <!-- Full Screen Viewer -->
 
         <div id="viewer" class="hidden">
@@ -1614,7 +1668,7 @@ if (window.netlifyIdentity) {
   <div id="vipAction"></div>
 </div>
 
-<script src="script.js?v=20260828-flower-images"></script>
+<script src="script.js?v=20260829-personality-lab"></script>
 <script src="living-desktop.js?v=20260829-more-moods"></script>
 
 <script defer src="internet.js?v=20260823-internet-hotfix"></script>

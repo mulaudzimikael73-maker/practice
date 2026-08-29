@@ -4453,3 +4453,37 @@ body.mikaelTakeoverActive #desktopArea:before{background:rgba(20,10,40,.12)!impo
 }
 
 .flowerImg{display:inline-block;object-fit:contain;vertical-align:middle}.seedPhoto{width:72px;height:72px;object-fit:contain;display:block;margin:0 auto 8px}.seedShopCard .seedPhoto{border-radius:12px}
+
+/* =====================================================
+   LIZZYOS V5 — PERSONALITY LAB
+   ===================================================== */
+.personalityLab{text-align:center}
+.personalityCards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:24px 0}
+.personalityCards button{
+    margin:0;min-height:165px;padding:20px 13px;display:flex;flex-direction:column;
+    justify-content:center;align-items:center;gap:8px;border-radius:21px
+}
+.personalityCards button span{font-size:42px}
+.personalityCards button strong{font-size:14px}
+.personalityCards button small{font-size:10px;opacity:.72;line-height:1.45}
+.personalityConsole{
+    max-width:680px;margin:22px auto;padding:18px;border-radius:18px;
+    background:rgba(18,15,32,.28);border:1px solid rgba(255,255,255,.18);
+    font-family:monospace;text-align:left
+}
+.personalityConsole>span{display:block;font-size:9px;letter-spacing:1.7px;opacity:.6;margin-bottom:8px}
+.personalityConsole p{margin:0;line-height:1.65}
+.personalityEffects{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:20px}
+.personalityEffects div{padding:13px;border-radius:15px;background:rgba(255,255,255,.1);font-size:12px}
+.personalityEffects strong,.personalityEffects span{display:block;margin-top:4px}
+.personalityEffects span{font-size:9px;opacity:.62}
+body[data-personality="Lizzy"] .desktopWindow{box-shadow:0 25px 70px rgba(255,145,196,.18)}
+body[data-personality="Little Miss Attitude"] .desktopWindow{box-shadow:0 25px 70px rgba(179,66,149,.25)}
+body[data-personality="Agent Yelizaveta"] .personalityConsole{letter-spacing:.2px;border-color:rgba(205,178,255,.3)}
+body[data-personality="Lizzy"] #personalitySample::before{content:"💗 "; }
+body[data-personality="Little Miss Attitude"] #personalitySample::before{content:"😏 "; }
+body[data-personality="Agent Yelizaveta"] #personalitySample::before{content:"[CLASSIFIED] ";opacity:.7}
+.personalityBinNote{margin-bottom:14px}
+@media(max-width:720px){
+    .personalityCards,.personalityEffects{grid-template-columns:1fr}
+}
