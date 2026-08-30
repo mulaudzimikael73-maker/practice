@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Masthead, SectionTitle, Colophon, LabelChip } from "@/components/newspaper";
-import { presidentQuotes } from "@/lib/news-data";
+import { getDailyEdition } from "@/lib/news-data";
 
 export const Route = createFileRoute("/president")({
   head: () => ({
@@ -9,7 +9,7 @@ export const Route = createFileRoute("/president")({
       {
         name: "description",
         content:
-          "Fifty official statements from the President on Lizzy, the economy, and Micky's refusal to remain professional.",
+          "Official statements from the President on Lizzy, the economy, and Micky's refusal to remain professional.",
       },
       { property: "og:title", content: "Words From The President — Micky's Daily News" },
       {
@@ -22,8 +22,7 @@ export const Route = createFileRoute("/president")({
 });
 
 function PresidentPage() {
-  const closing = presidentQuotes[presidentQuotes.length - 1];
-  const quotes = presidentQuotes.slice(0, -1);
+  const { presidentQuotes: quotes, closingQuote: closing } = getDailyEdition();
 
   return (
     <div className="paper min-h-screen">
@@ -41,7 +40,7 @@ function PresidentPage() {
           <div className="mx-auto mt-5 max-w-3xl rule-double" />
         </section>
 
-        <SectionTitle kicker="Fifty statements to the nation.">
+        <SectionTitle kicker="Today's statements to the nation.">
           Official Statements
         </SectionTitle>
 
@@ -61,7 +60,7 @@ function PresidentPage() {
 
         <section className="mt-8 border-4 border-double border-border bg-card p-6 text-center sm:p-10">
           <span className="font-mono text-[0.65rem] tracking-widest uppercase text-muted-foreground">
-            Statement 50 · Closing Address
+            Closing Address
           </span>
           <p className="mx-auto max-w-3xl pt-4 font-display text-xl leading-relaxed font-semibold italic sm:text-2xl">
             “{closing}”

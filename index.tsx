@@ -8,7 +8,7 @@ import {
   Colophon,
   LabelChip,
 } from "@/components/newspaper";
-import { varietyHeadlines, financeHeadlines, leadStories } from "@/lib/news-data";
+import { getDailyEdition } from "@/lib/news-data";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -30,9 +30,7 @@ export const Route = createFileRoute("/")({
 });
 
 function FrontPage() {
-  const lead = varietyHeadlines[0]!;
-  const secondary = varietyHeadlines.slice(1, 4);
-  const rest = varietyHeadlines.slice(4);
+  const { lead, secondary, bulletin, money, leadStories } = getDailyEdition();
 
   return (
     <div className="paper min-h-screen">
@@ -85,7 +83,7 @@ function FrontPage() {
                 </li>
                 <li>
                   <Link to="/president" className="underline decoration-dotted underline-offset-4 hover:text-accent">
-                    🇿🇦 Words From The President — 50 official statements
+                    🇿🇦 Words From The President — today's official statements
                   </Link>
                 </li>
               </ul>
@@ -111,11 +109,11 @@ function FrontPage() {
 
         {/* Headlines bulletin */}
         <section className="mt-12">
-          <SectionTitle kicker="Fifty headlines. No fact-checking department.">
+          <SectionTitle kicker="Today's bulletin. Fresh headlines every morning, no fact-checking department.">
             🗞️ Headlines Bulletin
           </SectionTitle>
           <div className="gap-8 md:columns-2 lg:columns-3">
-            {rest.map((h) => (
+            {bulletin.map((h) => (
               <HeadlineItem key={h.text} item={h} />
             ))}
           </div>
@@ -148,7 +146,7 @@ function FrontPage() {
             📉 The Money Pages
           </SectionTitle>
           <div className="gap-8 md:columns-2 lg:columns-3">
-            {financeHeadlines.map((h) => (
+            {money.map((h) => (
               <HeadlineItem key={h.text} item={h} />
             ))}
           </div>

@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import type { ReactNode } from "react";
-import { labels, tickerItems, marketUpdate, type Headline } from "@/lib/news-data";
+import { labels, marketUpdate, getDailyEdition, type Headline } from "@/lib/news-data";
 
 export function LabelChip({ name }: { name: keyof typeof labels }) {
   const l = labels[name]!;
@@ -8,7 +8,8 @@ export function LabelChip({ name }: { name: keyof typeof labels }) {
 }
 
 export function Ticker() {
-  const items = [...tickerItems, ...tickerItems];
+  const { ticker } = getDailyEdition();
+  const items = [...ticker, ...ticker];
   return (
     <div className="overflow-hidden border-y border-border bg-primary py-1.5 text-primary-foreground">
       <div className="ticker-track flex w-max gap-10 whitespace-nowrap font-mono text-[0.68rem] tracking-widest uppercase">
@@ -30,19 +31,14 @@ const nav = [
 ];
 
 export function Masthead({ edition }: { edition: string }) {
-  const today = new Date().toLocaleDateString("en-ZA", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
+  const { dateLabel, editionNo } = getDailyEdition();
 
   return (
     <header className="border-b-4 border-border">
       <div className="mx-auto max-w-6xl px-4">
         <div className="flex flex-wrap items-center justify-between gap-2 py-2 font-mono text-[0.6rem] tracking-widest uppercase text-muted-foreground">
-          <span>Vol. I — No. 1</span>
-          <span>{today}</span>
+          <span>Vol. I — No. {editionNo}</span>
+          <span>{dateLabel}</span>
           <span>Price: One Compliment</span>
         </div>
         <div className="rule-double" />

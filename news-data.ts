@@ -259,3 +259,167 @@ export const presidentQuotes: string[] = [
   "The economy may fluctuate. Interest rates may change. Prices may rise. But Micky's opinion of Lizzy remains remarkably stable.",
   "And finally, on behalf of the entire nation: Lizzy, you are loved, appreciated and very, very special. Please continue being exactly who you are — even if your bank account would prefer otherwise. ❤️",
 ];
+
+/* ------------------------------------------------------------------
+ * Daily rotation engine
+ *
+ * Every list above is a POOL. Each day the paper prints a fresh,
+ * de-duplicated selection drawn from those pools using a seeded
+ * shuffle keyed to the calendar date, so:
+ *  - the same day always renders the same edition (server + browser
+ *    agree, no hydration mismatch),
+ *  - no headline, bulletin, bank alert, ticker line or presidential
+ *    statement is ever printed twice in the same edition,
+ *  - the order and selection change automatically at midnight.
+ * ------------------------------------------------------------------ */
+
+export const EDITION_TIME_ZONE = "Africa/Johannesburg";
+
+/** Stable YYYY-MM-DD for the paper's timezone (identical on server & client). */
+export function editionDateKey(now: Date = new Date()): string {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: EDITION_TIME_ZONE,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(now);
+}
+
+export function editionDateLabel(now: Date = new Date()): string {
+  return new Intl.DateTimeFormat("en-ZA", {
+    timeZone: EDITION_TIME_ZONE,
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(now);
+}
+
+function hashSeed(input: string): number {
+  let h = 2166136261;
+  for (let i = 0; i < input.length; i++) {
+    h ^= input.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return h >>> 0;
+}
+
+/** Deterministic PRNG (mulberry32). */
+function rng(seed: number) {
+  let a = seed || 1;
+  return () => {
+    a |= 0;
+    a = (a + 0x6d2b79f5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+function shuffle<T>(items: readonly T[], seed: string): T[] {
+  const out = items.slice();
+  const rand = rng(hashSeed(seed));
+  for (let i = out.length - 1; i > 0; i--) {
+    const j = Math.floor(rand() * (i + 1));
+    [out[i], out[j]] = [out[j]!, out[i]!];
+  }
+  return out;
+}
+
+const normalise = (s: string) =>
+  s
+    .toUpperCase()
+    .replace(/[“”"'’‘]/g, "")
+    .replace(/[^A-Z0-9]+/g, " ")
+    .trim();
+
+/** Drops repeats (ignoring punctuation/case) and anything already printed. */
+function uniqueBy<T>(items: readonly T[], key: (item: T) => string, seen: Set<string>): T[] {
+  const out: T[] = [];
+  for (const item of items) {
+    const k = normalise(key(item));
+    if (!k || seen.has(k)) continue;
+    seen.add(k);
+    out.push(item);
+  }
+  return out;
+}
+
+export type DailyEdition = {
+  dateKey: string;
+  dateLabel: string;
+  editionNo: number;
+  ticker: string[];
+  lead: Headline;
+  secondary: Headline[];
+  bulletin: Headline[];
+  money: Headline[];
+  bankAlerts: string[];
+  presidentQuotes: string[];
+  closingQuote: string;
+  leadStories: Story[];
+};
+
+const EPOCH = Date.UTC(2026, 0, 1);
+
+function buildEdition(dateKey: string): DailyEdition {
+  const seen = new Set<string>();
+
+  // Front page picks first, so they always win the de-duplication race.
+  const variety = shuffle(varietyHeadlines, `variety:${dateKey}`);
+  const varietyPicks = uniqueBy(variety, (h) => h.text, seen);
+  const lead = varietyPicks[0]!;
+  const secondary = varietyPicks.slice(1, 4);
+  const bulletin = varietyPicks.slice(4, 28);
+
+  const money = uniqueBy(shuffle(financeHeadlines, `money:${dateKey}`), (h) => h.text, seen).slice(
+    0,
+    21,
+  );
+
+  const bankAlerts = uniqueBy(shuffle(bankStories, `bank:${dateKey}`), (s) => s, seen).slice(0, 16);
+
+  // Ticker lines are pulled last from whatever hasn't been printed yet.
+  const tickerPool = [
+    ...uniqueBy(shuffle(tickerItems, `ticker:${dateKey}`), (s) => s, seen),
+    ...varietyPicks.slice(28).map((h) => h.text),
+  ];
+  const ticker = tickerPool.slice(0, 6);
+
+  const quotesSeen = new Set<string>();
+  const quotes = uniqueBy(presidentQuotes, (q) => q, quotesSeen);
+  const closingQuote = quotes[quotes.length - 1]!;
+  const rotatingQuotes = shuffle(quotes.slice(0, -1), `president:${dateKey}`).slice(0, 18);
+
+  const stories = shuffle(uniqueBy(leadStories, (s) => s.title, new Set()), `stories:${dateKey}`);
+
+  const editionNo =
+    Math.max(
+      1,
+      Math.round((Date.parse(`${dateKey}T00:00:00Z`) - EPOCH) / 86400000),
+    ) + 1;
+
+  return {
+    dateKey,
+    dateLabel: editionDateLabel(new Date(`${dateKey}T12:00:00Z`)),
+    editionNo,
+    ticker,
+    lead,
+    secondary,
+    bulletin,
+    money,
+    bankAlerts,
+    presidentQuotes: rotatingQuotes,
+    closingQuote,
+    leadStories: stories.slice(0, 3),
+  };
+}
+
+let cache: DailyEdition | null = null;
+
+/** The edition for today — cached per day, identical on server and client. */
+export function getDailyEdition(now: Date = new Date()): DailyEdition {
+  const dateKey = editionDateKey(now);
+  if (!cache || cache.dateKey !== dateKey) cache = buildEdition(dateKey);
+  return cache;
+}

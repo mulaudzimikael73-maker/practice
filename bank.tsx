@@ -7,7 +7,7 @@ import {
   Colophon,
   LabelChip,
 } from "@/components/newspaper";
-import { leadStories, bankStories } from "@/lib/news-data";
+import { getDailyEdition } from "@/lib/news-data";
 
 export const Route = createFileRoute("/bank")({
   head: () => ({
@@ -29,6 +29,8 @@ export const Route = createFileRoute("/bank")({
 });
 
 function BankPage() {
+  const { leadStories, bankAlerts } = getDailyEdition();
+
   return (
     <div className="paper min-h-screen">
       <Masthead edition="Section 2 · The Bank & Funds — our economics desk, under pressure." />
@@ -90,7 +92,7 @@ function BankPage() {
             🏦 Bank Alerts
           </SectionTitle>
           <ol className="gap-8 md:columns-2">
-            {bankStories.map((s, i) => (
+            {bankAlerts.map((s, i) => (
               <li
                 key={s}
                 className="mb-3 break-inside-avoid border-b border-dashed border-border pb-3 font-body text-sm leading-relaxed"
