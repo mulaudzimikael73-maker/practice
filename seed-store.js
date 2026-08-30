@@ -20,6 +20,15 @@ const SEEDS=[
  {id:"orchidSeed",name:"Orchid Seed",emoji:"🌸",img:"assets/flowers/orchid.png",price:9},
  {id:"mysterySeed",name:"Mystery Seed",emoji:"❓",img:"assets/flowers/mysteryBloom.png",price:12},
  {id:"moonSeed",name:"Moonflower Seed",emoji:"🌙",img:"assets/flowers/moonflower.png",price:20},
+ {id:"jacarandaSeed",name:"Jacaranda Sapling",emoji:"🌳",img:"assets/flowers/jacaranda.png",price:18},
+ {id:"lemonTreeSeed",name:"Lemon Tree Sapling",emoji:"🍋",img:"assets/flowers/lemonTree.png",price:18},
+ {id:"willowSeed",name:"Willow Sapling",emoji:"🌳",img:"assets/flowers/willow.png",price:22},
+ {id:"cherryTreeSeed",name:"Cherry Blossom Sapling",emoji:"🌸",img:"assets/flowers/cherryTree.png",price:24},
+ {id:"pinkDogwoodSeed",name:"Pink Dogwood Sapling",emoji:"🌸",img:"assets/flowers/pinkDogwood.png",price:26},
+ {id:"bottlebrushSeed",name:"Bottlebrush Sapling",emoji:"🌳",img:"assets/flowers/bottlebrush.png",price:28},
+ {id:"silkTreeSeed",name:"Persian Silk Sapling",emoji:"🌸",img:"assets/flowers/silkTree.png",price:30},
+ {id:"japaneseMapleSeed",name:"Japanese Maple Sapling",emoji:"🍁",img:"assets/flowers/japaneseMaple.png",price:34},
+ {id:"saucerMagnoliaSeed",name:"Saucer Magnolia Sapling",emoji:"🌷",img:"assets/flowers/saucerMagnolia.png",price:38},
  {id:"mikaelSeed",name:"Mikael's Favourite",emoji:"🍌",img:"assets/flowers/bananaTree.png",price:25,note:"Grows into something suspiciously banana-shaped."}
 ];
 const today=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`};

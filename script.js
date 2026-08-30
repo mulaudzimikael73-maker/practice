@@ -2742,7 +2742,12 @@ window.LizzyDailyRewardsV4={counts:{basic:BASIC.length,reverse:REVERSE.length,no
         jacaranda:    {name:"Jacaranda Tree",emoji:"🌳",img:"assets/flowers/jacaranda.png",type:"tree",rarity:"Uncommon"},
         willow:       {name:"Willow Tree",emoji:"🌳",img:"assets/flowers/willow.png",type:"tree",rarity:"Rare"},
         cherryTree:   {name:"Cherry Blossom Tree",emoji:"🌸",img:"assets/flowers/cherryTree.png",type:"tree",rarity:"Rare"},
-        lemonTree:    {name:"Lemon Tree",emoji:"🍋",img:"assets/flowers/lemonTree.png",type:"tree",rarity:"Uncommon"}
+        lemonTree:    {name:"Lemon Tree",emoji:"🍋",img:"assets/flowers/lemonTree.png",type:"tree",rarity:"Uncommon"},
+        pinkDogwood:  {name:"Pink Dogwood Tree",emoji:"🌸",img:"assets/flowers/pinkDogwood.png",type:"tree",rarity:"Uncommon"},
+        bottlebrush:  {name:"Bottlebrush Tree",emoji:"🌳",img:"assets/flowers/bottlebrush.png",type:"tree",rarity:"Rare"},
+        silkTree:     {name:"Persian Silk Tree",emoji:"🌸",img:"assets/flowers/silkTree.png",type:"tree",rarity:"Rare"},
+        japaneseMaple:{name:"Japanese Maple",emoji:"🍁",img:"assets/flowers/japaneseMaple.png",type:"tree",rarity:"Epic"},
+        saucerMagnolia:{name:"Saucer Magnolia",emoji:"🌷",img:"assets/flowers/saucerMagnolia.png",type:"tree",rarity:"Legendary"}
     };
 
     const STANDARD_FLOWERS = [
@@ -2763,10 +2768,15 @@ window.LizzyDailyRewardsV4={counts:{basic:BASIC.length,reverse:REVERSE.length,no
         mysterySeed:{name:"Mystery Seed",emoji:"❓",plant:"mysteryBloom"},
         moonSeed:{name:"Moonflower Seed",emoji:"🌙",plant:"moonflower"},
         mikaelSeed:{name:"UNKNOWN_SEED.exe",emoji:"❓",plant:"bananaTree",secret:true},
-        jacarandaSeed:{name:"Jacaranda Sapling",emoji:"🌳",plant:"jacaranda"},
-        willowSeed:{name:"Willow Sapling",emoji:"🌳",plant:"willow"},
-        cherryTreeSeed:{name:"Cherry Blossom Sapling",emoji:"🌸",plant:"cherryTree"},
-        lemonTreeSeed:{name:"Lemon Tree Sapling",emoji:"🍋",plant:"lemonTree"}
+        jacarandaSeed:{name:"Jacaranda Sapling",emoji:"🌳",img:"assets/flowers/jacaranda.png",plant:"jacaranda"},
+        willowSeed:{name:"Willow Sapling",emoji:"🌳",img:"assets/flowers/willow.png",plant:"willow"},
+        cherryTreeSeed:{name:"Cherry Blossom Sapling",emoji:"🌸",img:"assets/flowers/cherryTree.png",plant:"cherryTree"},
+        lemonTreeSeed:{name:"Lemon Tree Sapling",emoji:"🍋",img:"assets/flowers/lemonTree.png",plant:"lemonTree"},
+        pinkDogwoodSeed:{name:"Pink Dogwood Sapling",emoji:"🌸",img:"assets/flowers/pinkDogwood.png",plant:"pinkDogwood"},
+        bottlebrushSeed:{name:"Bottlebrush Sapling",emoji:"🌳",img:"assets/flowers/bottlebrush.png",plant:"bottlebrush"},
+        silkTreeSeed:{name:"Persian Silk Sapling",emoji:"🌸",img:"assets/flowers/silkTree.png",plant:"silkTree"},
+        japaneseMapleSeed:{name:"Japanese Maple Sapling",emoji:"🍁",img:"assets/flowers/japaneseMaple.png",plant:"japaneseMaple"},
+        saucerMagnoliaSeed:{name:"Saucer Magnolia Sapling",emoji:"🌷",img:"assets/flowers/saucerMagnolia.png",plant:"saucerMagnolia"}
     };
     const COMMON_SEEDS = ["tulipSeed","roseSeed","snapdragonSeed","sunflowerSeed","lavenderSeed"];
     const GAME_SEEDS   = ["lilySeed","cryingLilySeed","orchidSeed","mysterySeed"];
@@ -3101,7 +3111,7 @@ window.LizzyDailyRewardsV4={counts:{basic:BASIC.length,reverse:REVERSE.length,no
         host.innerHTML=entries.map(([id,n])=>{
             const s=SEEDS[id];
             return `<button class="seedChip ${garden.selectedSeed===id?"selected":""}" data-seed="${id}">
-                <b>${s.emoji} ${s.secret?"Unknown Seed":s.name} ×${n}</b>
+                <b>${s.secret?s.emoji:(s.img?`<img class="flowerImg" src="${s.img}" alt="${s.name}" style="width:26px;height:26px;object-fit:contain;vertical-align:middle">`:s.emoji)} ${s.secret?"Unknown Seed":s.name} ×${n}</b>
                 <small>${s.secret?"Origin: Classified":"Tap, then choose an empty plot."}</small>
             </button>`;
         }).join("");
