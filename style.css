@@ -3451,6 +3451,39 @@ body.mikaelProfileActive #livingDesktopIcon:after{content:"MIKAEL";position:abso
 /* BANK OF MICKY — INTERNET BANKING */
 .bankLoginPage,.bankSite{max-width:680px;margin:0 auto}.bankLoginPage{text-align:center;padding:8px 0}.bankLoginBrand{font-size:52px}.bankLoginPage h1{margin:3px 0}.bankTagline{opacity:.7;margin:3px 0 18px}.bankLoginCard{max-width:390px;margin:auto;text-align:left;padding:20px;border-radius:18px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.14)}.bankLoginCard label{display:block;font-size:11px;font-weight:800;letter-spacing:.5px;margin:9px 0 5px}.bankClient,.bankLoginCard input{box-sizing:border-box;width:100%;padding:11px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.09);color:inherit}.bankLoginCard input{outline:none}.bankLoginCard button{width:100%;margin-top:13px;padding:11px;border:0;border-radius:11px;cursor:pointer;font-weight:800}.bankLoginStatus{min-height:18px;text-align:center;font-size:12px}.bankFinePrint{display:block;margin-top:14px;opacity:.55}.bankSiteHeader{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.bankSiteHeader small{font-weight:900;letter-spacing:1.2px;opacity:.65}.bankSiteHeader h2{margin:2px 0}.bankSiteHeader button{border:0;border-radius:9px;padding:7px 10px;cursor:pointer}.bankAccountCard{padding:20px;border-radius:20px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.16)}.bankAccountCard small,.bankMiniCard small{font-size:10px;font-weight:900;letter-spacing:1px;opacity:.7}.bankBigBalance{font-size:38px;font-weight:900;margin:7px 0}.bankBigBalance span{font-size:16px}.bankAccountNo{font-size:11px;opacity:.65}.bankGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}.bankMiniCard{padding:14px;border-radius:15px;background:rgba(255,255,255,.08);text-align:left}.bankMiniCard strong{display:block;font-size:21px;margin:5px 0}.bankMiniCard span{display:block;font-size:11px;opacity:.7;line-height:1.35}.bankActions{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.bankActions button{padding:10px 8px;border:0;border-radius:11px;cursor:pointer;font-size:11px;font-weight:800}.bankWebStatus{margin:10px 0;padding:9px 12px;border-radius:10px;background:rgba(255,255,255,.12);font-size:12px}.bankRules{margin-top:10px;padding:12px 14px;border-radius:13px;background:rgba(255,255,255,.06);font-size:11px;line-height:1.4}.bankRules p{margin:4px 0 0}@media(max-width:650px){.bankGrid,.bankActions{grid-template-columns:1fr}.bankBigBalance{font-size:30px}}
 
+/* MICKY'S DAILY NEWS */
+.newsPage{max-width:760px;margin:0 auto;padding:6px 4px 16px;color:inherit}
+.newsHeader{text-align:center;padding:14px 10px 16px;border-bottom:2px solid rgba(255,255,255,.25);margin-bottom:14px}
+.newsMasthead{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:6px}
+.newsLogo{font-size:42px;line-height:1}
+.newsMasthead h1{font-size:clamp(26px,4vw,38px);font-weight:900;letter-spacing:.5px;margin:0}
+.newsMasthead small{display:block;font-size:11px;opacity:.75;margin-top:2px;letter-spacing:.8px;text-transform:uppercase}
+.newsTagline{font-size:12px;font-style:italic;opacity:.8;margin-top:8px}
+.newsSectionTitle{font-size:13px;font-weight:900;letter-spacing:1px;opacity:.75;margin:18px 0 10px;text-transform:uppercase;border-left:4px solid rgba(255,255,255,.35);padding-left:10px}
+.newsBulletin{margin-bottom:8px}
+.newsHeadlineGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px}
+.newsHeadlineCard{padding:14px;border-radius:16px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.14);text-align:left}
+.newsHeadlineCard.featured{grid-column:1/-1;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.2)}
+.newsHeadlineCard h2{font-size:clamp(18px,2.6vw,26px);margin:8px 0 6px;line-height:1.25}
+.newsHeadlineCard h3{font-size:15px;margin:6px 0 5px;line-height:1.25}
+.newsHeadlineCard p{font-size:12px;opacity:.85;line-height:1.45;margin:0}
+.newsHeadlineCard small{display:block;margin-top:8px;font-size:10px;opacity:.65}
+.newsLabel{font-size:9px;font-weight:900;letter-spacing:1px;padding:4px 8px;border-radius:999px;background:rgba(255,255,255,.18)}
+.newsBlog{margin-bottom:10px}
+.newsArticle{padding:18px;border-radius:18px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.13);text-align:left;line-height:1.6}
+.newsArticle h2{font-size:clamp(18px,2.4vw,24px);margin:0 0 4px}
+.newsByline{font-size:11px;opacity:.7;margin:0 0 12px;font-style:italic}
+.newsArticle p{font-size:13px;margin:0 0 12px;opacity:.92}
+.newsArticleBox{padding:12px 14px;border-radius:12px;background:rgba(255,255,255,.1);border-left:4px solid rgba(255,255,255,.35);font-size:12px;margin-top:12px}
+.newsQuote{margin:14px 0 0;padding:14px 18px;border-radius:14px;background:rgba(255,255,255,.1);font-size:clamp(16px,2vw,21px);font-style:italic;line-height:1.45}
+.newsQuote cite{display:block;margin-top:8px;font-size:12px;font-style:normal;opacity:.75}
+.newsFooter{text-align:center;padding:16px 10px 6px;border-top:1px solid rgba(255,255,255,.2);margin-top:18px}
+.newsFooter p{font-size:11px;opacity:.7;margin:0 0 10px}
+.newsHomeBtn{border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.09);color:inherit;border-radius:10px;padding:8px 14px;cursor:pointer;font-size:12px;font-weight:700}
+.newsHomeBtn:hover{background:rgba(255,255,255,.16)}
+@media(max-width:700px){.newsHeadlineGrid{grid-template-columns:1fr}.newsMasthead{flex-direction:column;gap:6px}}
+
+
 /* DAILY LIZZY MAIL */
 #lizzyMailWindow{z-index:10030}
 .mailDesktopDot{position:absolute;top:-6px;right:-10px;font-size:8px;font-weight:900;padding:3px 6px;border-radius:999px;background:#fff;color:#8c2d82;box-shadow:0 2px 8px rgba(0,0,0,.2)}
