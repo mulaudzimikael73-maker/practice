@@ -167,7 +167,7 @@ function news(){
     <div class="newsHeadlineCard featured">
       <span class="newsLabel">BREAKING</span>
       <h2>Major Announcement Expected from the President</h2>
-      <p>Sources close to the President say a new address is being prepared. Details will be added here once the final text is received.</p>
+      <p>The President has confirmed that savings across LizzyOS are at an all-time high, and that the weekly +2 MB bonus will continue for every citizen who keeps at least 15 MB banked for seven days.</p>
       <small>Updated just now</small>
     </div>
     <div class="newsHeadlineGrid">
@@ -195,9 +195,10 @@ function news(){
       <h2>Inside the Bank of Micky: A Financial Update</h2>
       <p class="newsByline">By Micky's Daily News Finance Desk</p>
       <p>The Bank of Micky continues to operate as the only financial institution in LizzyOS fully backed by charm, confidence, and the occasional weekly bonus. This blog will hold the full story of how funds are managed, where Micky Bucs come from, and what the future holds for savers.</p>
-      <p><em>[Your detailed bank and funds content will go here.]</em></p>
+      <p>Here is how it works. Every Micky Buc you deposit is stored in your savings balance and stays there until you withdraw it. Keep 15 MB or more saved for seven full days and the bank pays you a +2 MB weekly bonus, claimable once per week straight from the Bank of Micky page.</p>
+      <p>Withdrawals are instant, deposits are free, and nothing is ever deducted for holding your money. The vault holds the rewards you unlock along the way, from free items to the rarer prizes that only show up now and then.</p>
       <div class="newsArticleBox">
-        <strong>Coming soon:</strong> interviews with top savers, a breakdown of the weekly +2 MB bonus, and an exclusive look at the vault.
+        <strong>Quick tips:</strong> deposit early in the week, never let your savings drop below 15 MB, and claim your bonus as soon as the timer clears.
       </div>
     </article>
   </section>
@@ -207,8 +208,8 @@ function news(){
     <article class="newsArticle">
       <h2>A Message to the People</h2>
       <p class="newsByline">Office of the President</p>
-      <p>This space is reserved for the President's official words. Whether it is a rallying call, a heartfelt note, or an important announcement, it will appear here in full once the final message is provided.</p>
-      <p><em>[The President's speech or letter will be inserted here.]</em></p>
+      <p>To everyone inside LizzyOS: thank you. This little world runs on the people who show up for it every day, save what they can, laugh at the life lessons, and keep coming back.</p>
+      <p>The plan stays simple. Keep the bank fair, keep the rewards worth chasing, and keep adding things worth exploring. If something feels broken or unfair, say so, and it gets fixed.</p>
       <blockquote class="newsQuote">
         "Leadership is not about being perfect. It is about showing up, being kind, and occasionally bringing snacks."
         <cite>— The President</cite>
