@@ -19,7 +19,8 @@ const SEEDS=[
  {id:"cryingLilySeed",name:"Crying Lily Seed",emoji:"🥀",img:"assets/flowers/cryingLily.png",price:8},
  {id:"orchidSeed",name:"Orchid Seed",emoji:"🌸",img:"assets/flowers/orchid.png",price:9},
  {id:"mysterySeed",name:"Mystery Seed",emoji:"❓",img:"assets/flowers/mysteryBloom.png",price:12},
- {id:"moonSeed",name:"Moonflower Seed",emoji:"🌙",img:"assets/flowers/moonflower.png",price:20}
+ {id:"moonSeed",name:"Moonflower Seed",emoji:"🌙",img:"assets/flowers/moonflower.png",price:20},
+ {id:"mikaelSeed",name:"Mikael's Favourite",emoji:"🍌",img:"assets/flowers/bananaTree.png",price:25,note:"Grows into something suspiciously banana-shaped."}
 ];
 const today=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`};
 const read=(k,f)=>{try{let v=localStorage.getItem(k);return v===null?f:JSON.parse(v)}catch(e){return f}};
@@ -72,14 +73,29 @@ function buySeed(id){
  const s=SEEDS.find(x=>x.id===id);if(!s)return;
  if(balance()<s.price){if($("seedStoreStatus"))$("seedStoreStatus").textContent=`😭 Not enough Micky Bucs. You need ${s.price} MB.`;return}
  // ADD to the existing Garden only. Never recreate/reset Garden progress.
- const garden=read("lizzyGardenV1",null);
- if(!garden||typeof garden!=="object"){if($("seedStoreStatus"))$("seedStoreStatus").textContent="Garden data wasn't found, so no purchase was made.";return}
- garden.seeds=garden.seeds||{};
- garden.seeds[id]=Number(garden.seeds[id]||0)+1;
- write("lizzyGardenV1",garden);setBalance(balance()-s.price);
+ // Preferred path: the Garden's own safe entry point. It re-reads the saved
+ // Garden first, so purchased seeds can never be overwritten by a later save.
+ let added=false;
+ try{
+   if(window.LizzyRewards&&typeof window.LizzyRewards.addSeed==="function"){
+     added=window.LizzyRewards.addSeed(id,1)===true;
+   }
+ }catch(e){added=false}
+ if(!added){
+   // Fallback: write straight to storage, then tell the Garden to reload
+   // so the in-memory copy picks the new seed up immediately.
+   const garden=read("lizzyGardenV1",null)||{};
+   if(typeof garden!=="object"){if($("seedStoreStatus"))$("seedStoreStatus").textContent="Garden data wasn't found, so no purchase was made.";return}
+   garden.seeds=garden.seeds||{};
+   garden.seeds[id]=Number(garden.seeds[id]||0)+1;
+   write("lizzyGardenV1",garden);
+   window.dispatchEvent(new Event("lizzyGardenUpdated"));
+ }
+ setBalance(balance()-s.price);
  if($("seedStoreStatus"))$("seedStoreStatus").textContent=`🌱 Purchased ${s.name}! Check Lizzy's Garden.`;
  notify("🛍️ SEED STORE PURCHASE",`${s.emoji} ${s.name}`,`Quantity: 1\nPaid: ${s.price} MB\nRemaining balance: ${balance()} MB\nGarden inventory updated successfully.`,{item:`${s.emoji} ${s.name}`,cost:s.price,price:s.price,balance:balance()});
  window.dispatchEvent(new CustomEvent("lizzySeedStorePurchase",{detail:{seed:s.id,name:s.name,price:s.price}}));
+ window.dispatchEvent(new Event("lizzyGardenUpdated"));
  render();
 }
 function openStore(){$("seedStoreWindow")?.classList.remove("hidden");render()}
