@@ -18,12 +18,6 @@
  * 2. Register it in @theme inline as --color-<name>: var(--<name>)
  */
 
-@theme {
-  --font-display: "Playfair Display", "Georgia", serif;
-  --font-body: "Newsreader", "Georgia", serif;
-  --font-mono: "IBM Plex Mono", monospace;
-}
-
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -68,28 +62,26 @@
 }
 
 :root {
-  --radius: 0.125rem;
-  --background: oklch(0.955 0.02 95);
-  --foreground: oklch(0.22 0.015 80);
-  --card: oklch(0.965 0.022 95);
-  --card-foreground: oklch(0.22 0.015 80);
-  --popover: oklch(0.965 0.022 95);
-  --popover-foreground: oklch(0.22 0.015 80);
-  --primary: oklch(0.28 0.02 80);
-  --primary-foreground: oklch(0.955 0.02 95);
-  --secondary: oklch(0.92 0.025 95);
-  --secondary-foreground: oklch(0.28 0.02 80);
-  --muted: oklch(0.92 0.025 95);
-  --muted-foreground: oklch(0.5 0.02 80);
-  --accent: oklch(0.52 0.19 27);
-  --accent-foreground: oklch(0.97 0.01 95);
-  --destructive: oklch(0.52 0.19 27);
-  --destructive-foreground: oklch(0.97 0.01 95);
-  --border: oklch(0.35 0.02 80);
-  --input: oklch(0.35 0.02 80);
-  --ring: oklch(0.52 0.19 27);
-  --rule: oklch(0.35 0.02 80);
-  --paper-dark: oklch(0.9 0.025 95);
+  --radius: 0.625rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.129 0.042 264.695);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.129 0.042 264.695);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.129 0.042 264.695);
+  --primary: oklch(0.208 0.042 265.755);
+  --primary-foreground: oklch(0.984 0.003 247.858);
+  --secondary: oklch(0.968 0.007 247.896);
+  --secondary-foreground: oklch(0.208 0.042 265.755);
+  --muted: oklch(0.968 0.007 247.896);
+  --muted-foreground: oklch(0.554 0.046 257.417);
+  --accent: oklch(0.968 0.007 247.896);
+  --accent-foreground: oklch(0.208 0.042 265.755);
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.984 0.003 247.858);
+  --border: oklch(0.929 0.013 255.508);
+  --input: oklch(0.929 0.013 255.508);
+  --ring: oklch(0.704 0.04 256.788);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -103,6 +95,30 @@
   --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
   --sidebar-border: oklch(0.929 0.013 255.508);
   --sidebar-ring: oklch(0.704 0.04 256.788);
+}
+
+/* LizzyOS Personality Lab theme */
+:root {
+  --radius: 1rem;
+  --background: oklch(0.16 0.03 300);
+  --foreground: oklch(0.97 0.01 330);
+  --card: oklch(0.22 0.04 305);
+  --card-foreground: oklch(0.97 0.01 330);
+  --popover: oklch(0.22 0.04 305);
+  --popover-foreground: oklch(0.97 0.01 330);
+  --primary: oklch(0.75 0.19 350);
+  --primary-foreground: oklch(0.18 0.04 320);
+  --secondary: oklch(0.28 0.05 300);
+  --secondary-foreground: oklch(0.97 0.01 330);
+  --muted: oklch(0.26 0.04 300);
+  --muted-foreground: oklch(0.74 0.04 320);
+  --accent: oklch(0.72 0.16 200);
+  --accent-foreground: oklch(0.18 0.04 320);
+  --border: oklch(0.98 0 0 / 12%);
+  --input: oklch(0.98 0 0 / 16%);
+  --ring: oklch(0.75 0.19 350);
+  --glow: 0 0 0 1px oklch(0.75 0.19 350 / 35%), 0 18px 50px -12px oklch(0.75 0.19 350 / 45%);
+  --panel: linear-gradient(160deg, oklch(0.26 0.05 305 / 90%), oklch(0.19 0.04 295 / 90%));
 }
 
 .dark {
@@ -149,53 +165,4 @@
     background-color: var(--color-background);
     color: var(--color-foreground);
   }
-}
-
-/* ---------- Micky's Daily News — newspaper layer ---------- */
-@layer components {
-  .paper {
-    background-color: var(--color-background);
-    background-image: radial-gradient(oklch(0.35 0.02 80 / 4%) 1px, transparent 1px);
-    background-size: 4px 4px;
-  }
-  .rule-double {
-    border-top: 3px double var(--rule);
-  }
-  .rule-thick {
-    border-top: 4px solid var(--rule);
-  }
-  .label-chip {
-    font-family: var(--font-mono);
-    font-size: 0.625rem;
-    letter-spacing: 0.08em;
-    font-weight: 600;
-    text-transform: uppercase;
-    padding: 0.125rem 0.375rem;
-    border: 1px solid currentColor;
-    display: inline-block;
-    white-space: nowrap;
-  }
-  .label-breaking { color: oklch(0.52 0.19 27); }
-  .label-economy { color: oklch(0.42 0.1 150); }
-  .label-bank { color: oklch(0.4 0.08 250); }
-  .label-president { color: oklch(0.42 0.1 150); }
-  .label-lizzy { color: oklch(0.55 0.18 350); }
-  .label-exclusive { color: oklch(0.52 0.19 27); }
-  .label-sources { color: oklch(0.5 0.05 80); }
-  .label-warning { color: oklch(0.55 0.15 70); }
-  .label-good { color: oklch(0.55 0.18 350); }
-  .label-nonsense { color: oklch(0.45 0.08 200); }
-  .label-romance { color: oklch(0.55 0.18 350); }
-}
-
-@keyframes ticker-scroll {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-
-.ticker-track {
-  animation: ticker-scroll 60s linear infinite;
-}
-.ticker-track:hover {
-  animation-play-state: paused;
 }
