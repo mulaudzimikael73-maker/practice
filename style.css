@@ -4491,6 +4491,10 @@ body.mikaelTakeoverActive #desktopArea:before{background:rgba(20,10,40,.12)!impo
    LIZZYOS V5 — PERSONALITY LAB
    ===================================================== */
 .personalityLab{text-align:center}
+#personalityLogin{text-align:center;padding:22px}
+#personalityLogin input{display:block;width:min(330px,90%);margin:16px auto 9px;padding:11px;border-radius:10px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.1);color:inherit}
+#personalityLogin button{border:0;border-radius:10px;padding:9px 13px;cursor:pointer;font-weight:800}
+#personalityLoginStatus{margin-top:8px;min-height:18px;font-size:13px;color:#ff9d9d}
 .personalityCards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:24px 0}
 .personalityCards button{
     margin:0;min-height:165px;padding:20px 13px;display:flex;flex-direction:column;

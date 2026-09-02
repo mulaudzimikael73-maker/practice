@@ -1434,37 +1434,50 @@
             </div>
 
             <div class="windowScroll personalityLab">
-                <p class="eyebrow">SYSTEM PERSONALITY</p>
-                <h3>Who are we dealing with today? 😭</h3>
-                <p class="memoryMessage">This changes how LizzyOS talks, reacts and comments — not just the wallpaper.</p>
 
-                <div class="personalityCards">
-                    <button data-v5-persona="Lizzy">
-                        <span>💗</span>
-                        <strong>Lizzy</strong>
-                        <small>Sweet, warm, flower-powered and suspiciously adorable.</small>
-                    </button>
-                    <button data-v5-persona="Little Miss Attitude">
-                        <span>😏</span>
-                        <strong>Little Miss Attitude</strong>
-                        <small>Sassy, cheeky and mildly judgemental of Agent Mikhail.</small>
-                    </button>
-                    <button data-v5-persona="Agent Yelizaveta">
-                        <span>🕵️</span>
-                        <strong>Agent Yelizaveta</strong>
-                        <small>Classified, mission-focused and permanently suspicious.</small>
-                    </button>
+                <div id="personalityLogin">
+                    <div class="mikaelControlSeal">🔒</div>
+                    <h2>Restricted Access</h2>
+                    <p>Enter the system password to reach the Personality Lab.</p>
+                    <input id="personalityPassword" type="password" autocomplete="off" placeholder="Enter password">
+                    <button id="personalityLoginBtn" type="button">Unlock</button>
+                    <div id="personalityLoginStatus"></div>
                 </div>
 
-                <div class="personalityConsole">
-                    <span>LIVE SYSTEM PREVIEW</span>
-                    <p id="personalitySample"></p>
+                <div id="personalityDashboard" class="hidden">
+                    <p class="eyebrow">SYSTEM PERSONALITY</p>
+                    <h3>Who are we dealing with today? 😭</h3>
+                    <p class="memoryMessage">This changes how LizzyOS talks, reacts and comments — not just the wallpaper.</p>
+
+                    <div class="personalityCards">
+                        <button data-v5-persona="Lizzy">
+                            <span>💗</span>
+                            <strong>Lizzy</strong>
+                            <small>Sweet, warm, flower-powered and suspiciously adorable.</small>
+                        </button>
+                        <button data-v5-persona="Little Miss Attitude">
+                            <span>😏</span>
+                            <strong>Little Miss Attitude</strong>
+                            <small>Sassy, cheeky and mildly judgemental of Agent Mikhail.</small>
+                        </button>
+                        <button data-v5-persona="Agent Yelizaveta">
+                            <span>🕵️</span>
+                            <strong>Agent Yelizaveta</strong>
+                            <small>Classified, mission-focused and permanently suspicious.</small>
+                        </button>
+                    </div>
+
+                    <div class="personalityConsole">
+                        <span>LIVE SYSTEM PREVIEW</span>
+                        <p id="personalitySample"></p>
+                    </div>
+
+                    <div class="personalityEffects">
+                        <div>🎮 <strong>Games</strong><span>Different commentary</span></div>
+                        <div>🗑️ <strong>Recycle Bin</strong><span>Different sass</span></div>
+                    </div>
                 </div>
 
-                <div class="personalityEffects">
-                    <div>🎮 <strong>Games</strong><span>Different commentary</span></div>
-                    <div>🗑️ <strong>Recycle Bin</strong><span>Different sass</span></div>
-                </div>
             </div>
 
             <button id="closePersonality" class="windowCloseButton">Close</button>

@@ -4034,7 +4034,7 @@ if(false)(() => {
   host.innerHTML=board.map((v,i)=>`<button class="tttCell" data-ttt="${i}">${v==="X"?"❌":v==="O"?"⭕":""}</button>`).join("");
   host.querySelectorAll("[data-ttt]").forEach(b=>b.onclick=()=>move(Number(b.dataset.ttt)));
  }
- function finish(text){over=true;$("ticTacToeStatus").textContent=text}
+ function finish(text){over=true;const s=$("ticTacToeStatus");if(s)s.textContent=text}
  function move(i){
   if(over||board[i])return;
   board[i]="X";render();
@@ -4044,7 +4044,7 @@ if(false)(() => {
    return;
   }
   if(board.every(Boolean)){finish("Draw. Mikael is calling this a moral victory.");return}
-  $("ticTacToeStatus").textContent="Mikael is thinking... allegedly.";
+  const s1=$("ticTacToeStatus");if(s1)s1.textContent="Mikael is thinking... allegedly.";
   setTimeout(aiMove,420);
  }
  function aiMove(){
@@ -4061,9 +4061,9 @@ if(false)(() => {
   board[pick]="O";render();
   if(winner("O")){finish("Mikael wins 😏 Please direct complaints to management.");return}
   if(board.every(Boolean)){finish("Draw. The hater survives.");return}
-  $("ticTacToeStatus").textContent="Your move, Hater.";
+  const s2=$("ticTacToeStatus");if(s2)s2.textContent="Your move, Hater.";
  }
- function reset(){board=Array(9).fill("");over=false;$("ticTacToeStatus").textContent="Your move, Hater.";render()}
+ function reset(){board=Array(9).fill("");over=false;const s3=$("ticTacToeStatus");if(s3)s3.textContent="Your move, Hater.";render()}
  $("ticTacToeRestart")?.addEventListener("click",reset);
  $("ticTacToeClose")?.addEventListener("click",()=>$("ticTacToeWindow")?.classList.add("hidden"));
  $("closeTicTacToe")?.addEventListener("click",()=>$("ticTacToeWindow")?.classList.add("hidden"));
@@ -4209,8 +4209,8 @@ if (typeof lizzyTelegramNotify === "function") window.lizzyTelegramNotify = lizz
         }
     };
 
-    const persona = () => store.getItem("lizzyPersona") || "Agent Yelizaveta";
-    const text = () => personalities[persona()] || personalities["Agent Yelizaveta"];
+    const persona = () => store.getItem("lizzyPersona") || "Little Miss Attitude";
+    const text = () => personalities[persona()] || personalities["Little Miss Attitude"];
 
     function applyPersonality(){
         const p=persona();
@@ -4247,10 +4247,40 @@ if (typeof lizzyTelegramNotify === "function") window.lizzyTelegramNotify = lizz
         }
     }
 
-    $("personalityIcon")?.addEventListener("click",()=>{
+    // ---- Password gate ----
+    const PERSONALITY_ACCESS="LIZZYOS";
+    const PERSONALITY_SESSION="lizzyPersonalityUnlockedV1";
+
+    function showPersonalityLogin(){
+        $("personalityLogin")?.classList.remove("hidden");
+        $("personalityDashboard")?.classList.add("hidden");
+        if($("personalityPassword")) $("personalityPassword").value="";
+        if($("personalityLoginStatus")) $("personalityLoginStatus").textContent="";
+        setTimeout(()=>$("personalityPassword")?.focus(),80);
+    }
+    function showPersonalityDashboard(){
+        $("personalityLogin")?.classList.add("hidden");
+        $("personalityDashboard")?.classList.remove("hidden");
         applyPersonality();
+    }
+    function attemptPersonalityLogin(){
+        const attempt=($("personalityPassword")?.value||"").trim().toUpperCase().replace(/\s+/g,"");
+        if(attempt!==PERSONALITY_ACCESS){
+            if($("personalityLoginStatus")) $("personalityLoginStatus").textContent="❌ Incorrect password.";
+            if($("personalityPassword")) $("personalityPassword").value="";
+            return;
+        }
+        sessionStorage.setItem(PERSONALITY_SESSION,"yes");
+        showPersonalityDashboard();
+    }
+
+    $("personalityIcon")?.addEventListener("click",()=>{
         $("personalityWindow")?.classList.remove("hidden");
+        if(sessionStorage.getItem(PERSONALITY_SESSION)==="yes") showPersonalityDashboard();
+        else showPersonalityLogin();
     });
+    $("personalityLoginBtn")?.addEventListener("click",attemptPersonalityLogin);
+    $("personalityPassword")?.addEventListener("keydown",e=>{if(e.key==="Enter")attemptPersonalityLogin()});
     ["closePersonality","personalityRedClose"].forEach(id =>
         $(id)?.addEventListener("click",()=>$("personalityWindow")?.classList.add("hidden"))
     );
