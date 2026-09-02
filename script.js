@@ -4350,12 +4350,20 @@ if (typeof lizzyTelegramNotify === "function") window.lizzyTelegramNotify = lizz
         ]
     };
 
+    const PERSONA_PHOTOS = {
+        "Lizzy": "assets/lizzy.png",
+        "Little Miss Attitude": "assets/little-miss-attitude.png",
+        "Agent Yelizaveta": "assets/agent-yelizaveta.png"
+    };
+
     function showSystemAlert(kind){
-        const pool = (kind==="error" ? SYS_ERRORS : SYS_WARNINGS)[persona()] || (kind==="error" ? SYS_ERRORS : SYS_WARNINGS)["Little Miss Attitude"];
+        const p = persona();
+        const pool = (kind==="error" ? SYS_ERRORS : SYS_WARNINGS)[p] || (kind==="error" ? SYS_ERRORS : SYS_WARNINGS)["Little Miss Attitude"];
         const message = pool[Math.floor(Math.random()*pool.length)];
+        const photo = PERSONA_PHOTOS[p] || PERSONA_PHOTOS["Little Miss Attitude"];
         const popup = document.createElement("div");
         popup.className = "systemAlertPopup " + kind;
-        popup.innerHTML = `<div class="systemAlertIcon">${kind==="error"?"❌":"⚠️"}</div><div class="systemAlertBody"><strong>${kind==="error"?"SYSTEM ERROR":"SYSTEM WARNING"}</strong><p>${message}</p></div>`;
+        popup.innerHTML = `<img class="systemAlertPhoto" src="${photo}" alt=""><div class="systemAlertBody"><strong>${kind==="error"?"❌ SYSTEM ERROR":"⚠️ SYSTEM WARNING"}</strong><p>${message}</p></div>`;
         document.body.appendChild(popup);
         setTimeout(()=>popup.classList.add("show"),50);
         setTimeout(()=>{
@@ -4378,6 +4386,8 @@ if (typeof lizzyTelegramNotify === "function") window.lizzyTelegramNotify = lizz
         const p=persona();
         document.body.dataset.personality=p;
         if($("personalitySample")) $("personalitySample").textContent=text().sample;
+        if($("personalityConsolePhoto")) $("personalityConsolePhoto").src=PERSONA_PHOTOS[p]||PERSONA_PHOTOS["Little Miss Attitude"];
+        qsa("[data-v5-persona]").forEach(btn=>btn.classList.toggle("activePersona",btn.dataset.v5Persona===p));
 
         // Existing game intros.
         const heartIntro=document.querySelector("#heartCatchWindow .memoryMessage");
