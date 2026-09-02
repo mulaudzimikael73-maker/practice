@@ -957,6 +957,32 @@ body{
     transform:translateX(0);
 
 }
+.systemAlertPopup{
+    position:fixed;
+    top:20px;
+    right:20px;
+    max-width:320px;
+    display:flex;
+    gap:12px;
+    align-items:flex-start;
+    background:rgba(20,16,28,.85);
+    backdrop-filter:blur(18px);
+    color:white;
+    padding:14px 16px;
+    border-radius:16px;
+    box-shadow:0 15px 40px rgba(0,0,0,.3);
+    transform:translateX(140%);
+    transition:.5s;
+    z-index:99998;
+}
+.systemAlertPopup.error{border:1px solid rgba(255,90,90,.55)}
+.systemAlertPopup.warning{border:1px solid rgba(255,190,80,.55)}
+.systemAlertPopup.show{transform:translateX(0)}
+.systemAlertIcon{font-size:20px;line-height:1}
+.systemAlertBody strong{display:block;font-size:11px;letter-spacing:1px;margin-bottom:4px;opacity:.85}
+.systemAlertPopup.error strong{color:#ff8080}
+.systemAlertPopup.warning strong{color:#ffc766}
+.systemAlertBody p{margin:0;font-size:13px;line-height:1.4}
 .folderIcon{
 
     font-size:90px;

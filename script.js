@@ -4212,6 +4212,168 @@ if (typeof lizzyTelegramNotify === "function") window.lizzyTelegramNotify = lizz
     const persona = () => store.getItem("lizzyPersona") || "Little Miss Attitude";
     const text = () => personalities[persona()] || personalities["Little Miss Attitude"];
 
+    const SYS_ERRORS = {
+        "Lizzy": [
+            "System Error: Too much cuteness detected. Please stand by. 💗",
+            "Error 402: Payment required — one hug, non-negotiable.",
+            "System Error: Heart rate spiked while thinking about Mikael. Investigating.",
+            "Error: LizzyOS cannot process this much happiness at once.",
+            "System Error: Snack levels critically low. Please refill immediately.",
+            "Error 204: No content — Lizzy is simply too busy being wonderful.",
+            "System Error: Butterflies detected in the stomach sector. 🦋",
+            "Error: Nap scheduling conflict. Please choose only one nap today.",
+            "System Error: Overload — someone was extra sweet today.",
+            "Error 418: I'm a teapot, and so is today's mood.",
+            "System Error: Playlist stuck on repeat because the song reminded her of him. 💗",
+            "Error: Compliment queue full. Please wait to be told you're amazing.",
+            "System Error: Flower garden growing faster than expected.",
+            "Error: Could not locate a reason to be upset today.",
+            "System Error: Screen brightness increased due to excessive smiling.",
+            "Error: Sock matching subsystem offline — cute mismatched socks only today.",
+            "System Error: Too many good morning texts queued for delivery. 💗",
+            "Error: Emotional support snack inventory low.",
+            "System Error: Softness levels exceeding recommended limits.",
+            "Error: Could not find anything wrong today. Suspicious, but nice."
+        ],
+        "Little Miss Attitude": [
+            "System Error: Patience module not found. As expected.",
+            "Error: Mikael's joke failed to load. Again.",
+            "System Error: Eye-roll subsystem overheating.",
+            "Error 403: Forbidden — access denied to Mikael's excuses.",
+            "System Error: Sass levels exceeded recommended daily limit.",
+            "Error: Could not verify Mikael's claim of 'GOAT' status.",
+            "System Error: Attitude buffer full. Please wait.",
+            "Error: Compliment rejected — insufficient effort detected.",
+            "System Error: Mikael's playlist choice caused an unexpected crash.",
+            "Error 401: Unauthorized — that excuse needs a permit.",
+            "System Error: Too much confidence detected in one room.",
+            "Error: Mikael's cooking attempt flagged as a system risk.",
+            "System Error: Judgemental glare subroutine activated without permission.",
+            "Error: Could not process that apology. Try again with more effort.",
+            "System Error: Mikael's bowling stats do not compute.",
+            "Error: Sarcasm levels critical. This is normal operation.",
+            "System Error: One eyebrow raised without authorisation.",
+            "Error: That excuse has been formally rejected by management.",
+            "System Error: Mikael attempted to win an argument. Unsuccessful.",
+            "Error: Could not locate any regrets. Checking again later."
+        ],
+        "Agent Yelizaveta": [
+            "SYSTEM ERROR: Cover status compromised. Reassessing.",
+            "ERROR 07: Classified file access denied to Agent Mikhail.",
+            "SYSTEM ERROR: Mission parameters altered without authorisation.",
+            "ERROR: Surveillance feed on Agent Mikhail returned inconclusive results.",
+            "SYSTEM ERROR: Clearance level mismatch detected.",
+            "ERROR: Could not verify Agent Mikhail's alibi.",
+            "SYSTEM ERROR: Encrypted message failed to decrypt. Suspicious.",
+            "ERROR 12: Unauthorized access attempt logged.",
+            "SYSTEM ERROR: Field report contains inconsistencies.",
+            "ERROR: Mission objective unclear. Recommend further investigation.",
+            "SYSTEM ERROR: Asset Mikhail's reliability rating fluctuating.",
+            "ERROR: Debrief scheduled but not yet filed.",
+            "SYSTEM ERROR: Cover identity nearly blown during casual conversation.",
+            "ERROR 99: Classified. Even to this system.",
+            "SYSTEM ERROR: Backup extraction plan missing.",
+            "ERROR: Intelligence report flagged for review.",
+            "SYSTEM ERROR: Unidentified charm detected in the field. Analysing.",
+            "ERROR: Mission timeline does not add up.",
+            "SYSTEM ERROR: Agent Mikhail's confidence readings exceed mission parameters.",
+            "ERROR: Could not confirm whether the mission was actually a success."
+        ]
+    };
+
+    const SYS_WARNINGS = {
+        "Lizzy": [
+            "Warning: Excessive smiling detected. Continue anyway? 💗",
+            "Warning: You are extremely loved. Proceed with caution.",
+            "Warning: Butterflies may occur without notice.",
+            "Warning: This app may cause spontaneous happiness.",
+            "Warning: One (1) good mood detected and rising.",
+            "Warning: Heart may skip a beat while reading messages from Mikael.",
+            "Warning: Cuteness overload imminent. Recommend a nap.",
+            "Warning: Flower collection growing at an alarming, adorable rate.",
+            "Warning: You may randomly think about your favourite person today.",
+            "Warning: Snack cravings incoming. Please prepare accordingly.",
+            "Warning: This system runs entirely on good vibes and soft playlists.",
+            "Warning: Softness detected in system core. This is not a bug.",
+            "Warning: Compliments may appear without warning. Please accept gracefully.",
+            "Warning: Today's forecast includes a high chance of giggles.",
+            "Warning: You are doing great. This message will not be repeated enough.",
+            "Warning: Bed is calling. Consider answering.",
+            "Warning: Heart currently full. Handle with care. 💗",
+            "Warning: Micky Bucs may be spent impulsively on something adorable.",
+            "Warning: This device may randomly remind you that you're wonderful.",
+            "Warning: Excess sweetness may leak into unrelated conversations."
+        ],
+        "Little Miss Attitude": [
+            "Warning: Sass reserves fully charged. 😏",
+            "Warning: Mikael's excuses may not be accepted today.",
+            "Warning: Eye-roll incoming. Duck if necessary.",
+            "Warning: Confidence detected. Someone should probably check that.",
+            "Warning: This system reserves the right to be unimpressed.",
+            "Warning: Mikael's jokes are being reviewed for quality.",
+            "Warning: Attitude may increase if provoked. Or unprovoked.",
+            "Warning: Patience running low. This is not new information.",
+            "Warning: Judgement subsystem online and fully operational.",
+            "Warning: One (1) unimpressed look loading.",
+            "Warning: Mikael's version of events is under investigation.",
+            "Warning: This device will not tolerate weak excuses today.",
+            "Warning: Sarcasm levels rising. No cause for concern.",
+            "Warning: Compliments accepted. Flattery will be judged separately.",
+            "Warning: Standards remain high. No exceptions today.",
+            "Warning: Mikael's confidence may be slightly ahead of his performance.",
+            "Warning: This system may respond with 'sure, okay' and mean the opposite.",
+            "Warning: Receipts are being kept. All of them.",
+            "Warning: One (1) unbothered attitude detected and holding steady.",
+            "Warning: Mikael has been warned. Repeatedly."
+        ],
+        "Agent Yelizaveta": [
+            "WARNING: Classified information may be discussed under this identity.",
+            "WARNING: Cover may be compromised by excessive smiling.",
+            "WARNING: Agent Mikhail's presence detected. Proceed with caution.",
+            "WARNING: This mission has no confirmed exit strategy.",
+            "WARNING: Emotional attachment to asset Mikhail remains unconfirmed.",
+            "WARNING: Field notes may contain personal bias.",
+            "WARNING: Surveillance may reveal more than intended.",
+            "WARNING: This system operates under strict need-to-know protocols.",
+            "WARNING: Mission success rate remains classified.",
+            "WARNING: Agent Mikhail's charm offensive is ongoing.",
+            "WARNING: Debriefing may take longer than expected.",
+            "WARNING: Trust levels with Agent Mikhail under review.",
+            "WARNING: This operation may involve unscheduled bowling.",
+            "WARNING: Clearance required for further emotional disclosures.",
+            "WARNING: Mission logs may contain redacted feelings.",
+            "WARNING: Asset Mikhail's reliability remains under evaluation.",
+            "WARNING: This identity may not be as classified as believed.",
+            "WARNING: Field conditions remain unpredictable.",
+            "WARNING: Investigation into 'the Mikael effect' remains ongoing.",
+            "WARNING: This mission report may require emotional redaction."
+        ]
+    };
+
+    function showSystemAlert(kind){
+        const pool = (kind==="error" ? SYS_ERRORS : SYS_WARNINGS)[persona()] || (kind==="error" ? SYS_ERRORS : SYS_WARNINGS)["Little Miss Attitude"];
+        const message = pool[Math.floor(Math.random()*pool.length)];
+        const popup = document.createElement("div");
+        popup.className = "systemAlertPopup " + kind;
+        popup.innerHTML = `<div class="systemAlertIcon">${kind==="error"?"❌":"⚠️"}</div><div class="systemAlertBody"><strong>${kind==="error"?"SYSTEM ERROR":"SYSTEM WARNING"}</strong><p>${message}</p></div>`;
+        document.body.appendChild(popup);
+        setTimeout(()=>popup.classList.add("show"),50);
+        setTimeout(()=>{
+            popup.classList.remove("show");
+            setTimeout(()=>popup.remove(),500);
+        },6000);
+    }
+
+    function maybeShowSystemAlert(){
+        const desktop = $("desktopArea");
+        if(!desktop || desktop.classList.contains("hidden")) return;
+        if(Math.random() > 0.28) return;
+        showSystemAlert(Math.random() < 0.5 ? "error" : "warning");
+    }
+    window.addEventListener("load",()=>{
+        window.LizzyPerf?.add?.("personalitySystemAlerts", 30000, maybeShowSystemAlert);
+    });
+
     function applyPersonality(){
         const p=persona();
         document.body.dataset.personality=p;
