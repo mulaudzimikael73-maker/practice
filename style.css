@@ -4521,7 +4521,7 @@ body.mikaelTakeoverActive #desktopArea:before{background:rgba(20,10,40,.12)!impo
 #personalityLogin input{display:block;width:min(330px,90%);margin:16px auto 9px;padding:11px;border-radius:10px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.1);color:inherit}
 #personalityLogin button{border:0;border-radius:10px;padding:9px 13px;cursor:pointer;font-weight:800}
 #personalityLoginStatus{margin-top:8px;min-height:18px;font-size:13px;color:#ff9d9d}
-.personalityCards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:24px 0}
+.personalityCards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:24px 0}
 .personalityCards button{
     margin:0;min-height:210px;padding:16px 13px;display:flex;flex-direction:column;
     justify-content:flex-start;align-items:center;gap:8px;border-radius:21px;overflow:hidden
@@ -4561,13 +4561,18 @@ body.mikaelTakeoverActive #desktopArea:before{background:rgba(20,10,40,.12)!impo
 .personalityEffects strong,.personalityEffects span{display:block;margin-top:4px}
 .personalityEffects span{font-size:9px;opacity:.62}
 body[data-personality="Lizzy"] .desktopWindow{box-shadow:0 25px 70px rgba(255,145,196,.18)}
+body[data-personality="Princess Four Eyes"] .desktopWindow{box-shadow:0 25px 80px rgba(255,214,232,.32)}
 body[data-personality="Little Miss Attitude"] .desktopWindow{box-shadow:0 25px 70px rgba(179,66,149,.25)}
 body[data-personality="Agent Yelizaveta"] .personalityConsole{letter-spacing:.2px;border-color:rgba(205,178,255,.3)}
 body[data-personality="Lizzy"] #personalitySample::before{content:"💗 "; }
+body[data-personality="Princess Four Eyes"] #personalitySample::before{content:"👓💗 "; }
 body[data-personality="Little Miss Attitude"] #personalitySample::before{content:"😏 "; }
 body[data-personality="Agent Yelizaveta"] #personalitySample::before{content:"[CLASSIFIED] ";opacity:.7}
 .personalityBinNote{margin-bottom:14px}
 .systemAlertPhoto{width:38px;height:38px;border-radius:50%;object-fit:cover;flex-shrink:0;box-shadow:0 3px 8px rgba(0,0,0,.35)}
+@media(max-width:920px){
+    .personalityCards{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
 @media(max-width:720px){
     .personalityCards,.personalityEffects{grid-template-columns:1fr}
     .personalityCards button{min-height:0}

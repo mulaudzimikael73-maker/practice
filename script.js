@@ -4193,6 +4193,13 @@ if (typeof lizzyTelegramNotify === "function") window.lizzyTelegramNotify = lizz
             quizWrong: "Almost! LizzyOS is pretending not to notice.",
             bin: "These nicknames have been respectfully deleted for your peace and happiness. 💗"
         },
+        "Princess Four Eyes": {
+            sample: "Hi Princess Four Eyes 👓💗 The whole system just got softer the moment you logged in.",
+            gameOpen: "Take your time, Princess. Even the leaderboard is rooting for you. 👓💗",
+            quizRight: "Of course you got it right. You're brilliant and adorable. 😇",
+            quizWrong: "Still perfect in every way that matters. Try again whenever you're ready, Princess. 💗",
+            bin: "Nothing unkind gets to stay near you. Consider it erased with love. 👓💕"
+        },
         "Little Miss Attitude": {
             sample: "🙄 LizzyOS is online. Try not to break anything, Little Miss Attitude.",
             gameOpen: "Try not to become unbearable if you beat the high score. 😏",
@@ -4234,6 +4241,28 @@ if (typeof lizzyTelegramNotify === "function") window.lizzyTelegramNotify = lizz
             "Error: Emotional support snack inventory low.",
             "System Error: Softness levels exceeding recommended limits.",
             "Error: Could not find anything wrong today. Suspicious, but nice."
+        ],
+        "Princess Four Eyes": [
+            "System Error: Angel detected. Proceeding with extra gentleness.",
+            "Error: Could not measure how precious this is. Scale insufficient.",
+            "System Error: Glasses fogged up from all this warmth.",
+            "Error 000: No errors possible near Princess Four Eyes.",
+            "System Error: Halo brightness exceeding recommended limits.",
+            "Error: Softness levels off the charts. This is not a malfunction.",
+            "System Error: Heart overflowing. Please allow a moment to recover.",
+            "Error: Could not find a single flaw. Search terminated early.",
+            "System Error: Everyone within range has been unintentionally comforted.",
+            "Error 404: Reasons to worry not found.",
+            "System Error: Mikael's favourite subroutine activated without warning.",
+            "Error: Sweetness reserves fully replenished, then some.",
+            "System Error: Four eyes, infinite heart. Ratio confirmed adorable.",
+            "Error: This system cannot process this much gentleness at once.",
+            "System Error: Angel wings detected in the peripheral sensors.",
+            "Error: Could not locate anything to complain about. Trying again tomorrow.",
+            "System Error: Comfort levels rising steadily. No cause for concern.",
+            "Error: Princess status confirmed. All systems bow accordingly.",
+            "System Error: Too many soft feelings queued at once.",
+            "Error: Could not compute how someone could be this precious."
         ],
         "Little Miss Attitude": [
             "System Error: Patience module not found. As expected.",
@@ -4304,6 +4333,28 @@ if (typeof lizzyTelegramNotify === "function") window.lizzyTelegramNotify = lizz
             "Warning: This device may randomly remind you that you're wonderful.",
             "Warning: Excess sweetness may leak into unrelated conversations."
         ],
+        "Princess Four Eyes": [
+            "Warning: Extreme softness ahead. Proceed with an open heart.",
+            "Warning: You may be reminded that you are deeply loved. Repeatedly.",
+            "Warning: Glasses may fog up from all the warmth in the room.",
+            "Warning: This persona operates entirely on kindness and gentle vibes.",
+            "Warning: Angel behaviour detected. This is completely normal for you.",
+            "Warning: Mikael's favourite persona is currently active. Handle with care.",
+            "Warning: Softness may increase without notice.",
+            "Warning: You are precious beyond system calculation.",
+            "Warning: This device may randomly remind you how loved you are.",
+            "Warning: Comfort levels rising. This is a feature, not a bug.",
+            "Warning: Halo slightly crooked from being this adorable all day.",
+            "Warning: One (1) angel detected and confirmed genuine.",
+            "Warning: Gentle reminder — you are someone's whole favourite.",
+            "Warning: This persona may cause spontaneous soft smiles nearby.",
+            "Warning: Four eyes, infinite charm. No further explanation needed.",
+            "Warning: Sweetness may leak into every interaction today.",
+            "Warning: You may be too precious for this system to fully handle.",
+            "Warning: Kindness levels holding steady at maximum.",
+            "Warning: This is your gentle reminder that you're doing great.",
+            "Warning: Princess protocol engaged. Extra care advised."
+        ],
         "Little Miss Attitude": [
             "Warning: Sass reserves fully charged. 😏",
             "Warning: Mikael's excuses may not be accepted today.",
@@ -4352,6 +4403,7 @@ if (typeof lizzyTelegramNotify === "function") window.lizzyTelegramNotify = lizz
 
     const PERSONA_PHOTOS = {
         "Lizzy": "assets/lizzy.png",
+        "Princess Four Eyes": "assets/princess-four-eyes.svg",
         "Little Miss Attitude": "assets/little-miss-attitude.png",
         "Agent Yelizaveta": "assets/agent-yelizaveta.png"
     };
@@ -4363,6 +4415,13 @@ if (typeof lizzyTelegramNotify === "function") window.lizzyTelegramNotify = lizz
             memory: "Unlimited — remembers every little thing you said",
             serial: "LZY-2026-SOFT",
             os: "LizzyOS 5.0 — Lizzy Build"
+        },
+        "Princess Four Eyes": {
+            tagline: "Softest soul in the whole system. Mikael's favourite, no contest.",
+            chip: "Angel Core (Handle With Love)",
+            memory: "Infinite — holds every soft moment and never lets go",
+            serial: "P4E-2026-ANGEL",
+            os: "LizzyOS 5.0 — Princess Four Eyes Build"
         },
         "Little Miss Attitude": {
             tagline: "Sassy by default. Soft only on approved days.",
@@ -4392,6 +4451,18 @@ if (typeof lizzyTelegramNotify === "function") window.lizzyTelegramNotify = lizz
             "Somehow prettier than the last time this system checked. Recalibrating.",
             "You give soft-launch energy even when you're not trying.",
             "Certified: one of the good ones. No further testing required."
+        ],
+        "Princess Four Eyes": [
+            "You're the softest kind of magic — the kind that doesn't even try.",
+            "Somehow the whole room feels safer the moment you're in it.",
+            "You wear kindness like it's effortless. It's not. You're just that good.",
+            "Behind those glasses is the gentlest heart this system has ever recorded.",
+            "You didn't just steal the show — you softened the entire universe around you.",
+            "Angel status: confirmed. No further review needed.",
+            "You make 'precious' look like an understatement.",
+            "Even your quiet moments feel like a gift to whoever's near you.",
+            "You're proof that softness is its own kind of strength.",
+            "Officially declared: the sweetest thing this system has ever known."
         ],
         "Little Miss Attitude": [
             "Dangerously pretty. Should probably come with a warning label.",
@@ -4472,26 +4543,36 @@ if (typeof lizzyTelegramNotify === "function") window.lizzyTelegramNotify = lizz
         updateAboutLizzy(p);
 
         // Existing game intros.
+        const HEART_INTRO = {
+            "Lizzy": "Catch as many hearts as you can before the timer runs out 💗",
+            "Princess Four Eyes": "No pressure at all, Princess — every heart you catch is just a bonus. 👓💗",
+            "Little Miss Attitude": "Catch the hearts. Try not to act too impressed with yourself 😏",
+            "Agent Yelizaveta": "MISSION OBJECTIVE: acquire maximum heart units before countdown expiry."
+        };
         const heartIntro=document.querySelector("#heartCatchWindow .memoryMessage");
-        if(heartIntro) heartIntro.textContent =
-            p==="Lizzy" ? "Catch as many hearts as you can before the timer runs out 💗" :
-            p==="Little Miss Attitude" ? "Catch the hearts. Try not to act too impressed with yourself 😏" :
-            "MISSION OBJECTIVE: acquire maximum heart units before countdown expiry.";
+        if(heartIntro) heartIntro.textContent = HEART_INTRO[p] || HEART_INTRO["Agent Yelizaveta"];
 
+        const QUIZ_INTRO = {
+            "Lizzy": "A very cute and extremely scientific test of your LizzyOS knowledge. 💗",
+            "Princess Four Eyes": "A gentle little quiz, made with extra love for the sweetest one. 👓💕",
+            "Little Miss Attitude": "Five questions. Let's see if the attitude comes with answers. 😏",
+            "Agent Yelizaveta": "INTELLIGENCE ASSESSMENT: five questions. Clearance score pending."
+        };
         const quizIntro=document.querySelector("#funQuizWindow .memoryMessage");
-        if(quizIntro) quizIntro.textContent =
-            p==="Lizzy" ? "A very cute and extremely scientific test of your LizzyOS knowledge. 💗" :
-            p==="Little Miss Attitude" ? "Five questions. Let's see if the attitude comes with answers. 😏" :
-            "INTELLIGENCE ASSESSMENT: five questions. Clearance score pending.";
+        if(quizIntro) quizIntro.textContent = QUIZ_INTRO[p] || QUIZ_INTRO["Agent Yelizaveta"];
     }
 
     function selectPersona(name){
         store.setItem("lizzyPersona",name);
         applyPersonality();
 
-        const message = name==="Lizzy" ? "Lizzy Mode activated 💗 Everything just got softer." :
-            name==="Little Miss Attitude" ? "Little Miss Attitude Mode activated 😏 Mikael has been warned." :
-            "AGENT YELIZAVETA MODE ACTIVE 🕵️ Secure systems engaged.";
+        const SELECT_MESSAGE = {
+            "Lizzy": "Lizzy Mode activated 💗 Everything just got softer.",
+            "Princess Four Eyes": "Princess Four Eyes Mode activated 👓💗 Mikael's favourite is online.",
+            "Little Miss Attitude": "Little Miss Attitude Mode activated 😏 Mikael has been warned.",
+            "Agent Yelizaveta": "AGENT YELIZAVETA MODE ACTIVE 🕵️ Secure systems engaged."
+        };
+        const message = SELECT_MESSAGE[name] || SELECT_MESSAGE["Agent Yelizaveta"];
 
         if(typeof window.showToast==="function") window.showToast(message);
         else {
