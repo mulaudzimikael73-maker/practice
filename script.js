@@ -4403,7 +4403,7 @@ if (typeof lizzyTelegramNotify === "function") window.lizzyTelegramNotify = lizz
 
     const PERSONA_PHOTOS = {
         "Lizzy": "assets/lizzy.png",
-        "Princess Four Eyes": "assets/princess-four-eyes.svg",
+        "Princess Four Eyes": "assets/princess-four-eyes.png",
         "Little Miss Attitude": "assets/little-miss-attitude.png",
         "Agent Yelizaveta": "assets/agent-yelizaveta.png"
     };
