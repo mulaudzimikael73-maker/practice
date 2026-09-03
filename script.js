@@ -4356,6 +4356,87 @@ if (typeof lizzyTelegramNotify === "function") window.lizzyTelegramNotify = lizz
         "Agent Yelizaveta": "assets/agent-yelizaveta.png"
     };
 
+    const ABOUT_LIZZY = {
+        "Lizzy": {
+            tagline: "Warm, soft, and quietly running the whole show.",
+            chip: "Sweetness Core (Overclocked)",
+            memory: "Unlimited — remembers every little thing you said",
+            serial: "LZY-2026-SOFT",
+            os: "LizzyOS 5.0 — Lizzy Build"
+        },
+        "Little Miss Attitude": {
+            tagline: "Sassy by default. Soft only on approved days.",
+            chip: "Attitude Core (Factory Overclocked)",
+            memory: "Remembers every receipt. Forgives selectively.",
+            serial: "LMA-2026-BADDIE",
+            os: "LizzyOS 5.0 — Little Miss Attitude Build"
+        },
+        "Agent Yelizaveta": {
+            tagline: "Classified. Composed. The most dangerous asset in the field.",
+            chip: "Classified Core (Clearance Level 7)",
+            memory: "Encrypted. Access denied to Agent Mikhail.",
+            serial: "AY-2026-KGB",
+            os: "LizzyOS 5.0 — Agent Yelizaveta Build"
+        }
+    };
+
+    const COMPLIMENTS = {
+        "Lizzy": [
+            "You have the kind of smile that ruins other people's poker faces.",
+            "Somehow you make ordinary days feel like main character energy.",
+            "You're proof that soft and strong can be the same person.",
+            "Your laugh is doing more for morale than this entire operating system.",
+            "You make 'effortless' look like a full-time job you're incredible at.",
+            "Warning: prolonged exposure to your kindness may cause butterflies.",
+            "You're the reason 'main character' became a compliment.",
+            "Somehow prettier than the last time this system checked. Recalibrating.",
+            "You give soft-launch energy even when you're not trying.",
+            "Certified: one of the good ones. No further testing required."
+        ],
+        "Little Miss Attitude": [
+            "Dangerously pretty. Should probably come with a warning label.",
+            "She's a baddie and she knows it — you're welcome for the reminder.",
+            "Confidence like that shouldn't be legal.",
+            "Walks in like she already won the argument. Because she did.",
+            "Pretty in a way that's mildly inconvenient for everyone else.",
+            "That attitude is doing a lot of heavy lifting for an already 10/10.",
+            "Unbothered, moisturized, and clearly the main event.",
+            "She didn't ask for permission to be this stunning. Correct choice.",
+            "Certified baddie. Attitude included at no extra charge.",
+            "That's not arrogance, that's just accurate self-assessment."
+        ],
+        "Agent Yelizaveta": [
+            "CLASSIFIED: Asset's charm rated beyond current containment protocols.",
+            "Field report confirms: subject remains dangerously composed under pressure.",
+            "Intelligence suggests this asset is unreasonably photogenic. Under investigation.",
+            "Mission notes describe subject as 'distractingly competent.'",
+            "Cover story: ordinary agent. Reality: significant security risk to bystanders' focus.",
+            "Debrief confirms: subject's confidence exceeds mission parameters.",
+            "Surveillance footage rated 'unfairly attractive' by three separate reviewers.",
+            "This asset's composure under pressure remains unmatched in the field.",
+            "Clearance required to fully appreciate this level of poise.",
+            "Official assessment: dangerously capable, dangerously charming. Handle accordingly."
+        ]
+    };
+
+    function rollCompliment(p){
+        const pool = COMPLIMENTS[p] || COMPLIMENTS["Little Miss Attitude"];
+        if($("aboutLizzyComplimentText")) $("aboutLizzyComplimentText").textContent = pool[Math.floor(Math.random()*pool.length)];
+    }
+
+    function updateAboutLizzy(p){
+        const data = ABOUT_LIZZY[p] || ABOUT_LIZZY["Little Miss Attitude"];
+        if($("aboutLizzyPhoto")) $("aboutLizzyPhoto").src = PERSONA_PHOTOS[p]||PERSONA_PHOTOS["Little Miss Attitude"];
+        if($("aboutLizzyName")) $("aboutLizzyName").textContent = "About This " + p;
+        if($("aboutLizzyTagline")) $("aboutLizzyTagline").textContent = data.tagline;
+        if($("aboutLizzyChip")) $("aboutLizzyChip").textContent = data.chip;
+        if($("aboutLizzyMemory")) $("aboutLizzyMemory").textContent = data.memory;
+        if($("aboutLizzySerial")) $("aboutLizzySerial").textContent = data.serial;
+        if($("aboutLizzyOS")) $("aboutLizzyOS").textContent = data.os;
+        rollCompliment(p);
+    }
+    $("aboutLizzyReroll")?.addEventListener("click",()=>rollCompliment(persona()));
+
     function showSystemAlert(kind){
         const p = persona();
         const pool = (kind==="error" ? SYS_ERRORS : SYS_WARNINGS)[p] || (kind==="error" ? SYS_ERRORS : SYS_WARNINGS)["Little Miss Attitude"];
@@ -4388,6 +4469,7 @@ if (typeof lizzyTelegramNotify === "function") window.lizzyTelegramNotify = lizz
         if($("personalitySample")) $("personalitySample").textContent=text().sample;
         if($("personalityConsolePhoto")) $("personalityConsolePhoto").src=PERSONA_PHOTOS[p]||PERSONA_PHOTOS["Little Miss Attitude"];
         qsa("[data-v5-persona]").forEach(btn=>btn.classList.toggle("activePersona",btn.dataset.v5Persona===p));
+        updateAboutLizzy(p);
 
         // Existing game intros.
         const heartIntro=document.querySelector("#heartCatchWindow .memoryMessage");

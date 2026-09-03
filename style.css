@@ -4540,6 +4540,23 @@ body.mikaelTakeoverActive #desktopArea:before{background:rgba(20,10,40,.12)!impo
 .personalityConsolePhoto{width:52px;height:52px;border-radius:50%;object-fit:cover;flex-shrink:0;box-shadow:0 4px 12px rgba(0,0,0,.35)}
 .personalityConsole p{margin:0;line-height:1.65}
 .personalityEffects{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:20px}
+.aboutLizzyPanel{
+    max-width:680px;margin:22px auto;padding:20px;border-radius:20px;
+    background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.16);
+    text-align:left
+}
+.aboutLizzyTop{display:flex;gap:16px;align-items:center;margin-bottom:16px}
+.aboutLizzyTop img{width:72px;height:72px;border-radius:16px;object-fit:cover;box-shadow:0 8px 20px rgba(0,0,0,.35);flex-shrink:0}
+.aboutLizzyTop h2{margin:0 0 4px;font-size:17px}
+.aboutLizzyTop p{margin:0;font-size:12px;opacity:.75;line-height:1.4}
+.aboutLizzySpecs{display:grid;grid-template-columns:1fr 1fr;gap:10px 18px;padding:14px 0;border-top:1px solid rgba(255,255,255,.14);border-bottom:1px solid rgba(255,255,255,.14)}
+.aboutLizzySpecs div{display:flex;justify-content:space-between;gap:8px;font-size:12px}
+.aboutLizzySpecs span{opacity:.6}
+.aboutLizzySpecs strong{text-align:right;font-weight:700}
+.aboutLizzyCompliment{margin-top:16px;text-align:center}
+.aboutLizzyCompliment>span{display:block;font-size:9px;letter-spacing:1.7px;opacity:.55;margin-bottom:8px}
+.aboutLizzyCompliment p{margin:0 0 12px;font-size:14px;line-height:1.5;font-style:italic}
+.aboutLizzyCompliment button{border:0;border-radius:10px;padding:8px 14px;cursor:pointer;font-weight:700;font-size:12px}
 .personalityEffects div{padding:13px;border-radius:15px;background:rgba(255,255,255,.1);font-size:12px}
 .personalityEffects strong,.personalityEffects span{display:block;margin-top:4px}
 .personalityEffects span{font-size:9px;opacity:.62}
