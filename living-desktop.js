@@ -282,6 +282,7 @@ function renderProfile(){
    :"Activate Mikael Takeover";
  $("mikaelTakeoverBanner")?.classList.toggle("hidden",!on);
  applyTakeoverLabels(on);
+ if(!on) setTimeout(()=>window.applyPersonaFolderLabels?.(),0);
  if(on){
    takeoverSticky();
    scheduleTakeoverMessage();

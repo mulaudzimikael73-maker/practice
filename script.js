@@ -4414,28 +4414,32 @@ if (typeof lizzyTelegramNotify === "function") window.lizzyTelegramNotify = lizz
             chip: "Sweetness Core (Overclocked)",
             memory: "Unlimited — remembers every little thing you said",
             serial: "LZY-2026-SOFT",
-            os: "LizzyOS 5.0 — Lizzy Build"
+            os: "LizzyOS 5.0 — Lizzy Build",
+            specialization: "Emotional Support & Flower Arranging"
         },
         "Princess Four Eyes": {
             tagline: "Softest soul in the whole system. Mikael's favourite, no contest.",
             chip: "Angel Core (Handle With Love)",
             memory: "Infinite — holds every soft moment and never lets go",
             serial: "P4E-2026-ANGEL",
-            os: "LizzyOS 5.0 — Princess Four Eyes Build"
+            os: "LizzyOS 5.0 — Princess Four Eyes Build",
+            specialization: "Unconditional Softness & Comfort"
         },
         "Little Miss Attitude": {
             tagline: "Sassy by default. Soft only on approved days.",
             chip: "Attitude Core (Factory Overclocked)",
             memory: "Remembers every receipt. Forgives selectively.",
             serial: "LMA-2026-BADDIE",
-            os: "LizzyOS 5.0 — Little Miss Attitude Build"
+            os: "LizzyOS 5.0 — Little Miss Attitude Build",
+            specialization: "Sass Deployment & Standards Enforcement"
         },
         "Agent Yelizaveta": {
             tagline: "Classified. Composed. The most dangerous asset in the field.",
             chip: "Classified Core (Clearance Level 7)",
             memory: "Encrypted. Access denied to Agent Mikhail.",
             serial: "AY-2026-KGB",
-            os: "LizzyOS 5.0 — Agent Yelizaveta Build"
+            os: "LizzyOS 5.0 — Agent Yelizaveta Build",
+            specialization: "Classified Operations & Surveillance"
         }
     };
 
@@ -4490,6 +4494,84 @@ if (typeof lizzyTelegramNotify === "function") window.lizzyTelegramNotify = lizz
         ]
     };
 
+    // ---- Persona folder names + exclusive commentary ----
+    const PERSONA_FOLDERS = {
+        "Lizzy": {
+            folderIcon:      {label:"Lizzy's Little Archive 💗",   comment:"Everything sweet, saved just for you. 💗"},
+            gamesFolderStaticIcon: {label:"Playtime 💗",           comment:"Have fun. Bonus points for smiling. 💗"},
+            openWhenIcon:    {label:"Open When You Miss Me 💗",    comment:"Whenever you need a little softness, it's right here. 💗"},
+            lizzyGardenIcon: {label:"My Garden 🌷",                comment:"Every flower here grew because you showed up. 🌷"},
+            tokenJarIcon:    {label:"Sweet Jar 🍯",                comment:"A little jar of sweet things, just for keeping. 🍯"},
+            seedStoreIcon:   {label:"Flower Shop 🌸",              comment:"Come pick something pretty. 🌸"},
+            recycleBinIcon:  {label:"Gentle Goodbyes 💗",          comment:"Even the deleted things get treated kindly here. 💗"}
+        },
+        "Princess Four Eyes": {
+            folderIcon:      {label:"Princess's Keepsakes 👓💗",   comment:"Every little thing kept safe, just for her. 👓💗"},
+            gamesFolderStaticIcon: {label:"Gentle Playtime 👓",    comment:"No pressure, Princess. Just have fun. 👓💗"},
+            openWhenIcon:    {label:"Open When You Need Me 👓💕",  comment:"Whenever it's hard, this is here for you. 👓💕"},
+            lizzyGardenIcon: {label:"Angel's Garden 🌷👓",         comment:"Soft things grow best with soft hands. 🌷👓"},
+            tokenJarIcon:    {label:"Treasure Jar 👓💗",           comment:"Every little treasure, kept safe and sound. 👓💗"},
+            seedStoreIcon:   {label:"Petal Shop 👓🌸",             comment:"Something gentle, for someone gentle. 🌸"},
+            recycleBinIcon:  {label:"Soft Farewell 👓💕",          comment:"Even goodbyes are gentle here. 👓💕"}
+        },
+        "Little Miss Attitude": {
+            folderIcon:      {label:"Receipts Folder 😏",          comment:"Everything's documented. Don't test her. 😏"},
+            gamesFolderStaticIcon: {label:"Prove It 😏",           comment:"Talk is cheap. Let's see the scoreboard. 😏"},
+            openWhenIcon:    {label:"Open When You've Earned It 😏", comment:"These aren't just handed out, you know. 😏"},
+            lizzyGardenIcon: {label:"My Empire 🌷😏",              comment:"Every flower here answers to her. 😏"},
+            tokenJarIcon:    {label:"Tax Collection 😏",           comment:"Mikael's contributions, collected as owed. 😏"},
+            seedStoreIcon:   {label:"Shopping List 🛍️",           comment:"Standards don't buy themselves. 🛍️"},
+            recycleBinIcon:  {label:"Deleted On Sight 🗑️😏",      comment:"No trial. No appeal. Gone. 😏"}
+        },
+        "Agent Yelizaveta": {
+            folderIcon:      {label:"CLASSIFIED ARCHIVES 🕵️",     comment:"CLEARANCE VERIFIED. Access granted."},
+            gamesFolderStaticIcon: {label:"TRAINING SIMULATIONS 🎯", comment:"Simulated conditions. Real consequences."},
+            openWhenIcon:    {label:"SEALED INTELLIGENCE 📨",      comment:"For your eyes only, when the time is right."},
+            lizzyGardenIcon: {label:"FIELD OPERATIONS 🌷",         comment:"Every asset here is under active cultivation."},
+            tokenJarIcon:    {label:"ASSET RESERVES 🫙",           comment:"Reserves logged. Audit pending."},
+            seedStoreIcon:   {label:"SUPPLY DEPOT 🛒",             comment:"Requisitions processed on approval only."},
+            recycleBinIcon:  {label:"EVIDENCE DISPOSAL 🗑️",       comment:"Contents destroyed. No further questions."}
+        }
+    };
+
+    function personaLabelNode(id){
+        const el = $(id); if(!el) return null;
+        return el.querySelector(":scope > span") || el.querySelector("span");
+    }
+
+    function applyPersonaFolderLabels(p){
+        if(localStorage.getItem("lizzyLivingMikaelProfileV1")==="on") return; // don't fight the Mikael Takeover system
+        const set = PERSONA_FOLDERS[p] || PERSONA_FOLDERS["Little Miss Attitude"];
+        Object.entries(set).forEach(([id,info])=>{
+            const label = personaLabelNode(id); if(!label) return;
+            if(!label.dataset.personaNormalLabel) label.dataset.personaNormalLabel = label.textContent.trim();
+            label.textContent = info.label;
+        });
+    }
+    window.applyPersonaFolderLabels = () => applyPersonaFolderLabels(persona());
+
+    function showFolderComment(text){
+        const p = persona();
+        const photo = PERSONA_PHOTOS[p] || PERSONA_PHOTOS["Little Miss Attitude"];
+        const popup = document.createElement("div");
+        popup.className = "systemAlertPopup folderComment";
+        popup.innerHTML = `<img class="systemAlertPhoto" src="${photo}" alt=""><div class="systemAlertBody"><strong>${p.toUpperCase()}</strong><p>${text}</p></div>`;
+        document.body.appendChild(popup);
+        setTimeout(()=>popup.classList.add("show"),50);
+        setTimeout(()=>{
+            popup.classList.remove("show");
+            setTimeout(()=>popup.remove(),500);
+        },5000);
+    }
+
+    Object.keys(PERSONA_FOLDERS["Lizzy"]).forEach(id=>{
+        $(id)?.addEventListener("click",()=>{
+            const p = persona();
+            const info = (PERSONA_FOLDERS[p] || PERSONA_FOLDERS["Little Miss Attitude"])[id];
+            if(info) showFolderComment(info.comment);
+        });
+    });
+
     function rollCompliment(p){
         const pool = COMPLIMENTS[p] || COMPLIMENTS["Little Miss Attitude"];
         if($("aboutLizzyComplimentText")) $("aboutLizzyComplimentText").textContent = pool[Math.floor(Math.random()*pool.length)];
@@ -4504,6 +4586,7 @@ if (typeof lizzyTelegramNotify === "function") window.lizzyTelegramNotify = lizz
         if($("aboutLizzyMemory")) $("aboutLizzyMemory").textContent = data.memory;
         if($("aboutLizzySerial")) $("aboutLizzySerial").textContent = data.serial;
         if($("aboutLizzyOS")) $("aboutLizzyOS").textContent = data.os;
+        if($("aboutLizzySpecialization")) $("aboutLizzySpecialization").textContent = data.specialization;
         rollCompliment(p);
     }
     $("aboutLizzyReroll")?.addEventListener("click",()=>rollCompliment(persona()));
@@ -4541,6 +4624,7 @@ if (typeof lizzyTelegramNotify === "function") window.lizzyTelegramNotify = lizz
         if($("personalityConsolePhoto")) $("personalityConsolePhoto").src=PERSONA_PHOTOS[p]||PERSONA_PHOTOS["Little Miss Attitude"];
         qsa("[data-v5-persona]").forEach(btn=>btn.classList.toggle("activePersona",btn.dataset.v5Persona===p));
         updateAboutLizzy(p);
+        applyPersonaFolderLabels(p);
 
         // Existing game intros.
         const HEART_INTRO = {

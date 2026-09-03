@@ -977,6 +977,8 @@ body{
 }
 .systemAlertPopup.error{border:1px solid rgba(255,90,90,.55)}
 .systemAlertPopup.warning{border:1px solid rgba(255,190,80,.55)}
+.systemAlertPopup.folderComment{border:1px solid rgba(255,214,232,.5)}
+.systemAlertPopup.folderComment strong{color:#ffd6e8;letter-spacing:.5px}
 .systemAlertPopup.show{transform:translateX(0)}
 .systemAlertIcon{font-size:20px;line-height:1}
 .systemAlertBody strong{display:block;font-size:11px;letter-spacing:1px;margin-bottom:4px;opacity:.85}
@@ -4553,6 +4555,8 @@ body.mikaelTakeoverActive #desktopArea:before{background:rgba(20,10,40,.12)!impo
 .aboutLizzySpecs div{display:flex;justify-content:space-between;gap:8px;font-size:12px}
 .aboutLizzySpecs span{opacity:.6}
 .aboutLizzySpecs strong{text-align:right;font-weight:700}
+.aboutLizzySpecRow{grid-column:1/-1;padding-top:8px;margin-top:2px;border-top:1px dashed rgba(255,255,255,.16)}
+.aboutLizzySpecRow strong{color:#ffd6ea}
 .aboutLizzyCompliment{margin-top:16px;text-align:center}
 .aboutLizzyCompliment>span{display:block;font-size:9px;letter-spacing:1.7px;opacity:.55;margin-bottom:8px}
 .aboutLizzyCompliment p{margin:0 0 12px;font-size:14px;line-height:1.5;font-style:italic}
