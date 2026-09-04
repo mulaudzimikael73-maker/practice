@@ -4574,6 +4574,46 @@ body[data-personality="Little Miss Attitude"] #personalitySample::before{content
 body[data-personality="Agent Yelizaveta"] #personalitySample::before{content:"[CLASSIFIED] ";opacity:.7}
 .personalityBinNote{margin-bottom:14px}
 .systemAlertPhoto{width:38px;height:38px;border-radius:50%;object-fit:cover;flex-shrink:0;box-shadow:0 3px 8px rgba(0,0,0,.35)}
+
+/* =====================================================
+   PERSONA DESKTOP THEMING — subtle mood tints for
+   Lizzy / Princess Four Eyes / Little Miss Attitude,
+   full conversion for Agent Yelizaveta.
+   ===================================================== */
+body[data-personality="Lizzy"]:not(.mikaelTakeoverActive) #desktopArea{filter:saturate(1.1) brightness(1.04) hue-rotate(-2deg)}
+body[data-personality="Princess Four Eyes"]:not(.mikaelTakeoverActive) #desktopArea{filter:saturate(.9) brightness(1.09) contrast(.95)}
+body[data-personality="Little Miss Attitude"]:not(.mikaelTakeoverActive) #desktopArea{filter:contrast(1.14) saturate(1.18)}
+
+body[data-personality="Agent Yelizaveta"]:not(.mikaelTakeoverActive) #desktopArea{
+    filter:grayscale(.72) contrast(1.28) brightness(.6) saturate(.3);
+    background-image:
+        repeating-linear-gradient(0deg, rgba(120,255,170,.06) 0px, rgba(120,255,170,.06) 1px, transparent 1px, transparent 3px),
+        radial-gradient(circle at 50% 0%, rgba(40,60,120,.5), transparent 62%);
+}
+body[data-personality="Agent Yelizaveta"] .desktopWindow{
+    border:1px solid rgba(120,255,170,.24);
+    box-shadow:0 25px 70px rgba(10,25,15,.4);
+}
+body[data-personality="Agent Yelizaveta"] .desktopWindow h2{letter-spacing:.4px}
+body[data-personality="Agent Yelizaveta"]:not(.mikaelTakeoverActive)::after{
+    content:"🔐 CLASSIFIED — CLEARANCE LEVEL 7";
+    position:fixed;
+    top:14px;
+    right:18px;
+    font-family:monospace;
+    font-size:10px;
+    letter-spacing:1.4px;
+    color:rgba(150,255,190,.6);
+    background:rgba(8,14,18,.55);
+    padding:6px 12px;
+    border:1px solid rgba(150,255,190,.28);
+    border-radius:6px;
+    pointer-events:none;
+    z-index:100005;
+}
+@media(max-width:720px){
+    body[data-personality="Agent Yelizaveta"]:not(.mikaelTakeoverActive)::after{font-size:8px;padding:4px 8px;top:8px;right:10px}
+}
 @media(max-width:920px){
     .personalityCards{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
