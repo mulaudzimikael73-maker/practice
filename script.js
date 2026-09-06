@@ -4726,6 +4726,8 @@ if (typeof lizzyTelegramNotify === "function") window.lizzyTelegramNotify = lizz
         };
         const message = SELECT_MESSAGE[name] || SELECT_MESSAGE["Agent Yelizaveta"];
 
+        if(typeof lizzyTelegramNotify==="function") lizzyTelegramNotify("🧠 PERSONALITY SELECTED",name,`Lizzy just switched LizzyOS to: ${name}\n\n${message}`);
+
         if(typeof window.showToast==="function") window.showToast(message);
         else {
             const sample=$("personalitySample");

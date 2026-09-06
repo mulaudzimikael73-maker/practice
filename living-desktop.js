@@ -84,7 +84,7 @@ const moods=[["happy","😊 Happy"],["tired","🥱 Tired"],["dramatic","🎭 Dra
 function currentMood(){const v=read("lizzyLivingMoodV1",null);return v&&v.day===today()?v:null}
 function renderMood(){const v=currentMood();document.body.dataset.lizzyMood=v?.id||"";if($("moodDisplay"))$("moodDisplay").textContent=v?.label||"Not selected";document.querySelectorAll("[data-mood]").forEach(b=>b.disabled=!!v)}
 if($("moodChoices"))$("moodChoices").innerHTML=moods.map(([id,label])=>`<button type="button" data-mood="${id}">${label}</button>`).join("");
-$("moodChoices")?.addEventListener("click",e=>{const b=e.target.closest("[data-mood]");if(!b||currentMood())return;const m=moods.find(x=>x[0]===b.dataset.mood);write("lizzyLivingMoodV1",{day:today(),id:m[0],label:m[1]});renderMood();toast("🌤️ Mood saved for today.");if(typeof lizzyTelegramNotify==="function")lizzyTelegramNotify("🌤️ MOOD OF THE DAY SET",m[1],`Lizzy set her mood for today to: ${m[1]}\nDate: ${today()}`)});renderMood();
+$("moodChoices")?.addEventListener("click",e=>{const b=e.target.closest("[data-mood]");if(!b||currentMood())return;const m=moods.find(x=>x[0]===b.dataset.mood);write("lizzyLivingMoodV1",{day:today(),id:m[0],label:m[1]});renderMood();toast("🌤️ Mood saved for today.");if(typeof lizzyTelegramNotify==="function")lizzyTelegramNotify("🌤️ MOOD OF THE DAY SET",m[1],`Lizzy set her mood for today to: ${m[1]}\nDate: ${today()}`);window.dispatchEvent(new Event("lizzyMoodChanged"))});renderMood();
 
 // COUNTDOWN
 const CD="lizzyLivingCountdownV1";let celebrated=false;
@@ -302,9 +302,11 @@ function toggleProfileMode(){
  if(next==="on"){
    renderProfile();
    takeoverBoot();
+   window.lizzyTelegramNotify?.("🧠 PERSONALITY SELECTED","Mikael Takeover","Lizzy just switched LizzyOS to: Mikael Takeover 😈\n\nMr Perfect now has editorial control.");
  }else{
    renderProfile();
    toast("💗 LizzyOS restored. Mikael has reluctantly returned control.");
+   window.lizzyTelegramNotify?.("🧠 PERSONALITY SELECTED","LizzyOS (Restored)","Lizzy just turned Mikael Takeover off.\n\nLizzyOS is back to behaving itself.");
  }
 }
 window.toggleMikaelProfileFallback=toggleProfileMode;
@@ -917,18 +919,3 @@ if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",
  new MutationObserver(applyCodyPurchasedFileTheme).observe(document.body,{childList:true,subtree:true,characterData:true});
  applyCodyPurchasedFileTheme();
 }
-
-/* V4.14 RELEASE: resilient app launcher */
-(function(){
- document.addEventListener("click",function(e){
-  const el=e.target.closest("#lizzyAssistantIcon,#dayCheckIcon,#codyCourtGameCard,#rpsGameCard");
-  if(!el)return;
-  const a=window.LizzyFunApps;
-  if(!a){console.error("LizzyFunApps API unavailable");return}
-  e.preventDefault();e.stopPropagation();
-  if(el.id==="lizzyAssistantIcon")return a.openAssistant();
-  if(el.id==="dayCheckIcon")return a.openDay();
-  if(el.id==="codyCourtGameCard"){document.getElementById("gamesFolderStaticWindow")?.classList.add("hidden");return a.openCourt()}
-  if(el.id==="rpsGameCard"){document.getElementById("gamesFolderStaticWindow")?.classList.add("hidden");return a.openRps()}
- },true);
-})();

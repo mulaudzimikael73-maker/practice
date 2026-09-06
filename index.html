@@ -603,6 +603,7 @@
             </div>
             <div class="desktopIcon livingDesktopIcon" id="lizzyAssistantIcon" role="button" tabindex="0"><div class="desktopEmoji">✨</div><span>Lizzy Assistant</span></div>
             <div class="desktopIcon livingDesktopIcon" id="dayCheckIcon" role="button" tabindex="0"><div class="desktopEmoji">💗</div><span>How's Today?</span></div>
+            <div class="desktopIcon livingDesktopIcon" id="connectionIcon" role="button" tabindex="0"><div class="desktopEmoji">💞</div><span>Today's Connection</span></div>
             <div class="desktopIcon calendarFolderIcon" id="calendarIcon">
                 <div class="desktopEmoji calendarFolderEmoji"><span class="folderCalendarBadge">📅</span></div>
                 <span>Our Date</span>
@@ -1422,6 +1423,23 @@
             <button id="closeRecycleBin" class="windowCloseButton">Close</button>
         </div>
 
+        <div id="connectionWindow" class="desktopWindow hidden">
+            <div class="windowTop">
+                <div class="windowDots">
+                    <span class="windowCloseDot" id="connectionClose" title="Close"></span>
+                    <span class="windowMinDot"></span>
+                    <span class="windowMaxDot"></span>
+                </div>
+                <h2>💞 Today's Connection</h2>
+            </div>
+            <div class="windowScroll">
+                <p class="memoryMessage">Two moods, one day. Let's see where you both landed. 💗</p>
+                <div id="connectionPanel" class="connectionPanel"></div>
+                <p class="binWarning">Mikael sets his mood by texting the bot: <code>/mymood [how he's feeling]</code></p>
+            </div>
+            <button id="closeConnection" class="windowCloseButton">Close</button>
+        </div>
+
         <!-- LizzyOS Personality Lab -->
         <div id="personalityWindow" class="desktopWindow hidden">
             <div class="windowTop">
@@ -1711,8 +1729,8 @@ if (window.netlifyIdentity) {
   <div id="vipAction"></div>
 </div>
 
-<script src="script.js?v=20260904-full-conversion"></script>
-<script src="living-desktop.js?v=20260903-persona-folders"></script>
+<script src="script.js?v=20260906-persona-notify"></script>
+<script src="living-desktop.js?v=20260906-persona-notify"></script>
 
 <script defer src="internet.js?v=20260904-news-expansion"></script>
 
@@ -1805,9 +1823,10 @@ if (window.netlifyIdentity) {
   <p id="mikaelTakeoverPopupText"></p>
 </div>
 
-<script src="fun-apps.js?v=20260827-full-working"></script>
+<script src="fun-apps.js?v=20260905-assistant-fix"></script>
 <script src="interactive-rewards.js?v=20260827-three-line"></script>
-<script src="telegram-bank-sync.js?v=20260827-claimable-deposits"></script>
+<script src="telegram-bank-sync.js?v=20260905-note-display-fix"></script>
+<script src="mikael-connection.js?v=20260905-synced-feelings"></script>
 
 </body>
 </html>
