@@ -855,6 +855,23 @@ missionIcon?.addEventListener("click", () => {
 
     unlockAchievement("Opened Mission Log 🗂️");
 
+    if(!localStorage.getItem("lizzyFirstDateBadgeV1")){
+        localStorage.setItem("lizzyFirstDateBadgeV1", "1");
+        setTimeout(()=>unlockAchievement("First Date Badge 🏅"), 3800);
+    }
+
+    if(!localStorage.getItem("lizzyStoryProgressM1V1")){
+        localStorage.setItem("lizzyStoryProgressM1V1", "1");
+        const total = (parseInt(localStorage.getItem("lizzyStoryProgressTotalV1")||"0",10)) + 1;
+        localStorage.setItem("lizzyStoryProgressTotalV1", String(total));
+        setTimeout(()=>unlockAchievement(`Story Progress +1 ❤️ (Total: ${total})`), 7600);
+    }
+
+    if(!localStorage.getItem("lizzyMission002UnlockedV1")){
+        localStorage.setItem("lizzyMission002UnlockedV1", "1");
+        setTimeout(()=>unlockAchievement("Mission #002 Unlocked 🔓"), 11400);
+    }
+
 });
 
 closeMission?.addEventListener("click", () => {
