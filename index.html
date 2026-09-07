@@ -8,7 +8,7 @@
 
     <title>Lizzy ❤️</title>
 
-    <link rel="stylesheet" href="style.css?v=20260904-full-conversion">
+    <link rel="stylesheet" href="style.css?v=20260906-badge-visual">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
 
@@ -821,7 +821,13 @@
 
                 <section class="missionSection">
                     <h3>🎁 Mission Rewards</h3>
-                    <p>🏅 First Date Badge</p>
+                    <div id="firstDateBadgeDisplay" class="badgeShowcase">
+                        <div class="badgeMedal">🏅</div>
+                        <div class="badgeInfo">
+                            <strong>First Date Badge</strong>
+                            <span id="firstDateBadgeStatus">Locked</span>
+                        </div>
+                    </div>
                     <p>📸 New Memories Added</p>
                     <p>❤️ Story Progress +1</p>
                     <p>🔓 Mission #002 Unlocked</p>
@@ -1790,7 +1796,7 @@ if (window.netlifyIdentity) {
   <div id="vipAction"></div>
 </div>
 
-<script src="script.js?v=20260906-mission-achievements"></script>
+<script src="script.js?v=20260906-badge-visual"></script>
 <script src="living-desktop.js?v=20260906-persona-notify"></script>
 
 <script defer src="internet.js?v=20260904-news-expansion"></script>

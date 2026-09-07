@@ -849,15 +849,26 @@ openMemoriesButton?.addEventListener("click", () => {
 // MISSION LOG
 // ========================================
 
+function renderFirstDateBadge(){
+    const box = document.getElementById("firstDateBadgeDisplay");
+    const status = document.getElementById("firstDateBadgeStatus");
+    if(!box || !status) return;
+    const earned = !!localStorage.getItem("lizzyFirstDateBadgeV1");
+    box.classList.toggle("earned", earned);
+    status.textContent = earned ? "Earned ✓" : "Locked";
+}
+
 missionIcon?.addEventListener("click", () => {
 
     missionWindow?.classList.remove("hidden");
 
     unlockAchievement("Opened Mission Log 🗂️");
 
+    renderFirstDateBadge();
+
     if(!localStorage.getItem("lizzyFirstDateBadgeV1")){
         localStorage.setItem("lizzyFirstDateBadgeV1", "1");
-        setTimeout(()=>unlockAchievement("First Date Badge 🏅"), 3800);
+        setTimeout(()=>{unlockAchievement("First Date Badge 🏅");renderFirstDateBadge()}, 3800);
     }
 
     if(!localStorage.getItem("lizzyStoryProgressM1V1")){

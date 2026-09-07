@@ -2192,6 +2192,37 @@ color:#ff5ca8;
     letter-spacing:2px;
 }
 
+.badgeShowcase{
+    display:flex;align-items:center;gap:14px;
+    padding:14px 16px;border-radius:16px;margin:0 0 12px;
+    background:rgba(255,255,255,.06);
+    border:2px solid rgba(255,255,255,.14);
+    transition:.4s;
+}
+.badgeMedal{
+    font-size:38px;line-height:1;flex-shrink:0;
+    filter:grayscale(1) opacity(.4);
+    transition:.4s;
+}
+.badgeInfo{display:flex;flex-direction:column;gap:2px}
+.badgeInfo strong{font-size:14px}
+.badgeInfo span{font-size:11px;opacity:.6;letter-spacing:.5px;text-transform:uppercase;font-weight:700}
+.badgeShowcase.earned{
+    background:linear-gradient(135deg,rgba(255,208,90,.18),rgba(255,150,60,.1));
+    border-color:rgba(255,208,90,.55);
+    box-shadow:0 8px 24px rgba(255,180,60,.25);
+}
+.badgeShowcase.earned .badgeMedal{
+    filter:none;
+    text-shadow:0 0 16px rgba(255,208,90,.7);
+    animation:badgeShine 2.4s ease-in-out infinite;
+}
+.badgeShowcase.earned .badgeInfo span{color:#ffd05a;opacity:1}
+@keyframes badgeShine{
+    0%,100%{transform:scale(1) rotate(0deg)}
+    50%{transform:scale(1.08) rotate(-4deg)}
+}
+
 .agentGrid{
     display:grid;
     grid-template-columns:repeat(2,minmax(0,1fr));
@@ -2372,6 +2403,12 @@ color:#ff5ca8;
 .deletedNickname strong,.deletedNickname small{display:block;margin-top:7px}
 .deletedNickname small{opacity:.65;font-size:11px}
 .binWarning{text-align:center;font-size:12px;opacity:.8}
+.connectionPanel{max-width:420px;margin:18px auto;padding:6px 0}
+.connectionRow{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:14px 16px;border-radius:14px;background:rgba(255,255,255,.08);margin-bottom:10px}
+.connectionRow span{font-size:11px;font-weight:800;letter-spacing:1px;opacity:.65;flex-shrink:0}
+.connectionRow strong{text-align:right;font-size:14px}
+.connectionStatus{text-align:center;margin-top:14px;padding:12px;border-radius:14px;background:rgba(255,255,255,.06);font-weight:800;font-size:13px;opacity:.75}
+.connectionStatus.mutual{background:rgba(255,111,181,.18);color:#ffb3da;opacity:1}
 
 
 /* QUIZ+ MIKHAIL QUIZ */
