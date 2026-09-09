@@ -82,6 +82,81 @@ document.getElementById("connectionIcon")?.addEventListener("click",()=>{
  document.getElementById(id)?.addEventListener("click",()=>document.getElementById("connectionWindow")?.classList.add("hidden"))
 );
 
+/* ---------- "I Wonder If..." shared thought board ---------- */
+async function fetchThoughts(){
+ const r=await fetch(WORKER+"?thoughtBoard=1",{cache:"no-store"});
+ const d=await r.json();
+ return d?.success&&Array.isArray(d.thoughts)?d.thoughts:[];
+}
+function timeAgo(iso){
+ const diff=Date.now()-new Date(iso).getTime();
+ const mins=Math.floor(diff/60000);
+ if(mins<1)return "just now";
+ if(mins<60)return `${mins}m ago`;
+ const hrs=Math.floor(mins/60);
+ if(hrs<24)return `${hrs}h ago`;
+ return `${Math.floor(hrs/24)}d ago`;
+}
+function esc(s){return String(s).replace(/</g,"&lt;")}
+async function renderThoughtBoard(){
+ const feed=document.getElementById("thoughtBoardFeed");
+ if(!feed)return;
+ feed.innerHTML=`<p class="memoryMessage">Loading the board... 💭</p>`;
+ let thoughts=[];
+ try{thoughts=await fetchThoughts()}catch(e){feed.innerHTML=`<p class="memoryMessage">Couldn't load the board right now. Try again in a moment.</p>`;return}
+ if(!thoughts.length){feed.innerHTML=`<p class="memoryMessage">Nothing here yet. Be the first to wonder something. 💭</p>`;return}
+ feed.innerHTML=[...thoughts].reverse().map(t=>{
+  const byMikael=t.author==="Mikael";
+  const replyBlock=t.reply
+   ?`<div class="thoughtReply"><div class="thoughtAuthor">${esc(t.reply.author)} answered</div><div class="thoughtText">${esc(t.reply.text)}</div><div class="thoughtTime">${timeAgo(t.reply.repliedAt)}</div></div>`
+   :(byMikael
+      ?`<div class="thoughtReplyBox"><input type="text" data-answer-for="${t.id}" placeholder="Answer Mikael's wonder..." maxlength="500"><button data-answer-btn="${t.id}">Answer</button></div>`
+      :`<div class="thoughtTime" style="margin-top:8px;opacity:.5">Waiting on Mikael... 💭</div>`);
+  return `<div class="thoughtCard ${byMikael?"byMikael":"byLizzy"}">
+    <div class="thoughtAuthor">${esc(t.author)} wonders...</div>
+    <div class="thoughtText">${esc(t.text)}</div>
+    <div class="thoughtTime">${timeAgo(t.createdAt)}</div>
+    ${replyBlock}
+  </div>`;
+ }).join("");
+
+ feed.querySelectorAll("[data-answer-btn]").forEach(btn=>{
+  btn.addEventListener("click",async()=>{
+   const id=btn.dataset.answerBtn;
+   const input=feed.querySelector(`[data-answer-for="${id}"]`);
+   const text=(input?.value||"").trim();
+   if(!text)return;
+   btn.disabled=true;btn.textContent="Sending...";
+   try{
+    await post({type:"thought_answer",id,text});
+    await renderThoughtBoard();
+   }catch(e){btn.disabled=false;btn.textContent="Answer"}
+  });
+ });
+}
+
+document.getElementById("thoughtBoardIcon")?.addEventListener("click",()=>{
+ document.getElementById("thoughtBoardWindow")?.classList.remove("hidden");
+ renderThoughtBoard();
+});
+["thoughtBoardClose","closeThoughtBoard"].forEach(id=>
+ document.getElementById(id)?.addEventListener("click",()=>document.getElementById("thoughtBoardWindow")?.classList.add("hidden"))
+);
+document.getElementById("newWonderSubmit")?.addEventListener("click",async()=>{
+ const input=document.getElementById("newWonderInput");
+ const text=(input?.value||"").trim();
+ if(!text)return;
+ const btn=document.getElementById("newWonderSubmit");
+ btn.disabled=true;btn.textContent="Posting...";
+ try{
+  await post({type:"thought_create",text});
+  input.value="";
+  await renderThoughtBoard();
+ }finally{
+  btn.disabled=false;btn.textContent="💭 Post It";
+ }
+});
+
 window.addEventListener("load",()=>setTimeout(renderMessages,1600));
 window.addEventListener("focus",renderMessages);
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible")renderMessages()});

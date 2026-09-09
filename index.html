@@ -8,7 +8,7 @@
 
     <title>Lizzy ❤️</title>
 
-    <link rel="stylesheet" href="style.css?v=20260906-badge-visual">
+    <link rel="stylesheet" href="style.css?v=20260907-thought-board">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
 
@@ -604,6 +604,7 @@
             <div class="desktopIcon livingDesktopIcon" id="lizzyAssistantIcon" role="button" tabindex="0"><div class="desktopEmoji">✨</div><span>Lizzy Assistant</span></div>
             <div class="desktopIcon livingDesktopIcon" id="dayCheckIcon" role="button" tabindex="0"><div class="desktopEmoji">💗</div><span>How's Today?</span></div>
             <div class="desktopIcon livingDesktopIcon" id="connectionIcon" role="button" tabindex="0"><div class="desktopEmoji">💞</div><span>Today's Connection</span></div>
+            <div class="desktopIcon livingDesktopIcon" id="thoughtBoardIcon" role="button" tabindex="0"><div class="desktopEmoji">💭</div><span>I Wonder If...</span></div>
             <div class="desktopIcon calendarFolderIcon" id="calendarIcon">
                 <div class="desktopEmoji calendarFolderEmoji"><span class="folderCalendarBadge">📅</span></div>
                 <span>Our Date</span>
@@ -1507,6 +1508,30 @@
             <button id="closeConnection" class="windowCloseButton">Close</button>
         </div>
 
+        <div id="thoughtBoardWindow" class="desktopWindow hidden">
+            <div class="windowTop">
+                <div class="windowDots">
+                    <span class="windowCloseDot" id="thoughtBoardClose" title="Close"></span>
+                    <span class="windowMinDot"></span>
+                    <span class="windowMaxDot"></span>
+                </div>
+                <h2>💭 "I Wonder If..."</h2>
+            </div>
+            <div class="windowScroll">
+                <p class="memoryMessage">A little board for the random thoughts and "what ifs" you don't want to lose. 💭</p>
+
+                <div class="newWonderBox">
+                    <textarea id="newWonderInput" placeholder="Lizzy wonders..." rows="2" maxlength="500"></textarea>
+                    <button id="newWonderSubmit" type="button">💭 Post It</button>
+                </div>
+
+                <div id="thoughtBoardFeed" class="thoughtBoardFeed"></div>
+
+                <p class="binWarning">Mikael posts one by texting the bot: <code>/wonder [his thought]</code> — and answers yours with <code>/answer [his reply]</code></p>
+            </div>
+            <button id="closeThoughtBoard" class="windowCloseButton">Close</button>
+        </div>
+
         <!-- LizzyOS Personality Lab -->
         <div id="personalityWindow" class="desktopWindow hidden">
             <div class="windowTop">
@@ -1799,7 +1824,7 @@ if (window.netlifyIdentity) {
 <script src="script.js?v=20260906-badge-visual"></script>
 <script src="living-desktop.js?v=20260906-persona-notify"></script>
 
-<script defer src="internet.js?v=20260904-news-expansion"></script>
+<script defer src="internet.js?v=20260907-bigger-bonus"></script>
 
 
         <div id="seedStoreWindow" data-build="20260818-locked-final" class="desktopWindow hidden seedStoreWindow">
@@ -1866,7 +1891,7 @@ if (window.netlifyIdentity) {
             </div>
         </div>
 
-<script src="seed-store.js?v=20260830-minimum-wage"></script>
+<script src="seed-store.js?v=20260907-bigger-bonus"></script>
 <script src="letter-notifications.js?v=20260821-open-when-telegram-fixed"></script>
 <script src="mikael-exe.js?v=20260822-v29-layout"></script>
 
@@ -1893,7 +1918,7 @@ if (window.netlifyIdentity) {
 <script src="fun-apps.js?v=20260906-more-questions"></script>
 <script src="interactive-rewards.js?v=20260827-three-line"></script>
 <script src="telegram-bank-sync.js?v=20260905-note-display-fix"></script>
-<script src="mikael-connection.js?v=20260905-synced-feelings"></script>
+<script src="mikael-connection.js?v=20260907-thought-board"></script>
 
 </body>
 </html>

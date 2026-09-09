@@ -90,6 +90,152 @@ async function createDeposit(env,amount,note,source){
   return {deposit:d,pendingCount:pending.length,pendingTotal:total};
 }
 
+/* ===== 💌 MESSAGES FROM MIKAEL =====
+   A little note or "thinking of you" ping that sits in KV as "pending"
+   until Lizzy's site shows it to her and she dismisses it. */
+const MESSAGE_INDEX_KEY="lizzy_messages:index:v1";
+const messageKey=id=>`lizzy_messages:message:${id}`;
+const mid=()=>`msg_${Date.now()}_${Math.random().toString(36).slice(2,8)}`;
+async function getMessageIndex(env){
+  const x=await env.LIZZY_CLAIMS.get(MESSAGE_INDEX_KEY,{type:"json"});
+  return Array.isArray(x)?x:[];
+}
+async function putMessageIndex(env,x){
+  await env.LIZZY_CLAIMS.put(MESSAGE_INDEX_KEY,JSON.stringify([...new Set(x)].slice(-200)));
+}
+async function getMessage(env,id){
+  return env.LIZZY_CLAIMS.get(messageKey(id),{type:"json"});
+}
+async function putMessage(env,m){
+  await env.LIZZY_CLAIMS.put(messageKey(m.id),JSON.stringify(m),{expirationTtl:2592000});
+}
+async function listMessages(env,onlyPending=true){
+  const ids=await getMessageIndex(env),out=[];
+  for(const id of ids){
+    const m=await getMessage(env,id);
+    if(!m)continue;
+    if(onlyPending&&m.status!=="pending")continue;
+    out.push(m);
+  }
+  return out.sort((a,b)=>String(a.createdAt).localeCompare(String(b.createdAt)));
+}
+async function createMessage(env,text,source){
+  const m={
+    id:mid(),text:String(text||"").slice(0,500),
+    source:String(source||"website").slice(0,60),
+    status:"pending",createdAt:new Date().toISOString(),
+    seenAt:null
+  };
+  await putMessage(env,m);
+  const ids=await getMessageIndex(env);ids.push(m.id);await putMessageIndex(env,ids);
+  const pending=await listMessages(env,true);
+  await tg(env,"sendMessage",{
+    chat_id:env.TELEGRAM_CHAT_ID,
+    text:`💌 MESSAGE QUEUED FOR LIZZY\n\n"${m.text}"\n\nIt'll show up on her screen next time she has LizzyOS open.\n\nUnseen messages waiting: ${pending.length}`
+  });
+  return {message:m,pendingCount:pending.length};
+}
+
+/* ===== 💗 SYNCED FEELINGS — MIKAEL'S MOOD =====
+   A single current value, not a queue — always just "what Mikael feels right now". */
+const MIKAEL_MOOD_KEY="mikael_mood:current:v1";
+async function getMikaelMood(env){
+  return env.LIZZY_CLAIMS.get(MIKAEL_MOOD_KEY,{type:"json"});
+}
+async function setMikaelMood(env,text,source){
+  const m={text:String(text||"").slice(0,200),at:new Date().toISOString(),source:String(source||"website").slice(0,60)};
+  await env.LIZZY_CLAIMS.put(MIKAEL_MOOD_KEY,JSON.stringify(m));
+  await tg(env,"sendMessage",{chat_id:env.TELEGRAM_CHAT_ID,text:`💗 YOUR MOOD SET\n\n"${m.text}"\n\nLizzy's Today's Connection screen will show this alongside her own mood.`});
+  return m;
+}
+
+/* ===== 💭 "I WONDER IF…" — SHARED THOUGHT BOARD =====
+   A running feed of open musings from either of you. Each thought can
+   carry exactly one reply from the other person. */
+const THOUGHT_INDEX_KEY="lizzy_thoughts:index:v1";
+const LAST_UNANSWERED_KEY="lizzy_thoughts:last_unanswered_lizzy:v1";
+const thoughtKey=id=>`lizzy_thoughts:thought:${id}`;
+const thid=()=>`thought_${Date.now()}_${Math.random().toString(36).slice(2,8)}`;
+
+async function getThoughtIndex(env){
+  const x=await env.LIZZY_CLAIMS.get(THOUGHT_INDEX_KEY,{type:"json"});
+  return Array.isArray(x)?x:[];
+}
+async function putThoughtIndex(env,x){
+  await env.LIZZY_CLAIMS.put(THOUGHT_INDEX_KEY,JSON.stringify([...new Set(x)].slice(-300)));
+}
+async function getThought(env,id){
+  return env.LIZZY_CLAIMS.get(thoughtKey(id),{type:"json"});
+}
+async function putThought(env,t){
+  await env.LIZZY_CLAIMS.put(thoughtKey(t.id),JSON.stringify(t),{expirationTtl:15552000});
+}
+async function listThoughts(env,limit=50){
+  const ids=await getThoughtIndex(env);
+  const out=[];
+  for(const id of ids){
+    const t=await getThought(env,id);
+    if(t)out.push(t);
+  }
+  out.sort((a,b)=>String(a.createdAt).localeCompare(String(b.createdAt)));
+  return out.slice(-limit);
+}
+async function createThought(env,author,text,source){
+  const t={
+    id:thid(),author:author==="Mikael"?"Mikael":"Lizzy",
+    text:String(text||"").slice(0,500),
+    createdAt:new Date().toISOString(),
+    source:String(source||"website").slice(0,60),
+    reply:null
+  };
+  await putThought(env,t);
+  const ids=await getThoughtIndex(env);ids.push(t.id);await putThoughtIndex(env,ids);
+  if(t.author==="Lizzy"){
+    await env.LIZZY_CLAIMS.put(LAST_UNANSWERED_KEY,t.id);
+    await tg(env,"sendMessage",{
+      chat_id:env.TELEGRAM_CHAT_ID,
+      text:`💭 LIZZY WONDERS...\n\n"${t.text}"\n\nReply with:\n/answer your reply here`
+    });
+  }else{
+    await tg(env,"sendMessage",{
+      chat_id:env.TELEGRAM_CHAT_ID,
+      text:`💭 YOUR WONDER IS ON THE BOARD\n\n"${t.text}"\n\nIt'll show up for Lizzy to answer next time she opens the Thought Board.`
+    });
+  }
+  return t;
+}
+async function answerThought(env,id,replyText,replyAuthor,source){
+  const t=await getThought(env,id);
+  if(!t)return null;
+  if(t.reply)return t;
+  t.reply={
+    author:replyAuthor==="Mikael"?"Mikael":"Lizzy",
+    text:String(replyText||"").slice(0,500),
+    repliedAt:new Date().toISOString(),
+    source:String(source||"website").slice(0,60)
+  };
+  await putThought(env,t);
+  if(t.reply.author==="Lizzy"){
+    await tg(env,"sendMessage",{
+      chat_id:env.TELEGRAM_CHAT_ID,
+      text:`💭 LIZZY ANSWERED YOUR WONDER\n\nYou wondered: "${t.text}"\n\nShe said: "${t.reply.text}"`
+    });
+  }else{
+    await tg(env,"sendMessage",{
+      chat_id:env.TELEGRAM_CHAT_ID,
+      text:`💭 YOU ANSWERED LIZZY'S WONDER\n\nShe wondered: "${t.text}"\n\nYou said: "${t.reply.text}"`
+    });
+  }
+  return t;
+}
+async function answerLatestUnansweredFromLizzy(env,replyText,source){
+  const id=await env.LIZZY_CLAIMS.get(LAST_UNANSWERED_KEY);
+  if(!id)return null;
+  const t=await answerThought(env,id,replyText,"Mikael",source);
+  if(t)await env.LIZZY_CLAIMS.delete(LAST_UNANSWERED_KEY);
+  return t;
+}
+
 export default{async fetch(req,env){
  if(req.method==="OPTIONS")return json({ok:true});
  const u=new URL(req.url);
@@ -106,6 +252,18 @@ export default{async fetch(req,env){
    if(u.searchParams.get("mickyDepositHistory")==="1"){
      const deposits=await listDeposits(env,false);
      return json({success:true,deposits});
+   }
+   if(u.searchParams.get("pendingLizzyMessages")==="1"){
+     const messages=await listMessages(env,true);
+     return json({success:true,messages,pendingCount:messages.length});
+   }
+   if(u.searchParams.get("mikaelMood")==="1"){
+     const mood=await getMikaelMood(env);
+     return json({success:true,mood:mood||null});
+   }
+   if(u.searchParams.get("thoughtBoard")==="1"){
+     const thoughts=await listThoughts(env,50);
+     return json({success:true,thoughts});
    }
    if(u.searchParams.get("pendingReverseRedemptions")==="1"){
      const ids=await getRedemptionIndex(env),items=[];
@@ -161,6 +319,39 @@ export default{async fetch(req,env){
        await tg(env,"sendMessage",{chat_id:chat,text:pending.length
          ?`⏳ UNCLAIMED DEPOSITS (${pending.length})\n\n${pending.map(d=>`• ${d.amount} MB${d.note?` — ${d.note}`:""}`).join("\n")}\n\nTotal: ${total} MB`
          :"✅ No unclaimed deposits. Lizzy has claimed everything."});
+       return json({ok:true});
+     }
+
+     // /tolizzy <text> — send a message that shows up on her screen.
+     const toL=txt.match(/^\/tolizzy(?:@\w+)?\s+([\s\S]+)$/i);
+     if(toL){
+       await createMessage(env,toL[1],"telegram");
+       return json({ok:true});
+     }
+     // /miss — quick one-tap "missing you" message, no typing required.
+     if(/^\/miss(?:@\w+)?$/i.test(txt)){
+       await createMessage(env,"Mikael is missing you right now 💗","telegram");
+       return json({ok:true});
+     }
+     // /mymood <text> — set Mikael's current mood for the Today's Connection screen.
+     const mood=txt.match(/^\/mymood(?:@\w+)?\s+([\s\S]+)$/i);
+     if(mood){
+       await setMikaelMood(env,mood[1],"telegram");
+       return json({ok:true});
+     }
+     // /wonder <text> — post a new thought to the shared "I Wonder If..." board.
+     const wonder=txt.match(/^\/wonder(?:@\w+)?\s+([\s\S]+)$/i);
+     if(wonder){
+       await createThought(env,"Mikael",wonder[1],"telegram");
+       return json({ok:true});
+     }
+     // /answer <text> — answer Lizzy's most recent unanswered wonder.
+     const answer=txt.match(/^\/answer(?:@\w+)?\s+([\s\S]+)$/i);
+     if(answer){
+       const t=await answerLatestUnansweredFromLizzy(env,answer[1],"telegram");
+       if(!t){
+         await tg(env,"sendMessage",{chat_id:chat,text:"There's nothing waiting for an answer right now. 💭"});
+       }
        return json({ok:true});
      }
 
@@ -331,6 +522,52 @@ if(
 🤖 LizzyOS responded:
 "${answer||"Response recorded"}"`,
     "assistant_activity"
+  );
+}
+
+
+/* =========================================================
+   💌 LETTER PURCHASED
+   ========================================================= */
+
+if(
+  eventType==="letter_purchased" ||
+  eventType==="secret_shelf_letter_purchased" ||
+  eventType==="💌 LETTER PURCHASED"
+){
+  const letter=S(
+    b.letter||
+    b.title||
+    b.item||
+    b.name||
+    "Open When Letter",
+    700
+  );
+
+  const paid=N(
+    b.paid||
+    b.price||
+    b.cost||
+    b.amount,
+    0
+  );
+
+  const balance=
+    b.balance!=null
+      ? N(b.balance)
+      : null;
+
+  return notifyTelegram(
+`💌 LETTER PURCHASED
+
+🛒 ${letter}
+
+💸 Paid:
+${paid} MB
+${balance!=null?`🏦 Balance after purchase:\n${balance} MB`:""}
+
+Lizzy has purchased one of the letters. Not opened yet.`,
+    "letter_purchased"
   );
 }
 
@@ -975,6 +1212,73 @@ if(eventType==="micky_bank_deposit_cancel"){
   d.status="cancelled";d.cancelledAt=new Date().toISOString();
   await putDeposit(env,d);
   return json({success:true,id:d.id});
+}
+
+
+/* =========================================================
+   💌 MESSAGES FROM MIKAEL
+   ========================================================= */
+
+/* create a message from the website (in addition to the /tolizzy Telegram command) */
+if(eventType==="lizzy_message_create"){
+  const text=S(b.text||b.message||"",500);
+  if(!text)return json({success:false,error:"Message text required"},400);
+  const r=await createMessage(env,text,S(b.source||"website",60));
+  return json({success:true,type:"message_created",message:r.message,pendingCount:r.pendingCount});
+}
+
+/* Lizzy's site has shown the message on screen — mark it seen */
+if(eventType==="lizzy_message_seen"){
+  const msgId=S(b.id,120);
+  const m=msgId?await getMessage(env,msgId):null;
+  if(!m)return json({success:false,error:"Message not found"},404);
+  if(m.status==="pending"){
+    m.status="seen";
+    m.seenAt=new Date().toISOString();
+    await putMessage(env,m);
+    const pending=await listMessages(env,true);
+    await tg(env,"sendMessage",{
+      chat_id:env.TELEGRAM_CHAT_ID,
+      text:`👀 MESSAGE SEEN BY LIZZY\n\n"${m.text}"\n\nStill unseen: ${pending.length} message(s)`
+    });
+  }
+  return json({success:true,id:m.id});
+}
+
+
+/* =========================================================
+   💗 SYNCED FEELINGS — MIKAEL'S MOOD
+   ========================================================= */
+
+/* set Mikael's mood from the website (in addition to the /mymood Telegram command) */
+if(eventType==="mikael_mood_set"){
+  const text=S(b.text||b.mood||"",200);
+  if(!text)return json({success:false,error:"Mood text required"},400);
+  const m=await setMikaelMood(env,text,S(b.source||"website",60));
+  return json({success:true,mood:m});
+}
+
+
+/* =========================================================
+   💭 "I WONDER IF…" — SHARED THOUGHT BOARD
+   ========================================================= */
+
+/* Lizzy posts a new wonder from the website */
+if(eventType==="thought_create"){
+  const text=S(b.text||"",500);
+  if(!text)return json({success:false,error:"Thought text required"},400);
+  const t=await createThought(env,"Lizzy",text,S(b.source||"website",60));
+  return json({success:true,thought:t});
+}
+
+/* Lizzy answers one of Mikael's wonders from the website */
+if(eventType==="thought_answer"){
+  const id=S(b.id,120);
+  const text=S(b.text||b.reply||"",500);
+  if(!id||!text)return json({success:false,error:"Thought id and reply text required"},400);
+  const t=await answerThought(env,id,text,"Lizzy",S(b.source||"website",60));
+  if(!t)return json({success:false,error:"Thought not found"},404);
+  return json({success:true,thought:t});
 }
 
 

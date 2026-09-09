@@ -2410,6 +2410,24 @@ color:#ff5ca8;
 .connectionStatus{text-align:center;margin-top:14px;padding:12px;border-radius:14px;background:rgba(255,255,255,.06);font-weight:800;font-size:13px;opacity:.75}
 .connectionStatus.mutual{background:rgba(255,111,181,.18);color:#ffb3da;opacity:1}
 
+.newWonderBox{display:flex;flex-direction:column;gap:8px;margin:16px 0 20px;padding:14px;border-radius:14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14)}
+.newWonderBox textarea{width:100%;box-sizing:border-box;resize:vertical;padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:inherit;font-family:inherit;font-size:13px}
+.newWonderBox button{align-self:flex-end;border:0;border-radius:10px;padding:8px 16px;font-weight:800;cursor:pointer}
+.thoughtBoardFeed{display:flex;flex-direction:column;gap:12px}
+.thoughtCard{padding:14px 16px;border-radius:16px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12)}
+.thoughtCard.byMikael{border-left:3px solid #7fc8ff}
+.thoughtCard.byLizzy{border-left:3px solid #ff8fc4}
+.thoughtAuthor{font-size:11px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;opacity:.7;margin-bottom:6px}
+.thoughtCard.byMikael .thoughtAuthor{color:#9fd6ff}
+.thoughtCard.byLizzy .thoughtAuthor{color:#ffb3da}
+.thoughtText{font-size:14px;line-height:1.5;margin-bottom:8px}
+.thoughtTime{font-size:10px;opacity:.5}
+.thoughtReply{margin-top:10px;padding:10px 12px;border-radius:12px;background:rgba(0,0,0,.18)}
+.thoughtReply .thoughtAuthor{margin-bottom:4px}
+.thoughtReplyBox{display:flex;gap:8px;margin-top:10px}
+.thoughtReplyBox input{flex:1;padding:8px 10px;border-radius:9px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:inherit;font-size:12px}
+.thoughtReplyBox button{border:0;border-radius:9px;padding:8px 12px;font-weight:800;cursor:pointer;white-space:nowrap}
+
 
 /* QUIZ+ MIKHAIL QUIZ */
 .quizLevelGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:22px 0}.quizLevelCard{min-height:145px;padding:18px 12px}.quizLevelCard span,.quizLevelCard strong,.quizLevelCard small{display:block}.quizLevelCard span{font-size:32px}.quizLevelCard strong{margin:9px 0 5px}.quizProgress{display:flex;justify-content:space-between;margin-bottom:20px;font-size:12px;font-weight:700}.mikhailAnswers{display:grid;gap:10px;max-width:620px;margin:20px auto}.mikhailAnswers button{width:100%;margin:0}.quizReaction{min-height:30px;text-align:center}.resultMedal{text-align:center;font-size:65px}.quizRewardTicket{max-width:520px;margin:25px auto;padding:25px;border:2px dashed rgba(255,255,255,.6);border-radius:20px;text-align:center;background:rgba(255,255,255,.12)}.quizRewardTicket small,.quizRewardTicket strong,.quizRewardTicket span{display:block}.quizRewardTicket strong{font-size:20px;margin:10px 0}.mysteryBoxContent{text-align:center}.mysteryGift{font-size:95px;margin:20px 0;animation:mysteryFloat 2.2s ease-in-out infinite}.mysteryReward{max-width:550px;margin:20px auto;padding:22px;border-radius:20px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.24)}@keyframes mysteryFloat{50%{transform:translateY(-9px) rotate(3deg)}}@media(max-width:650px){.quizLevelGrid{grid-template-columns:1fr}}
